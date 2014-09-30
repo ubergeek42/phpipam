@@ -15,10 +15,7 @@ class database extends mysqli  {
 	
 
 	/* open database connection */
-	public function __construct($host = NULL, $username = NULL, $dbname = NULL, $port = NULL, $socket = NULL, $printError = true) {
-	
-		# to throw exceptions
-		mysqli_report(MYSQLI_REPORT_STRICT);
+	public function __construct($host = NULL, $username = NULL, $dbname = NULL, $port = NULL, $socket = NULL, $printError = true) {		
 
 		# try to open
 	    try { parent::__construct($host, $username, $dbname, $port, $socket); }
@@ -35,48 +32,48 @@ class database extends mysqli  {
 	} 
 
 	
-	/* execute given query */
-	function executeQuery( $query, $lastId = false, $printError = true ) 
+	/**
+	 * execute given query 
+	 *
+	 */
+	function executeQuery( $query, $lastId = false ) 
 	{
-		# try to execute
-	    try { $result = parent::query( $query ); }
-	    catch (Exception $e) { 
-	        $error =  $e->getMessage(); 
-	        if($printError) print ("<div class='alert alert-danger'>"._('Error').": ".$this->connect_error."</div>");
-	        return false;
-	    } 
-	    
-	    # save id
-	    $this->lastSqlId = $this->insert_id;
+		/* execute query */
+		$result     = parent::query( $query );
+		$this->lastSqlId   = $this->insert_id;
 
-	    # return lastId if requested
-	    if($lastId)	{ return $this->lastSqlId; }
-	    else 		{ return true; }
+		/* if it failes throw new exception */
+		if ( mysqli_error( $this ) ) {
+            throw new exception( mysqli_error( $this ), mysqli_errno( $this ) ); 
+      		}
+        else {
+        	# return lastId if requested
+        	if($lastId)	{ return $this->lastSqlId; }
+        	else 		{ return true; }
+        }
 	}
-		
 	
-	/* get only 1 row */
-    function getRow ($query) 
+
+	/**
+	 * get only 1 row
+	 *
+	 */
+    function getRow ( $query ) 
     {
-		# try to execute
-	    try { $result = parent::query( $query ); }
-	    catch (Exception $e) { 
-	        $error =  $e->getMessage(); 
-	        if($printError) print ("<div class='alert alert-danger'>"._('Error').": ".$this->connect_error."</div>");
-	        return false;
-	    } 
-	    
         /* get result */
-        if ($result) {     
+        if ($result = parent::query($query)) {     
             $resp = $result->fetch_row();   
         }
-        
+        else {
+            throw new exception( mysqli_error( $this ), mysqli_errno( $this ) ); 
+        }
         /* return result */
         return $resp;   
         
         /* free result */
 		$result->close();  
     }
+
 	
 	
 	/**
@@ -89,24 +86,20 @@ class database extends mysqli  {
 	 * if nothing is provided use assocciative results
 	 *
 	 */
-	function getArray( $query , $assoc = true, $printError = true ) 
+	function getArray( $query , $assoc = true ) 
 	{	
-		/* save query */
-		$tmpfile = fopen("/tmp/phpipam_queries.txt", "a") or die("Unable to open file!");
-		fwrite($tmpfile, "$query \n");
-		fclose($tmpfile);
-		
-		# try to execute query
-		try { $result = parent::query( $query ); }
-	    catch (Exception $e) { 
-	        $error =  $e->getMessage(); 
-	        if($printError) print ("<div class='alert alert-danger'>"._('Error').": ".$this->connect_error."</div>");
-	        return false;
-	    } 
+		/* execute query */
+		$result = parent::query($query);
+	
+	    /* if it failes throw new exception */
+		if(mysqli_error($this)) {
+      		throw new exception(mysqli_error($this), mysqli_errno($this)); 
+        }
         
 		/** 
 		 * fetch array of all access responses 
          * either assoc or num, based on input
+         *
          */
 		if ($assoc == true) {
             while($row = $result->fetch_array(MYSQLI_ASSOC)) {

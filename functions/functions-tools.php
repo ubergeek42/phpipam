@@ -209,11 +209,10 @@ function updateLogTable ($command, $details = NULL, $severity = 0)
     $query .= '(`severity`, `date`,`username`,`ipaddr`,`command`,`details`)'. "\n";
     $query .= 'values'. "\n";
     $query .= '("'.  $severity .'", "'. $date .'", "'. $user .'", "'. $_SERVER['REMOTE_ADDR'] .'", "'. $command .'", "'. $details .'");';
-    
-    
+        
     /* execute */
     try {
-    	$database->executeMultipleQuerries($query);
+    	$database->executeQuery($query);
     }
     catch (Exception $e) {
     	$error =  $e->getMessage();

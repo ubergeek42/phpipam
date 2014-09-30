@@ -26,8 +26,8 @@ else{
  */
 function updateLogTable ($command, $details = NULL, $severity = 0)
 {
-    global $database; 
-    global $db;                                                                     
+    global $db;                                                                	
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    
     
     /* select database */
     try {
@@ -73,8 +73,9 @@ function updateLogTable ($command, $details = NULL, $severity = 0)
  */
 function getUserDetailsByName ($username)
 {
-    global $database;                                                                      
-    /* set query, open db connection and fetch results */
+	global $db;
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+	/* set query, open db connection and fetch results */
     $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
 
     /* execute */
@@ -114,7 +115,8 @@ function getActiveUserDetails ()
  */
 function getUserLang ($username)
 {
-    global $database;                                                                      
+    global $db;
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);                                                                      
     /* set query, open db connection and fetch results */
     $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and `username` = "'.$username.'";;';
 
@@ -136,7 +138,8 @@ function getUserLang ($username)
  */
 function getLangById ($id)
 {
-    global $database;                                                                      
+    global $db;
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);                                                                      
     /* set query, open db connection and fetch results */
     $query    = 'select * from `lang` where `l_id` = "'.$id.'";';
 
@@ -158,9 +161,8 @@ function getLangById ($id)
  */
 function getAllSettings()
 {
-    global $database;
     global $db;                                                                      
-
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
     /* Check connection */
     if ($database->connect_error) {
     	die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);
@@ -207,9 +209,9 @@ function getAllSettings()
  */
 function getADSettings()
 {
-    global $database;
     global $db;                                                                      
-
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+    
     /* Check connection */
     if ($database->connect_error) {
     	die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);
@@ -266,13 +268,15 @@ function getADSettings()
  */
 function checkLogin ($username, $md5password, $rawpassword) 
 {
-    global $database;                                                                      
     global $db;
-        
+    
+    # for login check
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+                     
     //escape strings
     $username   	= mysqli_real_escape_string($database, $username);
-    $$md5password   = mysqli_real_escape_string($database, $md5password);
-    
+    $md5password   	= mysqli_real_escape_string($database, $md5password);
+        
     $query 		= 'select * from `users` where `username` = binary "'. $username .'" and `password` = BINARY "'. $md5password .'" and `domainUser` = "0" limit 1;';
 
     /* execute */
@@ -282,9 +286,6 @@ function checkLogin ($username, $md5password, $rawpassword)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-
-    /* close database connection */
-    $database->close();
     
    	/* locally registered */
     if (sizeof($result) !=0 ) 	{ 
@@ -321,9 +322,6 @@ function checkLogin ($username, $md5password, $rawpassword)
 	    		print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	    		return false;
 	    	} 
-    		
-    		/* close database connection */
-    		$database->close();
     		
     		if(sizeof($result)!=0) {
 
@@ -418,7 +416,8 @@ function checkLogin ($username, $md5password, $rawpassword)
 function checkADLogin ($username, $password)
 {
 	/* first checked if it is defined in database - username and ad option */
-    global $database;                                                                      
+    global $db;
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);                                                                      
     
     /* check if user exists in local database */
     $query 		= 'select count(*) as count from users where `username` = binary "'. $username .'" and `domainUser` = "1";';
@@ -430,9 +429,6 @@ function checkADLogin ($username, $password)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-
-    /* close database connection */
-    $database->close();
 
     /* get All settings */
     $settings = getAllSettings();
@@ -487,7 +483,8 @@ function checkADLogin ($username, $password)
  */
 function checkAdmin ($die = true) 
 {
-    global $database;                                                                      
+	global $db;
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    
     
     /* first get active username */
     session_start();
@@ -504,9 +501,6 @@ function checkAdmin ($die = true)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-
-    /* close database connection */
-    $database->close();
     
     /* return true if admin, else false */
     if ($role[0] == "Administrator") {
@@ -533,7 +527,8 @@ function checkAdmin ($die = true)
  */
 function getAllTables()
 {
-    global $database;                                                                      
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
     
     /* first update request */
     $query    = 'show tables;';
@@ -556,8 +551,8 @@ function getAllTables()
  */
 function tableExists($table)
 {
+	global $db;
 	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-    global $db;                                                                  
 
     /* Check connection */
     if ($database->connect_error) {
@@ -586,8 +581,8 @@ function tableExists($table)
  */
 function fieldExists($table, $fieldName)
 {
-    global $database;                                                                      
-    
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
     /* first update request */
     $query    = 'describe `'. $table .'` `'. $fieldName .'`;';
 

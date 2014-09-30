@@ -253,10 +253,10 @@ function getUserDetailsByName ($username)
 	}
 	# query
 	else {
-	    global $database; 
+	    global $database;
 	    /* set query, open db connection and fetch results */
 	    $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
-	
+
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
 	    catch (Exception $e) { 
