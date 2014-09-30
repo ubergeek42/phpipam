@@ -186,6 +186,20 @@ else {
 		</td>  
 	</tr>
 	
+	<!-- mailNotify -->
+	<tr>
+    	<td><?php print _('Mail notifications'); ?></td> 
+    	<td>
+        <select name="mailNotify" class="form-control input-sm input-w-auto">
+            <option value="No"   selected="selected"><?php print _('No'); ?></option>
+            <option value="Yes"  <?php if ($user['mailNotify'] == "yes") print "selected"; ?>><?php print _('Yes'); ?></option>
+        </select>
+        
+        
+        </td> 
+        <td class="info2"><?php print _('Select yes to receive notification change mail for')."<br>"._('IP edited, Subnet edited, State change'); ?></td> 		
+	</tr>
+	
 	<!-- groups -->
 	<tr>
 		<td><?php print _('Groups'); ?></td>

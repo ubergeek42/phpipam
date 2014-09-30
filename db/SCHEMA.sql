@@ -40,7 +40,8 @@ CREATE TABLE `ipaddresses` (
   `lastSeen` DATETIME  NULL  DEFAULT '0000-00-00 00:00:00',
   `excludePing` BINARY  NULL  DEFAULT '0',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `subnetid` (`subnetId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 LOCK TABLES `ipaddresses` WRITE;
@@ -357,6 +358,7 @@ CREATE TABLE `users` (
   `widgets` VARCHAR(1024)  NULL  DEFAULT 'statistics;favourite_subnets;changelog;top10_hosts_v4',
   `lang` INT(11) UNSIGNED  NULL  DEFAULT '1',
   `favourite_subnets` VARCHAR(1024)  NULL  DEFAULT NULL,
+  `mailNotify` SET('Yes','No')  NULL  DEFAULT 'No',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`username`),
   UNIQUE KEY `id_2` (`id`),
@@ -537,4 +539,4 @@ VALUES
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.0';
+UPDATE `settings` set `version` = '1.02';

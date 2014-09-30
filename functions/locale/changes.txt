@@ -1152,3 +1152,17 @@ msgstr ""
 
 msgid "Sort by vendor"
 msgstr ""
+
+
+
+### 1.02.001 ###
+
+#: site/admin/userEditPrint.php
+msgid "Mail notifications"
+msgstr ""
+
+msgid "Select yes to receive notification change mail for"
+msgstr ""
+
+msgid "IP edited, Subnet edited, State change"
+msgstr ""

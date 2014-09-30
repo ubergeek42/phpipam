@@ -18,7 +18,9 @@ $height = 200;
 $slimit = 10;
 
 # get widget parameters
-$widget = getWidgetByFile($_REQUEST['subpage']);
+if(strlen(@$_REQUEST['subpage'])>0) {
+	$widget = getWidgetByFile($_REQUEST['subpage']);	
+}
 
 # if direct request include plot JS 
 if($_SERVER['HTTP_X_REQUESTED_WITH']!="XMLHttpRequest")	{ 
@@ -37,7 +39,7 @@ if($_SERVER['HTTP_X_REQUESTED_WITH']!="XMLHttpRequest")	{
 
 # get subnets statistic
 $type = 'IPv6';
-$subnetHost = getSubnetStatsDashboard($type, $slimit, false);
+$subnetHost = getSubnetStatsDashboard($type, 1000000, false);
 
 /* detect duplicates */
 $unique = array();	

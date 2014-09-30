@@ -238,7 +238,6 @@ if(sizeof($stateDiff)>0 && $email)
 
 		//send to all admins
 		sendStatusUpdateMail($mail['content'], $mail['subject']);
-		//mail($settings['siteAdminMail'], $mail['subject'], $mail['content'], $mail['headers']);
 	}
 }
 

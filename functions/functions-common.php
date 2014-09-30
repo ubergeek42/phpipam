@@ -84,16 +84,14 @@ function isUserAuthenticatedNoAjax ()
  * Check if user is admin
  */
 function checkAdmin ($die = true, $startSession = true) 
-{
-    global $db;                                                                      # get variables from config file
-    
+{    
     /* first get active username */
     if(!isset($_SESSION)) { session_start(); }
     $ipamusername = $_SESSION['ipamusername'];
     session_write_close();
     
     /* set check query and get result */
-    $database = new database ($db['host'], $db['user'], $db['pass'], $db['name']);
+    global $database;
 
     /* Check connection */
     if ($database->connect_error) {
@@ -114,8 +112,6 @@ function checkAdmin ($die = true, $startSession = true)
         die ("<div class='alert alert-danger'>"._('Error').": $error</div>");
     } 
 
-    /* close database connection */
-    $database->close();
     
     /* return true if admin, else false */
     if ($role[0] == "Administrator") {
@@ -151,10 +147,10 @@ function getActiveUserDetails ()
  */
 function getAllUsers ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
+
     /* set query, open db connection and fetch results */
     $query    = 'select * from users order by `role` asc, `real_name` asc;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -174,10 +170,9 @@ function getAllUsers ()
  */
 function getNumberOfUsers ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
     /* set query, open db connection and fetch results */
-    $query    = 'select count(*) as count from users order by id desc;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
+    $query    = 'select count(*) as count from users;';
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -197,10 +192,9 @@ function getNumberOfUsers ()
  */
 function getAllAdminUsers ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
     /* set query, open db connection and fetch results */
     $query    = 'select * from users where `role` = "Administrator" order by id desc;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -226,11 +220,9 @@ function getUserDetailsById ($id)
 	}
 	# query
 	else {
-
-	    global $db;                                                                      # get variables from config file
+	    global $database; 
 	    /* set query, open db connection and fetch results */
 	    $query    = 'select * from users where id = "'. $id .'";';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 	
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
@@ -261,10 +253,9 @@ function getUserDetailsByName ($username)
 	}
 	# query
 	else {
-	    global $db;                                                                      # get variables from config file
+	    global $database; 
 	    /* set query, open db connection and fetch results */
 	    $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 	
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
@@ -288,10 +279,9 @@ function getUserDetailsByName ($username)
  */
 function getUserLang ($username)
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
     /* set query, open db connection and fetch results */
     $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and `username` = "'.$username.'";;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -311,10 +301,9 @@ function getUserLang ($username)
  */
 function getLanguages ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
     /* set query, open db connection and fetch results */
     $query    = 'select * from `lang`;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -340,10 +329,9 @@ function getLangById ($id)
 	}
 	else {
 
-	    global $db;                                                                      # get variables from config file
+	    global $database; 
 	    /* set query, open db connection and fetch results */
 	    $query    = 'select * from `lang` where `l_id` = "'.$id.'";';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 	
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
@@ -366,8 +354,7 @@ function getLangById ($id)
  */
 function getAllWidgets($admin = false, $inactive = false)
 {
-    global $db; 
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
     
 	# inactive also - only for administration
 	if($inactive) 	{ $query = "select * from `widgets`; ";
@@ -401,8 +388,7 @@ function getAllWidgets($admin = false, $inactive = false)
  */
 function getWidgetById($wid)
 {
-    global $db; 
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
 	# query
 	$query = "select * from `widgets` where `wid` = '$wid'; ";
 
@@ -424,8 +410,7 @@ function getWidgetById($wid)
  */
 function getWidgetByFile($wfile)
 {
-    global $db; 
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
 	# query
 	$query = "select * from `widgets` where `wfile` = '$wfile'; ";
 
@@ -484,8 +469,7 @@ function getFavouriteSubnets()
  */
 function getUserFavouriteSubnets($subnetIds)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
+    global $database; 
 
 	# get details for each id
 	foreach($subnetIds as $id) {
@@ -540,8 +524,7 @@ function isSubnetFavourite($subnetId)
  */
 function editFavourite($post)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
+    global $database; 
 
     # get user details and favourites
     $user = getActiveUserDetails();
@@ -602,10 +585,9 @@ function getTranslationVersion ($code)
  */
 function getFullFieldData($table, $field)
 {
-    global $db;                                                                      # get variables from config file
+    global $database; 
     /* set query, open db connection and fetch results */
     $query = "show full columns from `$table` where `Field` = '$field';";
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -766,19 +748,19 @@ function getAllSettings()
 	} 
 	else {
 
-	    global $db;                                                                      # get variables from config file
-	    $database    = new database($db['host'], $db['user'], $db['pass']); 
+	    global $db;
+		global $database;
 	
 	    /* first check if table settings exists */
 	    $query    = 'SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_schema = "'. $db['name'] .'" AND table_name = "settings";';
-	
+			
 	    /* execute */
 	    try { $count = $database->getArray( $query ); }
 	    catch (Exception $e) { 
 	        $error =  $e->getMessage(); 
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
-	    } 
+	    }
 	  
 		/* return true if it exists */
 		if($count[0]['count'] == 1) {
@@ -807,7 +789,7 @@ function getAllSettings()
 function getAllMailSettings()
 {
     global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass']); 
+    global $database; 
 
     /* first check if table settings exists */
     $query    = 'SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_schema = "'. $db['name'] .'" AND table_name = "settingsMail";';
@@ -1469,8 +1451,7 @@ function getAllSlaves ($subnetId, $multi = false)
 		$removeSlaves[] = $subnetId;		# first
 	
 		# db
-		global $db;                                                                      # get variables from config file
-		$database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+		global $database; 
 		
 		while($end == false) {
 			

@@ -7,6 +7,7 @@
 
 
 
+
 /* @common functions ---------------- */
 
 
@@ -146,9 +147,8 @@ function getFirstPossibleSubnet($subnet, $free, $print = true)
  */
 function verifySwitchByName ($hostname)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set check query and get result */
-    $database = new database ($db['host'], $db['user'], $db['pass'], $db['name']);
     $query = 'select * from `devices` where `hostname` = "'. $hostname .'";';
 
     /* execute */
@@ -158,9 +158,6 @@ function verifySwitchByName ($hostname)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-
-    /* close database connection */
-    $database->close();
     
     /* return true */
     return true;
@@ -184,9 +181,8 @@ function getDeviceById ($deviceid)
 	else {
 
 		# query
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    /* set check query and get result */
-	    $database = new database ($db['host'], $db['user'], $db['pass'], $db['name']);
 	    $query = "SELECT * from `devices` LEFT JOIN `deviceTypes` ON `devices`.`type` = `deviceTypes`.`tid` where `devices`.`id` = '$deviceid' limit 1;";
 	    
 	    /* execute */
@@ -196,9 +192,6 @@ function getDeviceById ($deviceid)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	
-	    /* close database connection */
-	    $database->close();
 	    
 	    /* return true, else false */
 	    if (!$switch) 	{ return false; }
@@ -224,8 +217,7 @@ function getDeviceById ($deviceid)
  */
 function getAllVlansInSection ($sectionId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = "select distinct(`v`.`vlanId`),`v`.`name`,`v`.`number`, `v`.`description` from `subnets` as `s`,`vlans` as `v` where `s`.`sectionId` = $sectionId and `s`.`vlanId`=`v`.`vlanId` order by `v`.`number` asc;";
 
@@ -248,8 +240,7 @@ function getAllVlansInSection ($sectionId)
  */
 function getAllSubnetsInSectionVlan ($vlanId, $sectionId, $orderType = "subnet", $orderBy = "asc")
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 
     /* check for sorting in settings and override */
     $settings = getAllSettings();
@@ -292,8 +283,7 @@ function getAllSubnetsInSectionVlan ($vlanId, $sectionId, $orderType = "subnet",
  */
 function isSubnetIdVlan ($subnetId, $vlanId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = "select count(*) as `cnt` from `subnets` where `vlanId` = '$vlanId' and `id` = '$subnetId';";
 	
@@ -333,8 +323,7 @@ function validateVlan ($vlan)
  */
 function getVLANbyNumber ($number) 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = 'select * from `vlans` where `number` = "'. $number .'";';
     
@@ -367,8 +356,7 @@ function getVLANbyId ($id)
 	}
 	else {
 
-	    global $db;                                                                      # get variables from config file
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+	    global $database;                                                                     
 		/* execute query */
 		$query = 'select * from `vlans` where `vlanId` = "'. $id .'";';
 	    
@@ -404,8 +392,7 @@ function getVLANbyId ($id)
  */
 function getAllVRFs () 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = "select * from `vrf`;";
     
@@ -439,8 +426,7 @@ function getVRFDetailsById ($vrfId)
 	# check
 	else {
 
-	    global $db;                                                                      # get variables from config file
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+	    global $database;                                                                     
 		/* execute query */
 		$query = 'select * from `vrf` where `vrfId` = "'. $vrfId .'";';
 	    
@@ -465,8 +451,7 @@ function getVRFDetailsById ($vrfId)
  */
 function getAllVrfsInSection ($sectionId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = "select distinct(`v`.`vrfId`),`v`.`name`,`v`.`description` from `subnets` as `s`,`vrf` as `v` where `s`.`sectionId` = $sectionId and `s`.`vrfId`=`v`.`vrfId` order by `v`.`name` asc;";
 	
@@ -489,9 +474,7 @@ function getAllVrfsInSection ($sectionId)
  */
 function getAllSubnetsInSectionVRF ($vrfId, $sectionId, $orderType = "subnet", $orderBy = "asc")
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
-
+    global $database;                                                                     
     /* check for sorting in settings and override */
     $settings = getAllSettings();
     
@@ -533,8 +516,7 @@ function getAllSubnetsInSectionVRF ($vrfId, $sectionId, $orderType = "subnet", $
  */
 function isSubnetIdVrf ($subnetId, $vrfId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;                                                                     
 	/* execute query */
 	$query = "select count(*) as `cnt` from `subnets` where `vrfId` = '$vrfId' and `id` = '$subnetId';";
 	
@@ -568,13 +550,11 @@ function isSubnetIdVrf ($subnetId, $vrfId)
  */
 function fetchSections ($all = true)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query */
-    if($all) 	{ $query = 'select * from `sections` order by IF(ISNULL(`order`),1,0),`order`,`id` asc;'; }
-    else		{ $query = 'select * from `sections` where `masterSection` = 0 order by IF(ISNULL(`order`),1,0),`order`,`id` asc;'; }
+    if($all) 	{ $query = 'select SQL_CACHE * from `sections` order by IF(ISNULL(`order`),1,0),`order`,`id` asc;'; }
+    else		{ $query = 'select SQL_CACHE * from `sections` where `masterSection` = 0 order by IF(ISNULL(`order`),1,0),`order`,`id` asc;'; }
     
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-
     /* execute */
     try { $sections = $database->getArray( $query ); }
     catch (Exception $e) { 
@@ -582,7 +562,6 @@ function fetchSections ($all = true)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($sections);
@@ -594,10 +573,9 @@ function fetchSections ($all = true)
  */
 function getNumberOfSections ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query */
     $query 	  = 'select count(*) as count from `sections`;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $sections = $database->getArray( $query ); }
@@ -606,7 +584,6 @@ function getNumberOfSections ()
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($sections[0]['count']);
@@ -628,10 +605,9 @@ function getSectionDetailsById ($id)
 	}
 	# query
 	else {
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    /* set query, open db connection and fetch results */
 	    $query 	  = 'select * from sections where id = "'. $id .'";';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	
 	    /* execute */
 	    try { $section = $database->getArray( $query ); }
@@ -640,7 +616,6 @@ function getSectionDetailsById ($id)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 	
 	    /* return section */
 	    if(sizeof($section) > 0)	{ writeCache("section", $id, $section[0]); return($section[0]); }
@@ -663,10 +638,9 @@ function getSectionDetailsByName ($name)
 	}
 	# query
 	else {
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    /* set query, open db connection and fetch results */
 	    $query 	  = 'select * from sections where `name` = "'. $name .'";';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	
 	    /* execute */
 	    try { $subnets = $database->getArray( $query ); }
@@ -675,7 +649,6 @@ function getSectionDetailsByName ($name)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 	
 		writeCache("section", $name, $subnets[0]);
 	    /* return subnets array */
@@ -689,10 +662,9 @@ function getSectionDetailsByName ($name)
  */
 function getAllSubSections($sectionId)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query 	  = "select * from `sections` where `masterSection` = '$sectionId';";
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $sections = $database->getArray( $query ); }
@@ -701,8 +673,7 @@ function getAllSubSections($sectionId)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
-    
+        
     /* cache them */
 	if(sizeof($sections)>0) {
 		foreach($sections as $s) {
@@ -731,10 +702,9 @@ function getAllSubSections($sectionId)
  */
 function fetchAllSubnets ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query */
     $query 	  = 'select * from subnets;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $sections = $database->getArray( $query ); }
@@ -743,8 +713,7 @@ function fetchAllSubnets ()
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     }  
-    $database->close();
-
+    
     /* return subnets array */
     return($sections);
 }
@@ -755,10 +724,9 @@ function fetchAllSubnets ()
  */
 function getNumberOfSubnets ()
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query */
     $query 	  = 'select count(*) as count from subnets;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $subnets = $database->getArray( $query ); }
@@ -767,7 +735,6 @@ function getNumberOfSubnets ()
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($subnets[0]['count']);
@@ -780,7 +747,7 @@ function getNumberOfSubnets ()
  */
 function fetchSubnets ($sectionId, $orderType = "subnet", $orderBy = "asc" )
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* check for sorting in settings and override */
     $settings = getAllSettings();
     
@@ -802,9 +769,7 @@ function fetchSubnets ($sectionId, $orderType = "subnet", $orderBy = "asc" )
 
     /* set query, open db connection and fetch results */
     $query 	  = "select * from `subnets` where `sectionId` = '$sectionId' ORDER BY `isFolder` desc,`masterSubnetId`,`$orderType` $orderBy;";
-    
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-    
+        
     /* execute */
     try { $subnets = $database->getArray( $query ); }
     catch (Exception $e) { 
@@ -812,7 +777,6 @@ function fetchSubnets ($sectionId, $orderType = "subnet", $orderBy = "asc" )
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($subnets);
@@ -824,10 +788,9 @@ function fetchSubnets ($sectionId, $orderType = "subnet", $orderBy = "asc" )
  */
 function fetchMasterSubnets ($sectionId)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     # set query, open db connection and fetch results 
     $query 	  = 'select * from subnets where sectionId = "'. $sectionId .'" and (`masterSubnetId` = "0" or `masterSubnetId` IS NULL) ORDER BY subnet ASC;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $subnets = $database->getArray( $query ); }
@@ -836,7 +799,6 @@ function fetchMasterSubnets ($sectionId)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     # return subnets array
     return($subnets);
@@ -853,10 +815,9 @@ function getAllSlaveSubnetsBySubnetId ($subnetId)
 		return $vtmp;
 	}
 	else {
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    # set query, open db connection and fetch results
 	    $query 	  = 'select * from subnets where `masterSubnetId` = "'. $subnetId .'" ORDER BY subnet ASC;';
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	
 	    /* execute */
 	    try { $subnets = $database->getArray( $query ); }
@@ -865,7 +826,6 @@ function getAllSlaveSubnetsBySubnetId ($subnetId)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 
 		# save cache
 		if(sizeof($subnets)>0) {
@@ -889,10 +849,9 @@ function getIpAddressesBySubnetId ($subnetId)
 	}
 	else {
 	
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    /* set query, open db connection and fetch results */
 	    $query       = 'select * from `ipaddresses` where subnetId = "'. $subnetId .'" order by `ip_addr` ASC;';
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	    
 	    /* execute */
 	    try { $ipaddresses = $database->getArray( $query ); }
@@ -901,7 +860,6 @@ function getIpAddressesBySubnetId ($subnetId)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 	
 		# save cache
 		if(sizeof($ipaddresses)>0) {
@@ -925,10 +883,9 @@ function getIpAddressesBySubnetIdSort ($subnetId, $fieldName, $direction)
 	}
 	else {
 	
-	    global $db;                                                                      # get variables from config file  
+	    global $database;                                                                       
 	    /* set query, open db connection and fetch results */
 	    $query       = 'select * from `ipaddresses` where subnetId = "'. $subnetId .'" order by `'. $fieldName .'` '. $direction .';';
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	    
 	    /* execute */
 	    try { $ipaddresses = $database->getArray( $query ); }
@@ -937,7 +894,6 @@ function getIpAddressesBySubnetIdSort ($subnetId, $fieldName, $direction)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 
 		# save cache
 		if(sizeof($ipaddresses)>0) {
@@ -962,7 +918,7 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 	}
 	else {
 
-	    global $db;                                                                      # get variables from config file
+	    global $database;                                                                     
 	    /* get ALL slave subnets, then remove all subnets and IP addresses */
 	    global $removeSlaves;
 	    getAllSlaves ($subnetId);
@@ -977,7 +933,6 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 	    }
 	   
 	    $query      .= 'order by `'. $fieldName .'` '. $direction .';';
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 	    
 	    /* execute */
 	    try { $ipaddresses = $database->getArray( $query ); }
@@ -986,7 +941,6 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
 
 		# save cache
 		if(sizeof($ipaddresses)>0) {
@@ -1085,10 +1039,9 @@ function compressDHCPranges ($ipaddresses)
  */
 function countIpAddressesBySubnetId ($subnetId) 
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query       = 'select count(*) from ipaddresses where `subnetId` = "'. $subnetId .'" order by subnetId ASC;';
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $count = $database->getArray( $query ); }
@@ -1097,7 +1050,6 @@ function countIpAddressesBySubnetId ($subnetId)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
     
     /* we only need count field */
     $count	= $count[0]['count(*)'];
@@ -1114,10 +1066,9 @@ function countIpAddressesBySubnetId ($subnetId)
  */
 function getSubnetDetails ($subnetId)
 {
-    global $db;                                                                      # get variables from config file  
+    global $database;                                                                       
     /* set query, open db connection and fetch results */
     $query         = 'select * from subnets where id = "'. $subnetId .'";';
-    $database      = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $SubnetDetails = $database->getArray( $query ); }
@@ -1126,7 +1077,6 @@ function getSubnetDetails ($subnetId)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnet details - only 1st field! We cannot do getRow because we need associative array */
     if(sizeof($SubnetDetails) > 0)	{ return($SubnetDetails[0]); }
@@ -1149,11 +1099,10 @@ function getSubnetDetailsById ($id)
 	# query
 	else {
 	
-	    global $db;                                                                      # get variables from config file 
-	    /* set query, open db connection and fetch results */
+	    global $database;                                                                      
+	    /* set query */
 	    $query         = 'select * from `subnets` where `id` = "'. $id .'";';
-	    $database      = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-	
+		
 	    /* execute */
 	    try { $SubnetDetails = $database->getArray( $query ); }
 	    catch (Exception $e) { 
@@ -1161,8 +1110,7 @@ function getSubnetDetailsById ($id)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-	    $database->close();
-	
+		
 	    /* return subnet details - only 1st field! We cannot do getRow because we need associative array */
 	    if(sizeof($SubnetDetails) > 0) { 
 	    	writeCache('subnet', $id, $SubnetDetails[0]);
@@ -1264,9 +1212,7 @@ function calculateSubnetDetailsNew ( $subnet, $bitmask, $online, $offline, $rese
 function verifySubnetOverlapping ($sectionId, $subnetNew, $vrfId = 0) 
 {
     /* we need to get all subnets in section */
-    global $db;
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
-    
+    global $database;    
     /* first we must get all subnets in section (by sectionId) */
     $querySubnets     = 'select `subnet`,`mask`,`vrfId`,`description` from subnets where sectionId = "'. $sectionId .'";';  
 
@@ -1335,8 +1281,7 @@ function verifySubnetOverlapping ($sectionId, $subnetNew, $vrfId = 0)
 function verifyNestedSubnetOverlapping ($sectionId, $subnetNew, $vrfId, $masterSubnetId = 0) 
 {
     /* we need to get all subnets in section */
-    global $db;
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
+    global $database;
     
     /* first we must get all subnets in section (by sectionId) */
     $querySubnets     = 'select `id`,`subnet`,`mask`,`description`,`vrfId` from `subnets` where sectionId = "'. $sectionId .'" and `masterSubnetId` != "0" and `masterSubnetId` IS NOT NULL;';  
@@ -1428,8 +1373,7 @@ function subnetContainsSlaves($subnetId)
 	# query
 	else {
 
-	    global $db;                                                                      # get variables from config file
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+	    global $database;                                                                     
 	    
 	    /* get all ip addresses in subnet */
 	    $query 		  = 'SELECT count(*) from `subnets` where `masterSubnetId` = "'. $subnetId .'";';    
@@ -1594,8 +1538,7 @@ function isSubnetInsideSubnet ($subnetA, $subnetB)
  */
 function isSubnetWriteProtected($subnetId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;                                                                     
     
     /* first update request */
     $query    = 'select `adminLock` from subnets where id = '. $subnetId .';'; 
@@ -1615,8 +1558,7 @@ function isSubnetWriteProtected($subnetId)
  */
 function getAllSubnetsForExport() 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;                                                                     
     /* first update request */
     $query    = 'select `s`.`id`,`subnet`,`mask`,`name`,`se`.`description` as `se_description`,`s`.`description` as `s_description` from `subnets` as `s`,`sections` as `se` where `se`.`id`=`s`.`sectionId` order by `se`.`id` asc;'; 
 
@@ -1763,9 +1705,7 @@ function subnetGetVLANdetailsById($vlanId)
  */
 function getAllVlans($tools = false)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                         
     # custom fields
     $myFields = getCustomFields('vlans');     
     $myFieldsInsert['id']  = '';
@@ -1799,11 +1739,10 @@ function getAllVlans($tools = false)
  */
 function getSubnetsByVLANid ($id)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     
     /* set query, open db connection and fetch results */
     $query         = 'select * from `subnets` where `vlanId` = "'. $id .'";';
-    $database      = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $SubnetDetails = $database->getArray( $query ); }
@@ -1812,7 +1751,6 @@ function getSubnetsByVLANid ($id)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     }  
-    $database->close();
 
     /* return subnet details - only 1st field! We cannot do getRow because we need associative array */
     return($SubnetDetails); 
@@ -1852,9 +1790,7 @@ function MaxHosts( $mask, $type = 0 )
  */
 function getAllSubnetsInVRF($vrfId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
-
+    global $database;                                                                     
 	/* execute query */
 	$query = 'select * from `subnets` where `vrfId` = "'. $vrfId .'";';
 
@@ -1877,9 +1813,7 @@ function getAllSubnetsInVRF($vrfId)
  */
 function getSubnetStatsDashboard($type, $limit = "10", $perc = false)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
-
+    global $database;                                                                     
     # set limit
     if($limit == "0")	{ $limit = ""; }
     else				{ $limit = "limit $limit"; }
@@ -1927,7 +1861,6 @@ function getSubnetStatsDashboard($type, $limit = "10", $perc = false)
     } 
    	
     /* close database connection */
-    $database->close();
 
     /* return subnets array */
     return($stats);   	
@@ -1949,7 +1882,7 @@ function getSubnetStatsDashboard($type, $limit = "10", $perc = false)
  */
 function fetchFolders ($sectionId, $orderType = "subnet", $orderBy = "asc" )
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* check for sorting in settings and override */
     $settings = getAllSettings();
     
@@ -1971,7 +1904,6 @@ function fetchFolders ($sectionId, $orderType = "subnet", $orderBy = "asc" )
 
     /* set query, open db connection and fetch results */
     $query 	  = "select * from `subnets` where `sectionId` = '$sectionId' and `isFolder` = 1 ORDER BY `masterSubnetId`,`$orderType` $orderBy;";
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
     
     /* execute */
     try { $subnets = $database->getArray( $query ); }
@@ -1980,7 +1912,6 @@ function fetchFolders ($sectionId, $orderType = "subnet", $orderBy = "asc" )
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($subnets);
@@ -2069,9 +2000,7 @@ function printDropdownMenuBySectionFolders($sectionId, $subnetMasterId = "0")
  */
 function fetchAllIPAddresses ($hostnameSort = false)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-
+    global $database;                                                                     
     /* set query */
     if(!$hostnameSort) {
     	$query 	  = 'select * from ipaddresses;'; 
@@ -2089,7 +2018,6 @@ function fetchAllIPAddresses ($hostnameSort = false)
     } 
 
     /* close database connection */
-    $database->close();
 
     /* return subnets array */
     return($ipaddresses);
@@ -2101,9 +2029,7 @@ function fetchAllIPAddresses ($hostnameSort = false)
  */
 function getNuberOfIPv4Addresses ()
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-
+    global $database;                                                                     
     /* set query */
    	$query 	  = 'select count(cast(`ip_addr` as UNSIGNED)) as count from `ipaddresses` where cast(`ip_addr` as UNSIGNED) < "4294967295";'; 
 
@@ -2114,7 +2040,6 @@ function getNuberOfIPv4Addresses ()
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($ipaddresses[0]['count']);
@@ -2126,9 +2051,7 @@ function getNuberOfIPv4Addresses ()
  */
 function getNuberOfIPv6Addresses ()
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-
+    global $database;                                                                     
     /* set query */
    	$query 	  = 'select count(cast(`ip_addr` as UNSIGNED)) as count from `ipaddresses` where cast(`ip_addr` as UNSIGNED) > "4294967295";'; 
 
@@ -2139,7 +2062,6 @@ function getNuberOfIPv6Addresses ()
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return subnets array */
     return($ipaddresses[0]['count']);
@@ -2151,10 +2073,9 @@ function getNuberOfIPv6Addresses ()
  */
 function fetchAllIPAddressesByName ($hostname)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query */
     $query 	  = 'select * from ipaddresses where `dns_name` like "%'. $hostname .'%" order by `dns_name` desc;';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $ipaddresses = $database->getArray( $query ); }
@@ -2165,7 +2086,6 @@ function fetchAllIPAddressesByName ($hostname)
     } 
 
     /* close database connection */
-    $database->close();
 
     /* return subnets array */
     return($ipaddresses);
@@ -2177,10 +2097,9 @@ function fetchAllIPAddressesByName ($hostname)
  */
 function getSectionIdFromSectionName ($sectionName) 
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query         = 'select id from sections where name = "'. $sectionName .'";';
-    $database      = new database($db['host'], $db['user'], $db['pass'], $db['name']);
     
     /* execute */
     try { $SubnetDetails = $database->getArray( $query ); }
@@ -2189,7 +2108,6 @@ function getSectionIdFromSectionName ($sectionName)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     }     
-    $database->close();
 
     /* return subnet details - only 1st field! We cannot do getRow because we need associative array */
     return($SubnetDetails[0]['id']); 
@@ -2202,13 +2120,12 @@ function getSectionIdFromSectionName ($sectionName)
  */
 function checkDuplicate ($ip, $subnetId)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* we need to put IP in decimal format */
     $ip = Transform2decimal ($ip);
     
     /* set query, open db connection and fetch results */
     $query         = 'select * from `ipaddresses` where `ip_addr` = "'. $ip .'" and subnetId = "'. $subnetId .'" ;';
-    $database      = new database($db['host'], $db['user'], $db['pass'], $db['name']);
 
     /* execute */
     try { $unique = $database->getArray( $query ); }
@@ -2217,7 +2134,6 @@ function checkDuplicate ($ip, $subnetId)
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
     } 
-    $database->close();
 
     /* return false if it exists */
     if (sizeof($unique) != 0 ) 	{ return true; }
@@ -2230,9 +2146,7 @@ function checkDuplicate ($ip, $subnetId)
  */
 function modifyIpAddress ($ip) 
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;                                                                     
     /* escape special characters */
     $ip['description'] 	= mysqli_real_escape_string($database, $ip['description']); 
     $ip['note'] 		= mysqli_real_escape_string($database, $ip['note']); 
@@ -2372,10 +2286,9 @@ function SetInsertQuery( $ip )
  */
 function moveIPAddress ($id, $subnetId) 
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query    = 'update `ipaddresses` set `subnetId` = "'.$subnetId.'" where `id` = "'. $id .'";';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);             
 	   
 	/* execute */
     try { $database->executeQuery( $query ); }
@@ -2400,9 +2313,7 @@ function moveIPAddress ($id, $subnetId)
  */
 function insertScanResults($res, $subnetId)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    # open db
-    
+    global $database;                                                                         
     # set queries
     foreach($res as $ip) {
     	//escape strings
@@ -2430,10 +2341,9 @@ function insertScanResults($res, $subnetId)
  */
 function getIpAddrDetailsById ($id) 
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query    = 'select * from `ipaddresses` where `id` = "'. $id .'";';
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -2458,10 +2368,9 @@ function getIpAddrDetailsById ($id)
  */
 function getIpAddrDetailsByIPandSubnet ($ip, $subnetId) 
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
     $query    = "select * from `ipaddresses` where `ip_addr` = '$ip' and `subnetId` = $subnetId limit 1;";
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -2774,8 +2683,7 @@ function FindUnusedIpAddresses ($ip1, $ip2, $type, $broadcast = 0, $checkType = 
  */
 function getFirstAvailableIPAddress ($subnetId)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;                                                                     
     
     /* get all ip addresses in subnet */
     $query 		 = 'SELECT `ip_addr` from `ipaddresses` where `subnetId` = "'. $subnetId .'" order by `ip_addr` ASC;';    
@@ -2884,9 +2792,8 @@ function getFirstAvailableIPAddress ($subnetId)
  */
 function isHostUnique($host)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;                                                                     
     /* set query, open db connection and fetch results */
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
     $query    = 'select count(*) as cnt from `ipaddresses` where `dns_name` = "'. $host .'";';           
 
     /* execute */
@@ -2953,8 +2860,7 @@ function long2ip6($ipv6long)
  */
 function getIPaddressesBySwitchName ( $name ) 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;                                                                     
     
     /* get all vlans, descriptions and subnets */
     $query = 'SELECT * FROM `ipaddresses` where `switch` = "'. $name .'" order by port ASC;';
@@ -2977,8 +2883,7 @@ function getIPaddressesBySwitchName ( $name )
  */
 function countIPaddressesBySwitchId ( $id ) 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;                                                                     
     
     /* get all vlans, descriptions and subnets */
     if(is_null($id))	{ $query = 'SELECT count(*) as `count` FROM `ipaddresses` where `switch` IS NULL or `switch` = 0;'; }
@@ -3168,9 +3073,7 @@ function telnetHost ($ip, $ports, $timeout = 2, $exit = false)
  */
 function updateLastSeen($ip_id)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                         
     /* get all vlans, descriptions and subnets */
     $query = 'update `ipaddresses` set `lastSeen` = NOW() where `id` = "'.$ip_id.'";';
 
@@ -3192,9 +3095,7 @@ function updateLastSeen($ip_id)
  */
 function getAllIPsforScan($cli = false)
 {
-    global $db;                                                                     
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                         
     //set query
     $query = 'select `i`.`id`,`i`.`description`,`subnetId`,`ip_addr`,`lastSeen`,`lastSeen` as `oldStamp` from `ipaddresses` as `i`, `subnets` as `s` where `i`.`subnetId`=`s`.`id` and `s`.`pingSubnet` = 1 and `i`.`excludePing` != 1 order by `lastSeen` desc;';
 
@@ -3287,9 +3188,7 @@ function IdentifyAddress( $subnet )
 function getChangelogEntries($ctype, $coid, $long = false, $limit = 50)
 {
     /* set query, open db connection and fetch results */
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-        
+    global $database;                                                                             
     # change ctype to match table
 	if($ctype=="ip_addr")	$ctypeTable = "ipaddresses";
 	else					$ctypeTable = $ctype;
@@ -3327,9 +3226,7 @@ function getChangelogEntries($ctype, $coid, $long = false, $limit = 50)
 function getSubnetSlaveChangelogEntries($subnetId, $limit = 50)
 {
     /* set query, open db connection and fetch results */
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                         
     // get all slave subnets
     global $removeSlaves;
 	getAllSlaves ($subnetId);
@@ -3373,9 +3270,7 @@ function getSubnetSlaveChangelogEntries($subnetId, $limit = 50)
 function getSubnetIPChangelogEntries($subnetId, $limit = 50)
 {
     /* set query, open db connection and fetch results */
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                         
     // get all slave subnets
     global $removeSlaves;
 	getAllSlaves ($subnetId);
@@ -3432,9 +3327,7 @@ function getSubnetIPChangelogEntries($subnetId, $limit = 50)
 function getAllChangelogs($filter = false, $expr, $limit = 100)
 {
     /* set query, open db connection and fetch results */
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;                                                                     
 	//no filter
 	if(!$filter) {
 	    $query = "select * from (
@@ -3485,9 +3378,7 @@ function getAllChangelogs($filter = false, $expr, $limit = 100)
 function writeChangelog($ctype, $action, $result, $old, $new)
 {
     /* set query, open db connection and fetch results */
-    global $db;                                                                      # get variables from config file    
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;                                                                             
     # get settings
     $settings = getAllSettings();
     

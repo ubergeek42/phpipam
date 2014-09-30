@@ -11,9 +11,7 @@
  */
 function addHTTP() 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;     
 	$query = "UPDATE `settings` SET `siteURL` = IFNULL(CONCAT('http://',`siteURL`), 'http://');";
 
     /* execute */
@@ -28,8 +26,7 @@ function addHTTP()
  */
 function getAllTables()
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
     
     /* first update request */
     $query    = 'show tables;';
@@ -52,9 +49,9 @@ function getAllTables()
  */
 function tableExists($table)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass']); 
-
+    global $database;
+    global $db;
+    
     /* Check connection */
     if ($database->connect_error) {
     	if($quit)   { die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);}
@@ -83,8 +80,7 @@ function tableExists($table)
  */
 function fieldExists($table, $fieldName)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
     
     /* first update request */
     $query    = 'describe `'. $table .'` `'. $fieldName .'`;';
@@ -108,8 +104,7 @@ function fieldExists($table, $fieldName)
  */
 function upgradeDatabase($version)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+    global $database;
 
     /* Check connection */
     if ($database->connect_error) {

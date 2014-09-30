@@ -29,9 +29,7 @@ function verifyUserModInput ($userModDetails)
     if (!checkEmail($userModDetails['email'])) 																	{ $errors[] = _("Invalid email address!"); }
     # username must not already exist (if action is add)
     if ($userModDetails['action'] == "add") {
-        global $db;																	 				# get variables from config file
-        $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 				# open db connection
-        
+        global $database;
         $query    = 'select * from users where username = "'. $userModDetails['username'] .'";'; 	# set query and fetch results
 
         /* execute */
@@ -54,9 +52,8 @@ function verifyUserModInput ($userModDetails)
  */
 function deleteUserById($id, $name = "")
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection
- 
+    global $database;
+     
     $query    = 'delete from `users` where `id` = "'. $id .'";';						# set query, open db connection and fetch results */
 
 	/* execute */
@@ -82,9 +79,8 @@ function deleteUserById($id, $name = "")
  */
 function updateUserById ($userModDetails) {
 
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    # open db connection
-
+    global $database;
+    
     # replace special chars
     $userModDetails['groups'] = mysqli_real_escape_string($database, $userModDetails['groups']);
 
@@ -111,8 +107,8 @@ function updateUserById ($userModDetails) {
 		}
     
         $query  = "insert into users ";
-        $query .= "(`username`, `password`, `role`, `real_name`, `email`, `domainUser`,`groups`,`lang` $myFieldsInsert[query]) values "; 
-        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
+        $query .= "(`username`, `password`, `role`, `real_name`, `email`, `domainUser`,`mailNotify`,`groups`,`lang` $myFieldsInsert[query]) values "; 
+        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]',, '$userModDetails[mailNotify]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
     }
     else {
 
@@ -136,7 +132,7 @@ function updateUserById ($userModDetails) {
         if (strlen($userModDetails['password1']) != 0) {
         $query .= "`password` = '$userModDetails[password1]', "; 
         }
-        $query .= "`role`     = '$userModDetails[role]', `real_name`= '$userModDetails[real_name]', `email` = '$userModDetails[email]', `domainUser`= '$userModDetails[domainUser]', `lang`= '$userModDetails[lang]', `groups`='".$userModDetails['groups']."' "; 
+        $query .= "`role`     = '$userModDetails[role]', `real_name`= '$userModDetails[real_name]', `email` = '$userModDetails[email]', `domainUser`= '$userModDetails[domainUser]',`mailNotify`= '$userModDetails[mailNotify]', `lang`= '$userModDetails[lang]', `groups`='".$userModDetails['groups']."' "; 
     	$query .= $myFieldsInsert['query'];  
         $query .= "where `id` = '$userModDetails[userId]';";
     }
@@ -166,15 +162,14 @@ function updateUserById ($userModDetails) {
  */
 function selfUpdateUser ($userModDetails)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    # open db connection   
-
+    global $database;
+    
     /* set query */
     $query  = "update users set ";
     if(strlen($userModDetails['password1']) != 0) {
     $query .= "`password` = '$userModDetails[password1]',";
     }
-    $query .= "`real_name`= '$userModDetails[real_name]', `email` = '$userModDetails[email]', ";
+    $query .= "`real_name`= '$userModDetails[real_name]', `mailNotify`='$userModDetails[mailNotify]', `email` = '$userModDetails[email]', ";
     $query .= "`lang`= '$userModDetails[lang]' ";
     $query .= "where `id` = '$userModDetails[userId]';";
     
@@ -205,9 +200,8 @@ function selfUpdateUser ($userModDetails)
  */
 function setUserDashWidgets ($userId, $widgets)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    # open db connection   
-
+    global $database;
+    
     /* set query */
     $query  = "update users set `widgets`= '$widgets' where `id` = '$userId';";
                     
@@ -234,7 +228,7 @@ function setUserDashWidgets ($userId, $widgets)
  */
 function modifyLang ($lang)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;
     
     /* set query based on action */
     if($lang['action'] == "add")		{ $query = "insert into `lang` (`l_code`,`l_name`) values ('$lang[l_code]','$lang[l_name]');"; }
@@ -242,8 +236,6 @@ function modifyLang ($lang)
     elseif($lang['action'] == "delete")	{ $query = "delete from `lang` where `l_id`='$lang[l_id]'; "; }    
     else								{ return 'false'; }
     
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
-
     /* execute */
     try { $details = $database->executeQuery( $query ); }
     catch (Exception $e) { 
@@ -261,7 +253,7 @@ function modifyLang ($lang)
  */
 function modifyWidget ($w)
 {
-    global $db;                                                                      # get variables from config file
+    global $database;
     
     /* set query based on action */
     if($w['action'] == "add")			{ $query = "insert into `widgets` (`wtitle`,`wdescription`,`wfile`,`whref`,`wadminonly`,`wactive`,`wsize`) values ('$w[wtitle]','$w[wdescription]','$w[wfile]','$w[whref]','$w[wadminonly]','$w[wactive]','$w[wsize]');"; }
@@ -269,8 +261,6 @@ function modifyWidget ($w)
     elseif($w['action'] == "delete")	{ $query = "delete from `widgets` where `wid`='$w[wid]'; "; }    
     else								{ return 'false'; }
     
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);  
-
     /* execute */
     try { $details = $database->executeQuery( $query ); }
     catch (Exception $e) { 
@@ -299,9 +289,8 @@ function modifyWidget ($w)
  */
 function getAllGroups() 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
-
+    global $database;
+    
 	/* execute query */
 	$query = "select * from `userGroups` order by `g_name` asc;";
     
@@ -346,9 +335,8 @@ function getGroupById($id)
 	}
 	# query
 	else {
-	    global $db;                                                                      # get variables from config file
-	    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
-	
+	    global $database;
+	    	
 		/* execute query */
 		$query = "select * from `userGroups` where `g_id`= '$id';";
 	    
@@ -480,9 +468,8 @@ function getSectionPermissionsByGroup ($gid, $name = true)
  */
 function modifyGroup($g)
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']);    
-    
+    global $database;
+        
     # set query
     if($g['action'] == "add") 			{ $query = "insert into `userGroups` (`g_name`,`g_desc`) values ('$g[g_name]','$g[g_desc]'); "; }
     else if($g['action'] == "edit")		{ $query = "update `userGroups` set `g_name`='$g[g_name]', `g_desc`='$g[g_desc]' where `g_id` = '$g[g_id]';"; }
@@ -611,9 +598,8 @@ function removeUserFromGroup($gid, $uid)
  */
 function updateUserGroups($uid, $groups)
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # replace special chars
     $groups = mysqli_real_escape_string($database, $groups);
 
@@ -637,9 +623,8 @@ function updateUserGroups($uid, $groups)
  */
 function updateSectionGroups($sid, $groups)
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # replace special chars
    	$groups = mysqli_real_escape_string($database, $groups);
 
@@ -674,9 +659,8 @@ function updateSectionGroups($sid, $groups)
  */
 function modifySubnetDetails ($subnetDetails, $lastId = false) 
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # replace special chars
     $subnetDetails['permissions'] = mysqli_real_escape_string($database, $subnetDetails['permissions']);
     $subnetDetails['description'] = mysqli_real_escape_string($database, $subnetDetails['description']); 
@@ -868,9 +852,8 @@ function setModifySubnetDetailsQuery ($subnetDetails)
  */
 function deleteSubnet ($subnetId) 
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # set modify subnet details query
     $query = "delete from `subnets` where `id` = '$subnetId';";
 
@@ -891,9 +874,8 @@ function deleteSubnet ($subnetId)
  */
 function modifySubnetMask ($subnetId, $mask) 
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # set modify subnet details query
     $query = "update `subnets` set `mask` = '$mask' where `id` = '$subnetId';";
 
@@ -920,9 +902,8 @@ function modifySubnetMask ($subnetId, $mask)
  */
 function truncateSubnet($subnetId) 
 {
-    global $db;                                                                      # get variables from config file
-    $database    = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = 'delete from `ipaddresses` where `subnetId` = '. $subnetId .';'; 
 
@@ -1091,9 +1072,8 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
  */
 function updateSubnetPermissions ($subnet)
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection   
-
+    global $database;
+    
     # replace special chars
     $subnet['permissions'] = mysqli_real_escape_string($database, $subnet['permissions']);
 
@@ -1134,9 +1114,8 @@ function updateSubnetPermissions ($subnet)
  */
 function UpdateSection ($update, $api = false) 
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection  
-    
+    global $database;
+        
      # replace special chars for permissions
     $update['permissions'] = mysqli_real_escape_string($database, $update['permissions']);   
     $update['description'] = mysqli_real_escape_string($database, $update['description']); 
@@ -1266,9 +1245,8 @@ function setUpdateSectionQuery ($update)
  */
 function UpdateSectionOrder ($order) 
 {
-    global $db;                                                                     # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);	# open db connection  
-
+    global $database;
+    
 	// set querries for each section
 	$query = "";
 	foreach($order as $key=>$o) {
@@ -1324,9 +1302,8 @@ function parseSectionPermissions($permissions)
  */
 function updateDeviceDetails($device)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* set querry based on action */
     if($device['action'] == "add") {
 
@@ -1404,9 +1381,8 @@ function updateDeviceDetails($device)
  */
 function updateDevicetypeDetails($device)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* set querry based on action */
     if($device['action'] == "add") 			{ $query  = "insert into `deviceTypes` (`tname`,`tdescription`) values ('$device[tname]', '$device[tdescription]');"; }
     else if($device['action'] == "edit") 	{ $query  = "update `deviceTypes` set `tname` = '$device[tname]', `tdescription` = '$device[tdescription]' where `tid` = $device[tid]"; }
@@ -1476,9 +1452,8 @@ function reformatDeviceSections ($sections) {
  */
 function getDeviceTypes() 
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-	
+    global $database;
+    	
 	$query = "select * from `deviceTypes`;";
 
     /* execute */
@@ -1504,9 +1479,8 @@ function getDeviceTypes()
  */
 function TransformDeviceType($type) 
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-	
+    global $database;
+    	
 	$query = "select * from `deviceTypes` where `tid` = $type;";
 
     /* execute */
@@ -1538,9 +1512,8 @@ function TransformDeviceType($type)
  */
 function getADSettings()
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;
+    
     /* Check connection */
     if ($database->connect_error) {
     	die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);
@@ -1568,9 +1541,8 @@ function getADSettings()
  */
 function updateADsettings($ad)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;
+    
     /* Check connection */
     if ($database->connect_error) {
     	die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);
@@ -1611,9 +1583,8 @@ function updateADsettings($ad)
  */
 function updateVRFDetails($vrf)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* set querry based on action */
     if($vrf['action'] == "add") {
     	$query  = 'insert into `vrf` '. "\n";
@@ -1674,9 +1645,8 @@ function updateVRFDetails($vrf)
  */
 function updateVLANDetails($vlan, $lastId = false)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* set querry based on action */
     if($vlan['action'] == "add") {
     
@@ -1778,9 +1748,8 @@ function updateVLANDetails($vlan, $lastId = false)
  */
 function updateSettings($settings)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = 'update `settings` set ' . "\n";
     $query   .= '`siteTitle` 		  = "'. $settings['siteTitle'] .'", ' . "\n";
@@ -1834,9 +1803,8 @@ function updateSettings($settings)
  */
 function updateMailSettings($settings)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = 'update `settingsMail` set ' . "\n";
     $query   .= '`mtype` 		  	= "'. $settings['mtype'] .'", ' . "\n";
@@ -1890,9 +1858,8 @@ function isCheckbox($checkbox)
  */
 function searchAndReplace($query, $post)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* check how many records are in database */
     $query2 = 'select count(*) as count from `ipaddresses` where '. $post['field'] .' like "%'. $post['search'] .'%";';
     $count 	  = $database->getArray($query2); 
@@ -1918,8 +1885,7 @@ function searchAndReplace($query, $post)
  */
 function writeInstructions ($instructions) 
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+    global $database;
 
 	$instructions = $database->real_escape_string($instructions);	//this hides code
 	
@@ -1945,9 +1911,8 @@ function writeInstructions ($instructions)
  */
 function importCSVline ($line, $subnetId)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* get subnet details by Id */
     $subnetDetails = getSubnetDetailsById ($subnetId);
     $subnet = Transform2long($subnetDetails['subnet']) . "/" . $subnetDetails['mask'];
@@ -2029,9 +1994,8 @@ function importCSVline ($line, $subnetId)
  */
 function getIPaddrFields()
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = 'describe `ipaddresses`;';
 
@@ -2061,9 +2025,8 @@ function getSelectedIPaddrFields()
 	# we only need it if it is not already set!
 	if(!isset($settings)) {
 	
-	    global $db;                                                                      # get variables from config file
-	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-	    
+	    global $database;
+	    	    
 	    /* first update request */
 	    $query    = 'select IPfilter from `settings`;';
 	
@@ -2090,9 +2053,8 @@ function getSelectedIPaddrFields()
  */
 function updateSelectedIPaddrFields($fields)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = 'update `settings` set `IPfilter` = "'. $fields .'";';
 	
@@ -2124,9 +2086,8 @@ function updateSelectedIPaddrFields($fields)
  */
 function getCustomFields($table)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* first update request */
     $query    = "show full columns from `$table`;";
 
@@ -2149,7 +2110,8 @@ function getCustomFields($table)
 	
 	/* unset standard fields */
 	if($table == "users") {
-		unset($res['id'], $res['username'], $res['password'], $res['groups'], $res['role'], $res['real_name'], $res['email'], $res['domainUser'], $res['lang'],$res['editDate'],$res['widgets'],$res['favourite_subnets']);
+		unset($res['id'], $res['username'], $res['password'], $res['groups'], $res['role'], $res['real_name'], $res['email'], $res['domainUser'], $res['lang']);
+		unset($res['editDate'],$res['widgets'],$res['favourite_subnets'],$res['mailNotify']);
 	}
 	elseif($table == "devices") {
 		unset($res['id'], $res['hostname'], $res['ip_addr'], $res['type'], $res['vendor'], $res['model'], $res['version'], $res['description'], $res['sections'], $res['editDate']);
@@ -2192,9 +2154,8 @@ function getCustomFieldsNumArr($table)
  */
 function updateCustomField($field)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* set db type values */
     if($field['fieldType']=="bool" || $field['fieldType']=="text" || $field['fieldType']=="date" || $field['fieldType']=="datetime") 	
     																{ $field['ftype'] = "$field[fieldType]"; }
@@ -2236,9 +2197,8 @@ function updateCustomField($field)
  */
 function reorderCustomField($table, $next, $current)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     /* get field details */
     $old = getFullFieldData($table, $current);
     
@@ -2274,9 +2234,8 @@ function reorderCustomField($table, $next, $current)
  */
 function getAPIkeys()
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     # set query
     $query  = 'select * from `api`;';
     # get result
@@ -2296,9 +2255,8 @@ function getAPIkeys()
  */
 function getAPIkeyByName($app_id, $reformat = false)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     # set query
     $query  = "select * from `api` where `app_id` = '$app_id';";
     # get result
@@ -2325,9 +2283,8 @@ function getAPIkeyByName($app_id, $reformat = false)
  */
 function getAPIkeyById($id)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     # set query
     $query  = "select * from `api` where `id` = $id;";
     # get result
@@ -2346,9 +2303,8 @@ function getAPIkeyById($id)
  */
 function modifyAPI($api)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     # set query based on action
     if($api['action']=="add")			{ $query = "insert into `api` (`app_id`,`app_code`,`app_permissions`) values ('$api[app_id]','$api[app_code]','$api[app_permissions]');"; }
     elseif($api['action']=="edit")		{ $query = "update `api` set `app_id`='$api[app_id]',`app_code`='$api[app_code]',`app_permissions`='$api[app_permissions]' where `id`=$api[id] ; "; }
@@ -2391,7 +2347,7 @@ function verifyDatabase()
 	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "isFolder");
 	$fields['devices'] 	  	  = array("hostname", "ip_addr", "type", "vendor", "model", "version", "description", "sections");
 	$fields['deviceTypes'] 	  = array("tid", "tname", "tdescription");
-	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets");
+	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify");
 	$fields['vrf'] 	  	  	  = array("vrfId","name", "rd", "description");
 	$fields['vlans']   	  	  = array("vlanId", "name", "number", "description");
 	$fields['userGroups']     = array("g_id", "g_name", "g_desc");
@@ -2437,9 +2393,8 @@ function verifyDatabase()
  */
 function updateDBverify() 
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-    
+    global $database;
+        
     # set query based on action
     $query = "update `settings` set `dbverified`='1'; "; 
 	/* execute */
@@ -2505,9 +2460,8 @@ function getFieldFix($table, $field)
  */
 function fixTable($table)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;
+    
 	//get fix
 	$query = getTableFix($table);
 		
@@ -2526,9 +2480,8 @@ function fixTable($table)
  */
 function fixField($table, $field)
 {
-    global $db;                                                                      # get variables from config file
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
-
+    global $database;
+    
 	//get fix
 	$query  = "alter table `$table` add ";
 	$query .= trim(getFieldFix($table, $field), ",");
