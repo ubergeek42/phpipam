@@ -17,18 +17,21 @@ class database extends mysqli  {
 	/* open database connection */
 	public function __construct($host = NULL, $username = NULL, $dbname = NULL, $port = NULL, $socket = NULL, $printError = true) {		
 
+		# throw exceptions
+		mysqli_report(MYSQLI_REPORT_STRICT);
+
 		# try to open
-	    try { parent::__construct($host, $username, $dbname, $port, $socket); }
-	    catch (Exception $e) { 
-	        $error =  $e->getMessage(); 
-	        if($printError) print ("<div class='alert alert-danger'>"._('Error').": ".$this->connect_error."</div>");
-	        return false;
-	    } 		
-		
-		# set charset
+		try { parent::__construct($host, $username, $dbname, $port, $socket); }
+		catch (Exception $e) {
+    		if($printError) { print "<div class='alert alert-danger'>error:".$e->getMessage()."</div>"; }
+		}	
+
+		if(!isset($e))
 		$this->set_charset("utf8");
 		
-		return false;
+		
+		# change back reporting for exception throwing to scripts
+		//mysqli_report(MYSQLI_REPORT_ERROR);
 	} 
 
 	
@@ -41,7 +44,7 @@ class database extends mysqli  {
 		/* execute query */
 		$result     = parent::query( $query );
 		$this->lastSqlId   = $this->insert_id;
-
+		
 		/* if it failes throw new exception */
 		if ( mysqli_error( $this ) ) {
             throw new exception( mysqli_error( $this ), mysqli_errno( $this ) ); 
@@ -69,9 +72,6 @@ class database extends mysqli  {
         }
         /* return result */
         return $resp;   
-        
-        /* free result */
-		$result->close();  
     }
 
 	
@@ -120,9 +120,6 @@ class database extends mysqli  {
         	$fields = array();
         	return $fields;
         }
-		
-		/* free result */
-		$result->close();	
 	}
 
 
@@ -159,9 +156,6 @@ class database extends mysqli  {
 		
 		/* return result array of rows */
 		return($rows);
-		
-		/* free result */
-		$result->close();	
 	}
 	
 	
@@ -171,21 +165,18 @@ class database extends mysqli  {
 	 */
 	function executeMultipleQuerries( $query, $lastId = false ) 
 	{	
-        /* execute querries */
+        # execute querries 
 		$result = parent::multi_query($query);
 		$this->lastSqlId   = $this->insert_id;
 
-		/* if it failes throw new exception */
+		# if it failes throw new exception
 		if ( mysqli_error( $this ) ) {
             throw new exception( mysqli_error( $this ), mysqli_errno( $this ) ); 
       	}
         else {
        		if($lastId)	{ return $this->lastSqlId; }
         	else 		{ return true; }
-        }
-		
-		/* free result */
-		$result->close();	
+        }	
 	}
 
 
@@ -204,10 +195,7 @@ class database extends mysqli  {
       	}
         else {
             return true;
-        }
-		
-		/* free result */
-		$result->close();	
+        }	
 	}
 }
 

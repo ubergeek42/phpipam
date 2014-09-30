@@ -253,7 +253,14 @@ function getUserDetailsByName ($username)
 	}
 	# query
 	else {
-	    global $database;
+		# for db upgrade!
+		if(strpos($_SERVER['SCRIPT_URI'], "databaseUpgrade.php")>0) {
+			global $db;
+			$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+		}
+		else {
+			global $database;
+		} 
 	    /* set query, open db connection and fetch results */
 	    $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
 

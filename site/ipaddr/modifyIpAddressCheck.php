@@ -240,13 +240,14 @@ else {
 	        updateLogTable ('Error '. $ip['action'] .' IP address '. $ip['ip_addr'], 'Error '. $ip['action'] .' IP address '. $ip['ip_addr'] .'<br>SubnetId: '. $ip['subnetId'], 2);
 	    }
 	    else {
-	    	/* @mail functions ------------------- */
-			include_once('../../functions/functions-mail.php');
 			//set arrays
 			if($ip['action']=="add")		{ $old = array();	$new = $ip; }
 			elseif($ip['action']=="delete")	{ $old = $ipold;	$new = array(); }
 			else							{ $old = $ipold;	$new = $ip; }
-			sendObjectUpdateMails("ip", $ip['action'], $old, $new);
+
+	    	/* @mail functions ------------------- */
+			// include_once('../../functions/functions-mail.php');
+			// sendObjectUpdateMails("ip", $ip['action'], $old, $new);
 
 	        print '<div class="alert alert-success">'._("IP $ip[action] successful").'!</div>';
 	        updateLogTable ($ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!', $ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!<br>SubnetId: '. $ip['subnetId'], 0);

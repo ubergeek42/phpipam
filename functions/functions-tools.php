@@ -197,7 +197,14 @@ function checkIpv6AddressType ($subnet)
  */
 function updateLogTable ($command, $details = NULL, $severity = 0)
 {
-    global $database;                                                                      
+	# for db upgrade!
+	if(strpos($_SERVER['SCRIPT_URI'], "databaseUpgrade.php")>0) {
+		global $db;
+		$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	}
+	else {
+		global $database;
+	}                                                                 
     
     /* set variable */
     $date = date("Y-m-d H:i:s");
@@ -951,7 +958,7 @@ function getIPrequestById ($id)
  */
 function addNewRequest ($request)
 {
-    global $database;                                                                      
+    global $database;                                                                        
 
     # replace special chars for description
     $request['description'] = mysqli_real_escape_string($database, $request['description']);

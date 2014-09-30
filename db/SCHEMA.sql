@@ -47,18 +47,18 @@ CREATE TABLE `ipaddresses` (
 LOCK TABLES `ipaddresses` WRITE;
 /*!40000 ALTER TABLE `ipaddresses` DISABLE KEYS */;
 
-INSERT INTO `ipaddresses` (`id`, `subnetId`, `ip_addr`, `description`, `dns_name`, `mac`, `owner`, `state`, `switch`, `port`, `note`)
+INSERT INTO `ipaddresses` (`id`, `subnetId`, `ip_addr`, `description`, `dns_name`, `mac`, `owner`, `state`, `port`, `note`)
 VALUES
-	(1,'3','168427779','Server1','server1.cust1.local','','',1,'','',''),
-	(2,'3','168427780','Server2','server2.cust1.local','','',1,'','',''),
-	(3,'3','168427781','Server3','server3.cust1.local','','',2,'','',''),
-	(4,'3','168427782','Server4','server4.cust1.local','','',2,'','',''),
-	(5,'3','168428021','Gateway','','','','1','','',''),
-	(6,'4','168428286','Gateway','','','','1','','',''),
-	(7,'4','168428042','Server1','ser1.client2.local','','',1,'','',''),
-	(8, '6', '172037636', 'DHCP range', '', '', '', 3, '', '', ''),
-	(9, '6', '172037637', 'DHCP range', '', '', '', 3, '', '', ''),
-	(10, '6', '172037638', 'DHCP range', '', '', '', 3, '', '', '');
+	(1,'3','168427779','Server1','server1.cust1.local','','',1,'',''),
+	(2,'3','168427780','Server2','server2.cust1.local','','',1,'',''),
+	(3,'3','168427781','Server3','server3.cust1.local','','',2,'',''),
+	(4,'3','168427782','Server4','server4.cust1.local','','',2,'',''),
+	(5,'3','168428021','Gateway','','','','1','',''),
+	(6,'4','168428286','Gateway','','','','1','',''),
+	(7,'4','168428042','Server1','ser1.client2.local','','',1,'',''),
+	(8, '6', '172037636', 'DHCP range', '', '', '', 3,'', ''),
+	(9, '6', '172037637', 'DHCP range', '', '', '', 3,'', ''),
+	(10, '6', '172037638', 'DHCP range', '', '', '', 3, '', '');
 
 /*!40000 ALTER TABLE `ipaddresses` ENABLE KEYS */;
 UNLOCK TABLES;

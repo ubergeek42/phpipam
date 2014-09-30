@@ -2157,12 +2157,11 @@ function modifyIpAddress ($ip)
     /* save old if delete */
     if($ip['action']=="delete")		{ $dold = getIpAddrDetailsById ($ip['id']); }
     elseif($ip['action']=="edit")	{ $old  = getIpAddrDetailsById ($ip['id']); }
-
+    
     /* execute */
     try { $id = $database->executeQuery( $query, true ); }
     catch (Exception $e) { 
-        $error =  $e->getMessage(); 
-        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+        print ("<div class='alert alert-danger'>"._('Error').": ".$e->getMessage() ."</div>");
         //save changelog
 		writeChangelog('ip_addr', $ip['action'], 'error', $old, $new);
         return false;

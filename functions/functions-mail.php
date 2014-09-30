@@ -601,5 +601,14 @@ function sendStatusUpdateMail($content, $subject)
 	return true;
 }
 
+
+
+/**
+ *	Send object update mail
+ */ 
+function sendObjectUpdateMails($content, $subject)
+{
+	return true;
+}
  
 ?>

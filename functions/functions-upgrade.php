@@ -104,8 +104,8 @@ function fieldExists($table, $fieldName)
  */
 function upgradeDatabase($version)
 {
-    global $database;
-
+	global $database;  
+	
     /* Check connection */
     if ($database->connect_error) {
     	die('<div class="alert alert-danger">Connect Error (' . $database->connect_errno . '): '. $database->connect_error). "</div>";
@@ -132,8 +132,7 @@ function upgradeDatabase($version)
     	$database->executeMultipleQuerries( $query );
     }
     catch (Exception $e) {
-    	$error =  $e->getMessage();
-    	updateLogTable ('DB update failed', 'DB updated failed with error: '. $error, 2);
+    	updateLogTable ('DB update failed', 'DB updated failed with error: '. $e->getMessage(), 2);
     	die('<div class="alert alert-danger">Update error: '. $error .'</div>');
 	}
     

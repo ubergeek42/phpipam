@@ -27,7 +27,7 @@ else{
 function updateLogTable ($command, $details = NULL, $severity = 0)
 {
     global $db;                                                                	
-	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    
+	$database = new database($db['host'], $db['user'], $db['pass']);    
     
     /* select database */
     try {
@@ -73,8 +73,12 @@ function updateLogTable ($command, $details = NULL, $severity = 0)
  */
 function getUserDetailsByName ($username)
 {
-	global $db;
-	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);     
+	global $database;
+	if(!is_object($database)) {
+		global $db;
+		$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	}
+		
 	/* set query, open db connection and fetch results */
     $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
 
@@ -483,8 +487,7 @@ function checkADLogin ($username, $password)
  */
 function checkAdmin ($die = true) 
 {
-	global $db;
-	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);    
+	global $database;   
     
     /* first get active username */
     session_start();
