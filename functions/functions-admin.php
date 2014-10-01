@@ -108,7 +108,7 @@ function updateUserById ($userModDetails) {
     
         $query  = "insert into users ";
         $query .= "(`username`, `password`, `role`, `real_name`, `email`, `domainUser`,`mailNotify`,`groups`,`lang` $myFieldsInsert[query]) values "; 
-        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]',, '$userModDetails[mailNotify]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
+        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]', '$userModDetails[mailNotify]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
     }
     else {
 
