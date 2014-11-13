@@ -21,6 +21,9 @@ CheckReferrer();
 # get subnet details
 $subnet = getSubnetDetailsById ($_POST['subnetId']);
 
+# get settings
+$settings = getAllSettings();
+
 # get php exec path
 if(!$phpPath = getPHPExecutableFromPath()) {
 	die('<div class="alert alert-danger">Cannot access php executable!</div>');
@@ -55,7 +58,7 @@ $serr  = @$result['error'];
 $error = @$result['errors'];
 
 #verify that pign path is correct
-if(!file_exists($pathPing)) { $pingError = true; }
+if(!file_exists($settings['scanPingPath'])) { $pingError = true; }
 
 ?>
 

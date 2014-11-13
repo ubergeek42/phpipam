@@ -3,6 +3,15 @@ version - 1.1
 	+ status - available, trash (preveri kako)
 	+ salting passwords
 	
+	+ Define Default Gateway for a Subnet
+	+ Run Discovery from Cron
+	+ Rewrite pagination
+	
+	+ API !
+	
+	+ Per-admin mailing selection
+	+ Per-admin changelog mailing
+	
 	+ new user creating send link to set password
 	
 	+ delete confirmation

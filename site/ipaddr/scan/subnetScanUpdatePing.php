@@ -135,4 +135,16 @@ else {
 	
 	print "</table>";
 }
+
+
+
+# debug?
+if($_POST['debug']==1) {
+	print "<hr>";
+	print "<pre>";
+	print_r($result);
+	print "</pre>";
+}
+
+
 ?>

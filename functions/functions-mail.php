@@ -576,6 +576,7 @@ function sendStatusUpdateMail($content, $subject)
 		$pmail->SetFrom($mailsettings['mAdminMail'], $mailsettings['mAdminName']);
 		// add admins to CC
 		$admins = getAllAdminUsers ();
+		
 		foreach($admins as $admin) {
 			if($admin['mailNotify']=="Yes") {
 			$pmail->AddAddress($admin['email']);
@@ -598,16 +599,6 @@ function sendStatusUpdateMail($content, $subject)
 	
 	# write log for ok
 	updateLogTable ("Sending notification mail for IP address state change succeeded!", $severity = 0);
-	return true;
-}
-
-
-
-/**
- *	Send object update mail
- */ 
-function sendObjectUpdateMails($content, $subject)
-{
 	return true;
 }
  

@@ -193,6 +193,14 @@ function getNumberOfUsers ()
 function getAllAdminUsers ()
 {
     global $database; 
+    
+    /* check for possible errors because of cron */
+    if(isset($database->error)) {
+	    unset($database);
+	    global $db;
+	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
+    }
+    
     /* set query, open db connection and fetch results */
     $query    = 'select * from users where `role` = "Administrator" order by id desc;';
 

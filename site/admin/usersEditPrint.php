@@ -191,8 +191,8 @@ else {
     	<td><?php print _('Mail notifications'); ?></td> 
     	<td>
         <select name="mailNotify" class="form-control input-sm input-w-auto">
-            <option value="No"   selected="selected"><?php print _('No'); ?></option>
-            <option value="Yes"  <?php if ($user['mailNotify'] == "yes") print "selected"; ?>><?php print _('Yes'); ?></option>
+            <option value="No"><?php print _('No'); ?></option>
+            <option value="Yes"  <?php if ($user['mailNotify'] == "Yes") print "selected='selected'"; ?>><?php print _('Yes'); ?></option>
         </select>
         
         

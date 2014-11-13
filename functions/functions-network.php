@@ -605,7 +605,16 @@ function getSectionDetailsById ($id)
 	}
 	# query
 	else {
-	    global $database;                                                                     
+	    global $database;                     
+	    
+		/* cront errors */
+		if(isset($database->error)) {
+			unset($database);
+			global $db;
+			$database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
+		}
+
+	                                                    
 	    /* set query, open db connection and fetch results */
 	    $query 	  = 'select * from sections where id = "'. $id .'";';
 	
@@ -1066,7 +1075,15 @@ function countIpAddressesBySubnetId ($subnetId)
  */
 function getSubnetDetails ($subnetId)
 {
-    global $database;                                                                       
+    global $database;             
+    
+    /* cront errors */
+    if(isset($database->error)) {
+	    unset($database);
+	    global $db;
+	    $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
+    }
+                                                              
     /* set query, open db connection and fetch results */
     $query         = 'select * from subnets where id = "'. $subnetId .'";';
 
@@ -2919,18 +2936,17 @@ function countIPaddressesBySwitchId ( $id )
 function pingHost ($ip, $count=1, $timeout = 1, $exit=false)
 {
 	global $settings;
-	$pathPing = $settings['scanPingPath'];
 	
 	//verify ping path
-	if(!file_exists($pathPing)) {
+	if(!file_exists($settings['scanPingPath'])) {
 		$retval = 1000;
 	}
 	else {
 		//set ping command based on OS type
-		if(PHP_OS == "FreeBSD" || PHP_OS == "NetBSD" || PHP_OS == "OpenBSD")	{ $cmd = "$pathPing -c $count -W ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
-		elseif(PHP_OS == "Linux")												{ $cmd = "$pathPing -c $count -w $timeout $ip 1>/dev/null 2>&1"; }
-		elseif(PHP_OS == "WIN32" || PHP_OS == "Windows" || PHP_OS == "WINNT")	{ $cmd = "$pathPing -n $count -I ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
-		else																	{ $cmd = "$pathPing -c $count -n $ip 1>/dev/null 2>&1"; }
+		if(PHP_OS == "FreeBSD" || PHP_OS == "NetBSD" || PHP_OS == "OpenBSD")	{ $cmd = $settings['scanPingPath']." -c $count -W ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
+		elseif(PHP_OS == "Linux")												{ $cmd = $settings['scanPingPath']." -c $count -w $timeout $ip 1>/dev/null 2>&1"; }
+		elseif(PHP_OS == "WIN32" || PHP_OS == "Windows" || PHP_OS == "WINNT")	{ $cmd = $settings['scanPingPath']." -n $count -I ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
+		else																	{ $cmd = $settings['scanPingPath']." -c $count -n $ip 1>/dev/null 2>&1"; }
 	
 		//set and execute;
 	    exec($cmd, $output, $retval);	
@@ -3072,7 +3088,9 @@ function telnetHost ($ip, $ports, $timeout = 2, $exit = false)
  */
 function updateLastSeen($ip_id)
 {
-    global $database;                                                                         
+    global $db;
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
+                                                                         
     /* get all vlans, descriptions and subnets */
     $query = 'update `ipaddresses` set `lastSeen` = NOW() where `id` = "'.$ip_id.'";';
 
@@ -3536,9 +3554,13 @@ function writeChangelog($ctype, $action, $result, $old, $new)
 			# execute
 			try {  $database->executeQuery( $query ); }
 			catch (Exception $e) { 
-		    	$error =  $e->getMessage(); 
+		    	$error =  $e->getMessage();
 				return true;
 			}
+			# mail it!
+			
+			
+			# all good
 			return true;	
 		}
 	}

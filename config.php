@@ -13,7 +13,7 @@ $db['name'] = "phpipam";
  * true  = SHOW all php errors
  * false = HIDE all php errors
  ******************************/
-$debugging = false;
+$debugging = true;
 
 /**	
  *	BASE definition if phpipam 

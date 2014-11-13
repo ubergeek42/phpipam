@@ -204,6 +204,12 @@ function updateLogTable ($command, $details = NULL, $severity = 0)
 	}
 	else {
 		global $database;
+		
+		# check if broken because of cron
+		if(isset($database->error)) {
+		    global $db;
+			$database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
+		}
 	}                                                                 
     
     /* set variable */

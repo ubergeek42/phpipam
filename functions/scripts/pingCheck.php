@@ -38,10 +38,9 @@ $statuses = explode(";", $settings['pingStatus']);
 //set execution start time
 $sTime = time();
 
-
 //verify that pign path is correct
-if(!file_exists($pathPing)) {
-	print "Invalid ping path! You can set parameters for scan under functions/scan/config-scan.php\n";
+if(!file_exists($settings['scanPingPath'])) {
+	print "Invalid ping path! You can set parameters for scan under Administration > ping settings\n";
 }
 //threads not supported, scan 1 by one - it is highly recommended to enable threading for php
 elseif(!$threads) {
@@ -86,12 +85,12 @@ else {
 	$z = 0;			//addresses array index
 
 	//run per MAX_THREADS
-    for ($m=0; $m<=$size; $m += $MAX_THREADS) {
+    for ($m=0; $m<=$size; $m += $settings['scanMaxThreads']) {
         // create threads 
         $threads = array();
         
         //fork processes
-        for ($i = 0; $i <= $MAX_THREADS && $i <= $size; $i++) {
+        for ($i = 0; $i <= $settings['scanMaxThreads'] && $i <= $size; $i++) {
         	//only if index exists!
         	if(isset($addresses[$z])) {
         		//calculate diff since last alive
