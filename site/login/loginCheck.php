@@ -23,7 +23,7 @@ if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 
 	$ipamusername = $_POST['ipamusername'];
 	$ipampassword['raw'] = $_POST['ipampassword'];
-	$ipampassword['md5'] = md5($_POST['ipampassword']);
+	$ipampassword['md5'] = $_POST['ipampassword'];
 	
 	// verify that there are no invalid characters
 	if(strpos($ipamusername, " ") >0 ) 			{ die("<div class='alert alert-danger'>"._("Invalid characters in username")."!</div>"); }

@@ -30,7 +30,7 @@ function verifyUserModInput ($userModDetails)
     # username must not already exist (if action is add)
     if ($userModDetails['action'] == "add") {
         global $database;
-        $query    = 'select * from users where username = "'. $userModDetails['username'] .'";'; 	# set query and fetch results
+        $query    = 'select * from users where md5(`username`) = "'. $userModDetails['username'] .'";'; 	# set query and fetch results
 
         /* execute */
         try { $details = $database->getArray( $query ); }

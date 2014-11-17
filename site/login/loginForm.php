@@ -1,5 +1,5 @@
 <div id="login">
-<form name="login" id="login" class="form-inline">  
+<form name="login" id="login" class="form-inline" method="post">  
 
 <div class="loginForm">
 <table class="login">

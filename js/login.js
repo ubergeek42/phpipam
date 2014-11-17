@@ -32,8 +32,13 @@ function loginRedirect() { window.location="dashboard/"; }
 $('form#login').submit(function() {
     //stop all active animations
     $('div#loginCheck').stop(true,true);
+    //get username
+    var ipamusername = $('#username', this).val();
+    var ipampassword = $('#password', this).val();
+    ipamusername = md5(ipamusername);
+    ipampassword = md5(ipampassword);
     //get login data
-    var logindata = $(this).serialize();
+    var logindata = "ipamusername="+ipamusername+"&ipampassword="+ipampassword;
     
     $('div#loginCheck').hide();
     //post to check form

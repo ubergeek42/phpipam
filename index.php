@@ -28,6 +28,9 @@ else {
 	$settings = getAllSettings();
 }
 
+/* escape GET vars to prevent SQL injection */
+$_GET = filter_user_input ($_GET, true, true);
+
 /* verify login and permissions */
 if($_REQUEST['page'] != "login" && $_REQUEST['page'] != "request_ip"  && $_REQUEST['page'] != "upgrade" && $_REQUEST['page'] != "install") { isUserAuthenticatedNoAjax(); }
 
@@ -47,6 +50,7 @@ if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BA
 elseif($_SERVER['SERVER_PORT'] != "80")  	{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
 /* normal http */
 else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
+
 
 /* site header */
 ?>
@@ -81,7 +85,10 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 	<!-- js -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/jclock.jquery.js"></script>
+	<?php if($_GET['page']=="login" || $_GET['page'=="logout"]|| $_GET['page']=="request_ip") { ?>
+	<script type="text/javascript" src="js/md5.js"></script>
 	<script type="text/javascript" src="js/login.js"></script>
+	<?php } ?>
 <!-- 	<script type="text/javascript" src="js/magic-1.0.min.js"></script> -->
 	<script type="text/javascript" src="js/magic-1.0.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>

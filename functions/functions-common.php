@@ -149,7 +149,7 @@ function checkAdmin ($die = true, $startSession = true)
 	}
 
 	/* set query if database exists! */
-    $query = 'select role from users where username = "'. $ipamusername .'";';
+    $query = 'select role from users where md5(`username`) = "'. $ipamusername .'";';
     
     /* fetch role */
     try { $role = $database->getRow( $query ); }
@@ -316,7 +316,7 @@ function getUserDetailsByName ($username)
 			global $database;
 		} 
 	    /* set query, open db connection and fetch results */
-	    $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
+	    $query    = 'select * from users where md5(`username`) LIKE BINARY "'. $username .'";';
 
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
@@ -342,7 +342,7 @@ function getUserLang ($username)
 {
     global $database; 
     /* set query, open db connection and fetch results */
-    $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and `username` = "'.$username.'";;';
+    $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and md5(`username`) = "'.$username.'";;';
 
     /* execute */
     try { $details = $database->getArray( $query ); }

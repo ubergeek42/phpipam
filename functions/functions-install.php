@@ -80,7 +80,7 @@ function getUserDetailsByName ($username)
 	}
 		
 	/* set query, open db connection and fetch results */
-    $query    = 'select * from users where username LIKE BINARY "'. $username .'";';
+    $query    = 'select * from users where md5(`username`) LIKE BINARY "'. $username .'";';
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -122,7 +122,7 @@ function getUserLang ($username)
     global $db;
     $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);                                                                      
     /* set query, open db connection and fetch results */
-    $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and `username` = "'.$username.'";;';
+    $query    = 'select `lang`,`l_id`,`l_code`,`l_name` from `users` as `u`,`lang` as `l` where `l_id` = `lang` and md5(`username`) = "'.$username.'";;';
 
     /* execute */
     try { $details = $database->getArray( $query ); }
@@ -270,7 +270,7 @@ function getADSettings()
  * First we try to authenticate via local database
  * if it fails we querry the AD, if set in config file
  */
-function checkLogin ($username, $md5password, $rawpassword) 
+function checkLogin ($md5username, $md5password, $rawpassword) 
 {
     global $db;
     
@@ -278,10 +278,10 @@ function checkLogin ($username, $md5password, $rawpassword)
     $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
                      
     //escape strings
-    $username   	= mysqli_real_escape_string($database, $username);
+    $username   	= mysqli_real_escape_string($database, $md5username);
     $md5password   	= mysqli_real_escape_string($database, $md5password);
         
-    $query 		= 'select * from `users` where `username` = binary "'. $username .'" and `password` = BINARY "'. $md5password .'" and `domainUser` = "0" limit 1;';
+    $query 		= 'select * from `users` where md5(`username`) = BINARY "'. $username .'" and `password` = BINARY "'. $md5password .'" and `domainUser` = "0" limit 1;';
 
     /* execute */
     try { $result = $database->getArray( $query ); }
