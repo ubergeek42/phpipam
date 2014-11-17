@@ -15,6 +15,9 @@ CheckReferrer();
 /* get old details */
 $user_old = getActiveUserDetails();
 
+/* escape vars to prevent SQL injection */
+$_POST = filter_user_input ($_POST, true, true);
+
 /* get changed details */
 $modData = $_POST;
 

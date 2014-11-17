@@ -1158,11 +1158,14 @@ msgstr ""
 ### 1.02.001 ###
 
 #: site/admin/userEditPrint.php
-msgid "Mail notifications"
+msgid "Mail State changes"
 msgstr ""
 
-msgid "Select yes to receive notification change mail for"
+msgid "Select yes to receive notification change mail for State change"
 msgstr ""
 
-msgid "IP edited, Subnet edited, State change"
+msgid "Mail Changelog"
+msgstr ""
+
+msgid "Select yes to receive notification change mail for changelog"
 msgstr ""

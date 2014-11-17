@@ -1,4 +1,4 @@
-== 1.02.005
+== 1.02.006
 
 	Enhancements:
 	----------------------------
@@ -20,6 +20,13 @@
 	+ Fixed IE search bug with workaround;
 	+ Fixed subnet and bcast not showing on strict mode disabled;
 	+ Fixed top subnets missing on dashboard for non-admin users;
+	+ Fixed bug when installation was silently failing bacause pf missing _() function (missing gettext extension)
+	
+	Security Fixes:
+	+ Fixed known command injection vulnerabilities in the scan functions;
+	+ Fixed known SQL injection vulnerabilities;
+	+ Fixed known XSS vulnerabilities;
+	+ Fixed known action XSS events;
 
 == 1.0
 	

@@ -36,13 +36,17 @@ if($_REQUEST['page'] != 'upgrade' && $_REQUEST['page'] != "login" && $_REQUEST['
 	include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 }
+# verify requirements for installation
+elseif ($_REQUEST['page'] == "install") {
+	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
+}
 
 /* recreate base */
-if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
+if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BASE; }
 /* custom port */
-elseif($_SERVER['SERVER_PORT'] != "80")  	{ $url = "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]".BASE; }
+elseif($_SERVER['SERVER_PORT'] != "80")  	{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
 /* normal http */
-else								 		{ $url = "http://$_SERVER[SERVER_NAME]".BASE; }
+else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
 /* site header */
 ?>

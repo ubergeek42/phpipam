@@ -359,6 +359,7 @@ CREATE TABLE `users` (
   `lang` INT(11) UNSIGNED  NULL  DEFAULT '1',
   `favourite_subnets` VARCHAR(1024)  NULL  DEFAULT NULL,
   `mailNotify` SET('Yes','No')  NULL  DEFAULT 'No',
+  `mailChangelog` SET('Yes','No')  NULL  DEFAULT 'No',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`username`),
   UNIQUE KEY `id_2` (`id`),

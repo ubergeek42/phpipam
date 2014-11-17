@@ -10,6 +10,9 @@ require_once('../../functions/functions.php');
 /* verify that user is logged in */
 isUserAuthenticated(false);
 
+/* escape vars to prevent SQL injection */
+$_POST = filter_user_input ($_POST, true, true);
+
 /* verify that user has permissions if add */
 if($_POST['action'] == "add") {
 	$sectionPerm = checkSectionPermission ($_POST['sectionId']);

@@ -10,6 +10,9 @@ require_once('../../../functions/functions.php');
 /* verify that user is logged in */
 isUserAuthenticated(true);
 
+/* subnet Id must be a integer */
+if(!is_numeric($_POST['subnetId']))	{ die("<div class='alert alert-danger'>Invalid subnetId!</div>"); }
+
 /* verify that user has write permissions for subnet */
 $subnetPerm = checkSubnetPermission ($_REQUEST['subnetId']);
 if($subnetPerm < 2) 			{ die('<div class="alert alert-danger">'._('You do not have permissions to modify hosts in this subnet').'!</div>'); }

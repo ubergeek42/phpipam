@@ -107,8 +107,8 @@ function updateUserById ($userModDetails) {
 		}
     
         $query  = "insert into users ";
-        $query .= "(`username`, `password`, `role`, `real_name`, `email`, `domainUser`,`mailNotify`,`groups`,`lang` $myFieldsInsert[query]) values "; 
-        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]', '$userModDetails[mailNotify]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
+        $query .= "(`username`, `password`, `role`, `real_name`, `email`, `domainUser`,`mailNotify`,`mailChangelog`,`groups`,`lang` $myFieldsInsert[query]) values "; 
+        $query .= "('$userModDetails[username]', '$userModDetails[password1]', '$userModDetails[role]', '$userModDetails[real_name]', '$userModDetails[email]', '$userModDetails[domainUser]', '$userModDetails[mailNotify]','$userModDetails[mailChangelog]','$userModDetails[groups]','$userModDetails[lang]' $myFieldsInsert[values]);";
     }
     else {
 
@@ -132,7 +132,7 @@ function updateUserById ($userModDetails) {
         if (strlen($userModDetails['password1']) != 0) {
         $query .= "`password` = '$userModDetails[password1]', "; 
         }
-        $query .= "`role`     = '$userModDetails[role]', `real_name`= '$userModDetails[real_name]', `email` = '$userModDetails[email]', `domainUser`= '$userModDetails[domainUser]',`mailNotify`= '$userModDetails[mailNotify]', `lang`= '$userModDetails[lang]', `groups`='".$userModDetails['groups']."' "; 
+        $query .= "`role`     = '$userModDetails[role]', `real_name`= '$userModDetails[real_name]', `email` = '$userModDetails[email]', `domainUser`= '$userModDetails[domainUser]',`mailNotify`= '$userModDetails[mailNotify]',`mailChangelog`= '$userModDetails[mailChangelog]', `lang`= '$userModDetails[lang]', `groups`='".$userModDetails['groups']."' "; 
     	$query .= $myFieldsInsert['query'];  
         $query .= "where `id` = '$userModDetails[userId]';";
     }
@@ -169,7 +169,7 @@ function selfUpdateUser ($userModDetails)
     if(strlen($userModDetails['password1']) != 0) {
     $query .= "`password` = '$userModDetails[password1]',";
     }
-    $query .= "`real_name`= '$userModDetails[real_name]', `mailNotify`='$userModDetails[mailNotify]', `email` = '$userModDetails[email]', ";
+    $query .= "`real_name`= '$userModDetails[real_name]', `mailNotify`='$userModDetails[mailNotify]', `mailChangelog`='$userModDetails[mailChangelog]', `email` = '$userModDetails[email]', ";
     $query .= "`lang`= '$userModDetails[lang]' ";
     $query .= "where `id` = '$userModDetails[userId]';";
     
@@ -661,9 +661,8 @@ function modifySubnetDetails ($subnetDetails, $lastId = false)
 {
     global $database;
     
-    # replace special chars
-    $subnetDetails['permissions'] = mysqli_real_escape_string($database, $subnetDetails['permissions']);
-    $subnetDetails['description'] = mysqli_real_escape_string($database, $subnetDetails['description']); 
+    /* escape vars to prevent SQL injection */
+	$subnetDetails = filter_user_input ($subnetDetails, true, true);
 
     # set modify subnet details query
     $query = setModifySubnetDetailsQuery ($subnetDetails, $sectionChange);
@@ -2111,7 +2110,7 @@ function getCustomFields($table)
 	/* unset standard fields */
 	if($table == "users") {
 		unset($res['id'], $res['username'], $res['password'], $res['groups'], $res['role'], $res['real_name'], $res['email'], $res['domainUser'], $res['lang']);
-		unset($res['editDate'],$res['widgets'],$res['favourite_subnets'],$res['mailNotify']);
+		unset($res['editDate'],$res['widgets'],$res['favourite_subnets'],$res['mailNotify'],$res['mailChangelog']);
 	}
 	elseif($table == "devices") {
 		unset($res['id'], $res['hostname'], $res['ip_addr'], $res['type'], $res['vendor'], $res['model'], $res['version'], $res['description'], $res['sections'], $res['editDate']);
@@ -2155,6 +2154,9 @@ function getCustomFieldsNumArr($table)
 function updateCustomField($field)
 {
     global $database;
+
+    /* escape vars */
+    $field = filter_user_input ($field, true, true);
         
     /* set db type values */
     if($field['fieldType']=="bool" || $field['fieldType']=="text" || $field['fieldType']=="date" || $field['fieldType']=="datetime") 	
@@ -2174,7 +2176,10 @@ function updateCustomField($field)
     else if ($field['action']=="edit"&&@$field['NULL']=="NO") 	{ $query  = "ALTER TABLE `$field[table]` CHANGE COLUMN `$field[oldname]` `$field[name]` $field[ftype] $charset DEFAULT $field[fieldDefault] NOT NULL COMMENT '$field[Comment]';"; }
     else if ($field['action']=="edit") 							{ $query  = "ALTER TABLE `$field[table]` CHANGE COLUMN `$field[oldname]` `$field[name]` $field[ftype] $charset DEFAULT $field[fieldDefault] COMMENT '$field[Comment]';"; }
     else if ($field['action']=="add"&&@$field['NULL']=="NO") 	{ $query  = "ALTER TABLE `$field[table]` ADD COLUMN 	`$field[name]` 					$field[ftype] $charset DEFAULT $field[fieldDefault] NOT NULL COMMENT '$field[Comment]';"; }
-    else 														{ $query  = "ALTER TABLE `$field[table]` ADD COLUMN 	`$field[name]` 					$field[ftype] $charset DEFAULT $field[fieldDefault] NULL COMMENT '$field[Comment]';"; }
+    else if ($field['action']=="add")							{ $query  = "ALTER TABLE `$field[table]` ADD COLUMN 	`$field[name]` 					$field[ftype] $charset DEFAULT $field[fieldDefault] NULL COMMENT '$field[Comment]';"; }
+    else {
+	    return false;
+    }
     
     /* prepare log */ 
     $log = prepareLogFromArray ($field);
@@ -2347,7 +2352,7 @@ function verifyDatabase()
 	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "isFolder");
 	$fields['devices'] 	  	  = array("hostname", "ip_addr", "type", "vendor", "model", "version", "description", "sections");
 	$fields['deviceTypes'] 	  = array("tid", "tname", "tdescription");
-	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify");
+	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify", "mailChangelog");
 	$fields['vrf'] 	  	  	  = array("vrfId","name", "rd", "description");
 	$fields['vlans']   	  	  = array("vlanId", "name", "number", "description");
 	$fields['userGroups']     = array("g_id", "g_name", "g_desc");

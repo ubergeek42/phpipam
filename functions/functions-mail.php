@@ -320,8 +320,9 @@ function sendIPReqEmail($request)
 		// add admins to TO
 		$admins = getAllAdminUsers ();
 		foreach($admins as $admin) {
+			if($admin['mailNotify']=="Yes") {
 			$pmail->AddAddress($admin['email']);
-		}
+		}	}
 		$pmail->ClearReplyTos();
 		$pmail-> AddReplyTo($mailsettings['mAdminMail'], $mailsettings['mAdminName']);
 		// send copy to requester
@@ -494,7 +495,6 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		$objectSelected = $objectOld;	
 	}
 
-
 	# content
 	$content  = "<tr><td style='padding:5px;margin:0px;color:#333;font-size:16px;text-shadow:1px 1px 1px white;border-bottom:1px solid #eeeeee;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:16px;'>$subject</font></td></tr>";
 	foreach($objectSelected as $k=>$l) {
@@ -528,7 +528,7 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		// add admins
 		$admins = getAllAdminUsers ();
 		foreach($admins as $admin) {
-			if($admin['mailNotify']=="Yes") {
+			if($admin['mailChangelog']=="Yes") {
 			$pmail->AddAddress($admin['email']);
 		}	}
 		$pmail->ClearReplyTos();

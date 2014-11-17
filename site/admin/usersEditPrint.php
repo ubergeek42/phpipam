@@ -188,7 +188,7 @@ else {
 	
 	<!-- mailNotify -->
 	<tr>
-    	<td><?php print _('Mail notifications'); ?></td> 
+    	<td><?php print _('Mail State changes'); ?></td> 
     	<td>
         <select name="mailNotify" class="form-control input-sm input-w-auto">
             <option value="No"><?php print _('No'); ?></option>
@@ -197,7 +197,24 @@ else {
         
         
         </td> 
-        <td class="info2"><?php print _('Select yes to receive notification change mail for')."<br>"._('IP edited, Subnet edited, State change'); ?></td> 		
+        <td class="info2"><?php print _('Select yes to receive notification change mail for State change'); ?></td> 		
+	</tr>
+
+	<!-- mailNotifyChangelog -->
+	<tr>
+    	<td><?php print _('Mail Changelog'); ?></td> 
+    	<td>
+        <select name="mailChangelog" class="form-control input-sm input-w-auto">
+            <option value="No"><?php print _('No'); ?></option>
+            <option value="Yes"  <?php if ($user['mailChangelog'] == "Yes") print "selected='selected'"; ?>><?php print _('Yes'); ?></option>
+        </select>
+        
+        
+        </td> 
+        <td class="info2"><?php print _('Select yes to receive notification change mail for changelog'); ?></td> 		
+	</tr>
+	<tr>
+		<td colspan="3"><hr></td>
 	</tr>
 	
 	<!-- groups -->

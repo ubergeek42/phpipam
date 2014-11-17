@@ -11,16 +11,20 @@
  
 class database extends mysqli  {
 
-	public $lastSqlId;	# last SQL insert id
+	# variables
+	public $lastSqlId;		// last SQL insert id
+	
 	
 
-	/* open database connection */
+	/** 
+	 * Construct object
+	 */
 	public function __construct($host = NULL, $username = NULL, $dbname = NULL, $port = NULL, $socket = NULL, $printError = true) {		
 
 		# throw exceptions
 		mysqli_report(MYSQLI_REPORT_STRICT);
 
-		# try to open
+		# open database connection
 		try { parent::__construct($host, $username, $dbname, $port, $socket); }
 		catch (Exception $e) {
     		if($printError) { print "<div class='alert alert-danger'>error:".$e->getMessage()."</div>"; }
@@ -39,13 +43,13 @@ class database extends mysqli  {
 	 * execute given query 
 	 *
 	 */
-	function executeQuery( $query, $lastId = false ) 
+	public function executeQuery( $query, $lastId = false ) 
 	{
-		/* execute query */
+		# execute query
 		$result     = parent::query( $query );
 		$this->lastSqlId   = $this->insert_id;
 		
-		/* if it failes throw new exception */
+		# if it failes throw new exception
 		if ( mysqli_error( $this ) ) {
             throw new exception( mysqli_error( $this ), mysqli_errno( $this ) ); 
       		}

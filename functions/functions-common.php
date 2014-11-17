@@ -28,6 +28,52 @@ function CheckReferrer()
 
 
 
+/**
+ * protect against injections\
+ *
+ *	sql protects against SQL injections (mysql_escape_string)
+ *	xss protects agains XSS injections (strip_tags)
+ *	action sets permitted actions!
+ */
+function filter_user_input ($input, $sql = true, $xss = true, $actions = false)
+{
+	# XSS
+	if($xss) {
+
+		if(is_array($input)) {
+			foreach($input as $k=>$v) { $input[$k] = strip_tags($v); }
+		}
+		else {
+			$input = strip_tags($input);
+		}		
+	}
+
+	# sql?
+	if($sql) {
+		global $database;
+		
+		if(is_array($input)) {
+			foreach($input as $k=>$v) { $input[$k] = $database->real_escape_string($v); }
+		}
+		else {
+			$input = $database->real_escape_string($input);
+		}
+	}
+	
+	# actions
+	if($actions) {
+		$permitted = array("add", "edit", "delete");
+		if(!in_array($input, $permitted)) {
+			die("<div class='alert alert-danger'>Invalid action!</div>");
+		}
+	}
+	
+	
+	return $input;
+}
+
+
+
 /* @user based functions ---------- */
 
 /**
@@ -43,9 +89,9 @@ function isUserAuthenticated($die = true)
     	# save requested page
     	$_SESSION['phpipamredirect'] = $_SERVER['HTTP_REFERER'];												//here we need referrer
     	
-    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['SERVER_NAME'].BASE; }
-    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].BASE; }
-    	else								 	{ $url = "http://".$_SERVER['SERVER_NAME'].BASE; }
+    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['HTTP_HOST'].BASE; }
+    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
+    	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# die
     	if($die) { die('<div class="alert alert-danger"><a href="'.$url.'login/">'._('Please login first').'!</a></div>'); }
     	else	 { die("<div class='pHeader'>"._('Error')."</div><div class='pContent'><div class='alert alert-danger'>"._('Please login first')."!</div></div><div class='pFooter'><a class='btn btn-sm btn-default' href='".$url."login/'>"._('Login')."</a>"); }
@@ -69,9 +115,9 @@ function isUserAuthenticatedNoAjax ()
     	# save requested page
     	$_SESSION['phpipamredirect'] = $_SERVER['SCRIPT_URI'];
     	
-    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['SERVER_NAME'].BASE; }
-    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].BASE; }
-    	else								 	{ $url = "http://".$_SERVER['SERVER_NAME'].BASE; }
+    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['HTTP_HOST'].BASE; }
+    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
+    	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# redirect
     	header("Location:".$url."login/");    
     }
@@ -95,9 +141,9 @@ function checkAdmin ($die = true, $startSession = true)
 
     /* Check connection */
     if ($database->connect_error) {
-    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['SERVER_NAME'].BASE; }
-    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].BASE; }
-    	else								 	{ $url = "http://".$_SERVER['SERVER_NAME'].BASE; }
+    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['HTTP_HOST'].BASE; }
+    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
+    	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# redirect
     	header("Location:".$url."login/");  
 	}
@@ -601,6 +647,11 @@ function getTranslationVersion ($code)
 function getFullFieldData($table, $field)
 {
     global $database; 
+    
+    /* escape vars to prevent SQL injection */
+	$table = filter_user_input ($table, true, true);
+	$field = filter_user_input ($field, true, true);
+    
     /* set query, open db connection and fetch results */
     $query = "show full columns from `$table` where `Field` = '$field';";
 

@@ -40,13 +40,19 @@ if(isset($_SESSION['ipamlanguage'])) {
 	}	
 }
 
+/* detext missing gettext and fake function */
+if(!function_exists(gettext)) {
+	function gettext ($text) 	{ return $text; }
+	function _($text) 			{ return $text; }
+}
+
 /* open persistent DB connection */
 $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
 
 /* set latest version */
 define("VERSION", "1.02");									//version changes if database structure changes
 /* set latest revision */
-define("REVISION", "005");									//revision always changes, verision only if database structure changes
+define("REVISION", "006");									//revision always changes, verision only if database structure changes
 /* set last possible upgrade */
 define("LAST_POSSIBLE", "0.9");								//minimum required version to be able to upgrade
 

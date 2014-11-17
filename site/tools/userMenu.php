@@ -93,7 +93,18 @@ if($ipamusername['domainUser'] == "0") {
 			<option value="Yes" <?php if($ipamusername['mailNotify']=="Yes") { print "selected='selected'"; } ?>><?php print _("Yes"); ?></option>
 		</select>
 	</td>
-	<td class="info2"><?php print _('Select yes to receive notification change mail for')."<br>"._('IP edited, Subnet edited, State change'); ?></td>
+	<td class="info2"><?php print _('Select yes to receive notification change mail for state change'); ?></td>
+</tr>
+<!-- weather to receive mails for changelog -->
+<tr>
+	<td><?php print _('Mail Changelog'); ?></td>
+	<td>
+		<select name="mailChangelog" class="form-control input-sm input-w-auto">
+			<option value="No"><?php print _("No"); ?></option>
+			<option value="Yes" <?php if($ipamusername['mailChangelog']=="Yes") { print "selected='selected'"; } ?>><?php print _("Yes"); ?></option>
+		</select>
+	</td>
+	<td class="info2"><?php print _('Select yes to receive notification change mail for changelog'); ?></td>
 </tr>
 <?php } ?>
 

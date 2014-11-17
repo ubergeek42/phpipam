@@ -2935,7 +2935,8 @@ function countIPaddressesBySwitchId ( $id )
  */
 function pingHost ($ip, $count=1, $timeout = 1, $exit=false)
 {
-	global $settings;
+    # get settings
+    $settings = getAllSettings();
 	
 	//verify ping path
 	if(!file_exists($settings['scanPingPath'])) {

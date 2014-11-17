@@ -11,6 +11,9 @@ if(!function_exists('countAllLogs')) {
 require_once('../../functions/functions.php'); 
 }
 
+/* escape vars to prevent SQL injection */
+$_POST = filter_user_input ($_POST, true, true);
+
 /* if nothing is provided display all! */
 if ( empty($_POST['Informational']) && empty($_POST['Notice']) && empty($_POST['Warning']) ) {
     $_POST['Informational'] = _("Informational");
