@@ -355,7 +355,7 @@ else															{ $readonly = false; }
 				}	
 				//text
 				elseif($field['type'] == "text") {
-					print ' <textarea class="form-control input-sm" name="'. $field['nameNew'] .'" placeholder="'. $field['name'] .'" '.$delete.' rowspan=3 rel="tooltip" data-placement="right" title="'.$field['Comment'].'">'. $subnetDataOld[$field['name']]. '</textarea>'. "\n"; 				
+					print ' <textarea class="form-control input-sm" name="'. $field['nameNew'] .'" placeholder="'. $field['name'] .'" '.$delete.' rowspan=3 rel="tooltip" data-placement="right" title="'.$field['Comment'].'">'. str_replace("\\n","",$subnetDataOld[$field['name']]). '</textarea>'. "\n"; 
 				}	
 				//default - input field
 				else {

@@ -10,7 +10,7 @@
 		<tr>
 			<th><?php print _('Username'); ?></th>
             <td>
-            	<input type="text" id="username" name="ipamusername" class="login form-control input-sm" placeholder="<?php print _('Username'); ?>" autofocus="autofocus"></input>
+            	<input type="text" id="username" name="ipamusername" class="login form-control input-sm" placeholder="<?php print _('Username'); ?>" autofocus="autofocus" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
             </td>
         </tr>
             
@@ -18,7 +18,7 @@
         <tr>
             <th><?php print _('Password'); ?></th>
             <td>
-                <input type="password" id="password" name="ipampassword" class="login form-control input-sm" placeholder="<?php print _('Password'); ?>"></input>
+                <input type="password" id="password" name="ipampassword" class="login form-control input-sm" placeholder="<?php print _('Password'); ?>" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
                 <?php
                 // add requested var for redirect
                 if(isset($_SESSION['phpipamredirect'])) {

@@ -1315,7 +1315,7 @@ function updateDeviceDetails($device)
 			/* set inserts for custom */
 			foreach($myFields as $myField) {	
 				# empty?
-				if(strlen($ip[$myField['name']])==0) {		
+				if(strlen($device[$myField['name']])==0) { 	
 					$myFieldsInsert['query']  .= ', `'. $myField['name'] .'`';
 					$myFieldsInsert['values'] .= ", NULL";
 				} else {

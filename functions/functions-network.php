@@ -930,6 +930,7 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 	    global $database;                                                                     
 	    /* get ALL slave subnets, then remove all subnets and IP addresses */
 	    global $removeSlaves;
+	    
 	    getAllSlaves ($subnetId);
 	    $removeSlaves = array_unique($removeSlaves);
 	    
@@ -2944,8 +2945,8 @@ function pingHost ($ip, $count=1, $timeout = 1, $exit=false)
 	}
 	else {
 		//set ping command based on OS type
-		if(PHP_OS == "FreeBSD" || PHP_OS == "NetBSD" || PHP_OS == "OpenBSD")	{ $cmd = $settings['scanPingPath']." -c $count -W ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
-		elseif(PHP_OS == "Linux")												{ $cmd = $settings['scanPingPath']." -c $count -w $timeout $ip 1>/dev/null 2>&1"; }
+		if(PHP_OS == "FreeBSD" || PHP_OS == "NetBSD")                           { $cmd = $settings['scanPingPath']." -c $count -W ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
+		elseif(PHP_OS == "Linux" || PHP_OS == "OpenBSD")                        { $cmd = $settings['scanPingPath']." -c $count -w $timeout $ip 1>/dev/null 2>&1"; }		
 		elseif(PHP_OS == "WIN32" || PHP_OS == "Windows" || PHP_OS == "WINNT")	{ $cmd = $settings['scanPingPath']." -n $count -I ".($timeout*1000)." $ip 1>/dev/null 2>&1"; }
 		else																	{ $cmd = $settings['scanPingPath']." -c $count -n $ip 1>/dev/null 2>&1"; }
 	

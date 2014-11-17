@@ -811,6 +811,7 @@ function getAllSettings()
 	# check if it already exists
 	if(isset($settings)) {
 		return $settings;
+		print_r($settings);
 	} 
 	else {
 

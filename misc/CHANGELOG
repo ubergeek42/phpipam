@@ -1,4 +1,4 @@
-== 1.02.006
+== 1.02.009
 
 	Enhancements:
 	----------------------------
@@ -6,7 +6,7 @@
 	+ Reduced number of DB queries;
 	+ Added selected mail notifications to admins to be notified on IP/subnet change;
 	+ Added new subnetId index to ipaddresses table that significantly improves widget loading;
-	+ Now using only 1 network connection towards MySQL serverl
+	+ Now using only 1 network connection towards MySQL server;
 
 	Translations:
 	----------------------------
@@ -21,12 +21,14 @@
 	+ Fixed subnet and bcast not showing on strict mode disabled;
 	+ Fixed top subnets missing on dashboard for non-admin users;
 	+ Fixed bug when installation was silently failing bacause pf missing _() function (missing gettext extension)
+	+ Fixed device custom field not populated on adding device;
 	
 	Security Fixes:
 	+ Fixed known command injection vulnerabilities in the scan functions;
 	+ Fixed known SQL injection vulnerabilities;
 	+ Fixed known XSS vulnerabilities;
 	+ Fixed known action XSS events;
+	+ Added hashing of username/password for user login;
 
 == 1.0
 	
