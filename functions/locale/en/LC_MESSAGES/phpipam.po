@@ -4,7 +4,7 @@
 # miha petkovsek <miha.petkovsek@gmail.com>, 2013.
 #
 
-# "Project-Id-Version: 0.99.001\n"
+# "Project-Id-Version: 1.04.001\n"
 # "Report-Msgid-Bugs-To: Miha Petkovsek <miha.petkovsek@gmail.com>\n"
 # "POT-Creation-Date: 2013-04-02 14:33+0200\n"
 # "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -4632,11 +4632,36 @@ msgstr ""
 msgid "Sort by vendor"
 msgstr ""
 
-msgid "Mail notifications"
+#: site/admin/userEditPrint.php
+msgid "Mail State changes"
 msgstr ""
 
-msgid "Select yes to receive notification change mail for"
+msgid "Select yes to receive notification change mail for State change"
 msgstr ""
 
-msgid "IP edited, Subnet edited, State change"
+msgid "Mail Changelog"
+msgstr ""
+
+msgid "Select yes to receive notification change mail for changelog"
+msgstr ""
+
+#: site/admin/usersEditPrint.php
+msgid "Require user to change password after initial login"
+msgstr ""
+
+#: site/tools/changePasswordRequired.php
+msgid "Password change required"
+msgstr ""
+
+msgid "You are required to change your password before you can access phpipam."
+msgstr ""
+
+msgid "Password change"
+msgstr ""
+
+msgid "Save password"
+msgstr ""
+
+#: site/login/loginCheck.php
+msgid "You have been blocked for 5 minutes due to authentication failures"
 msgstr ""

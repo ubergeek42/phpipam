@@ -537,8 +537,22 @@ VALUES
 
 
 
+# Dump of table loginAttempts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `loginAttempts`;
+
+CREATE TABLE `loginAttempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ip` varchar(128) NOT NULL DEFAULT '',
+  `count` int(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ip` (`ip`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.02';
+UPDATE `settings` set `version` = '1.03';

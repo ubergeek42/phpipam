@@ -1,4 +1,4 @@
-== 1.03.001
+== 1.04.001
 
 	Enhancements:
 	----------------------------
@@ -32,6 +32,7 @@
 	+ Added hashing of username/password for user login;
 	+ Added option to force user to change pass after first login;
 	+ Admin password must be changed after installation;
+	+ Added auth block for 5 minutes after 5x unsuccesfull login;
 
 == 1.0
 	

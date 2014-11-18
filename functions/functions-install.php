@@ -274,6 +274,9 @@ function checkLogin ($md5username, $md5password, $rawpassword)
 {
     global $db;
     
+    # set failed flag to update authFailed table
+    $authFailed = false;
+    
     # for login check
     $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
                      
@@ -307,7 +310,7 @@ function checkLogin ($md5username, $md5password, $rawpassword)
     	# print success
     	print('<div class="alert alert-success">'._('Login successful').'!</div>');	
     	# write log file
-    	updateLogTable ('User '. $username .' logged in.', "", 0); 
+    	updateLogTable ('User logged in.', "", 0); 
     }
     /* locally failed, try domain */
     else {
@@ -346,11 +349,11 @@ function checkLogin ($md5username, $md5password, $rawpassword)
 	    			# print success
 	    			if($settings['domainAuth'] == "1") {
 		    			print('<div class="alert alert-success">'._('AD login successful').'!</div>');	
-		    			updateLogTable ('User '. $username .' logged in.', "", 0); 	
+		    			updateLogTable ('User logged in.', "", 0); 	
 		    		}
 		    		else {
 		    			print('<div class="alert alert-success">'._('LDAP login successful').'!</div>');	
-		    			updateLogTable ('User '. $username .' logged in.', "", 0); 			    	
+		    			updateLogTable ('User logged in.', "", 0); 			    	
 		    		}
 		    	}
 		    	# failed to connect
@@ -370,11 +373,13 @@ function checkLogin ($md5username, $md5password, $rawpassword)
 					# print error
 					if($settings['domainAuth'] == "1") {
 					    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to authenticate user against AD').'!</div>');	
-					    updateLogTable ('User '. $username .' failed to authenticate against AD.', "", 2); 	
+					    updateLogTable ('User failed to authenticate against AD.', "", 2); 	
+					    $authFailed = true;
 					}
 					else {
 				    	print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to authenticate user against LDAP').'!</div>');	
-				    	updateLogTable ('User '. $username .' failed to authenticate against LDAP.', "", 2); 					
+				    	updateLogTable ('User failed to authenticate against LDAP.', "", 2); 	
+				    	$authFailed = true;				
 				    }
 				}
 				# wrong user/pass
@@ -382,11 +387,13 @@ function checkLogin ($md5username, $md5password, $rawpassword)
 					# print error
 					if($settings['domainAuth'] == "1") {
 					    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-					    updateLogTable ('User '. $username .' failed to authenticate against AD.', "", 2); 
+					    updateLogTable ('User failed to authenticate against AD.', "", 2); 
+					    $authFailed = true;
 					}
 					else {
 				    	print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    	updateLogTable ('User '. $username .' failed to authenticate against LDAP.', "", 2); 					
+				    	updateLogTable ('User failed to authenticate against LDAP.', "", 2); 			
+				    	$authFailed = true;		
 				    }
 				}
 			}
@@ -395,11 +402,13 @@ function checkLogin ($md5username, $md5password, $rawpassword)
 				# print error
 				if($settings['domainAuth'] == "1") {
 				    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    updateLogTable ('User '. $username .' failed to authenticate against AD.', "", 2); 
+				    updateLogTable ('User failed to authenticate against AD.', "", 2); 
+				    $authFailed = true;
 				}
 				else {
 				    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    updateLogTable ('User '. $username .' failed to authenticate against LDAP.', "", 2); 					
+				    updateLogTable ('User failed to authenticate against LDAP.', "", 2); 	
+				    $authFailed = true;				
 				}				
 			}
     	}
@@ -408,9 +417,18 @@ function checkLogin ($md5username, $md5password, $rawpassword)
     		# print error
 			print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to log in').'!</div>');	
 			# write log file
-	    	updateLogTable ('User '. $username .' failed to log in.', "", 2);
+	    	updateLogTable ('User failed to log in.', "", 2);
+	    	$authFailed = true;
     	}   
     }
+    
+    # update failed table
+    if($authFailed) {
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))	{ $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; }
+		else										{ $ip = $_SERVER['REMOTE_ADDR']; }
+		//add block count
+		block_ip ($ip);
+	}
 }
 
 
@@ -519,6 +537,117 @@ function checkAdmin ($die = true)
     	updateLogTable ('User '. $ipamusername .' tried to access admin page.', "", 2);
     }      
 }
+
+
+
+
+/* @block IP address from login for 5 minutes ----------- */
+
+/**
+ *	add/update entry
+ */
+function block_ip ($ip) 
+{
+	# first check if already in
+	if(check_blocked_ip ($ip)) {
+		# update
+		update_blocked_count($ip);
+	}
+	# if not in add first entry
+	else {
+		add_blocked_entry($ip);
+	}
+	return true;
+}
+
+
+/**
+ *	check
+ */
+function check_blocked_ip ($ip) 
+{
+	# first purge
+	purge_blocked_entries();
+	
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	# set date
+	$now = date("Y-m-d H:i:s", time() - 5*60);
+    
+    # set check query and get result
+    $query = "select * from `loginAttempts` where `ip` = '$ip' and `datetime` > '$now';";
+    
+    # execute
+    try { $ips = $database->getArray( $query ); }
+    catch (Exception $e) { 
+        return false;
+    }
+    
+    # verify
+    if(sizeof($ips[0])>0)	{ return $ips[0]['count']; }
+    else					{ return false; }
+}
+
+/**
+ *	add block count
+ */
+function update_blocked_count($ip)
+{
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	# query
+	$query = "update `loginAttempts` set `count`=`count`+1 where `ip` = '$ip'; ";
+
+    # execute
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) {}
+    # return
+    return true;
+}
+
+/**
+ *	add new block entry
+ */
+function add_blocked_entry($ip)
+{
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']); 
+	# query
+	$query = "insert into `loginAttempts` (`ip`,`count`) values ('$ip',1); ";
+
+    # execute
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) {
+	    	print $e->getMessage();
+    }
+    # return
+    return true;
+}
+ 
+/**
+ *	purge records
+ */
+function purge_blocked_entries()
+{
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	# set date
+	$now = date("Y-m-d H:i:s", time() - 5*60);
+	# query
+	$query = "delete from `loginAttempts` where `datetime` < '$now'; ";
+
+    # execute
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) {}
+    # return
+    return true;
+}
+
+
+
+
+
+
 
 
 /*********************************

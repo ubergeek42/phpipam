@@ -234,8 +234,9 @@ function sendUserAccDetailsEmail($userDetails, $subject)
 		// add admins to CC
 		$admins = getAllAdminUsers ();
 		foreach($admins as $admin) {
-			$pmail->AddCC($admin['email']);
-		}
+			if($admin['mailNotify']=="Yes") {
+			$pmail->AddAddress($admin['email']);
+		}	}
 		// content
 		$pmail->Subject = $subject;
 		$pmail->AltBody = $mail['contentAlt'];

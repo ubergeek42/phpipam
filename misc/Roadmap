@@ -3,6 +3,8 @@ version - 1.1
 	+ status - available, trash (preveri kako)
 	+ salting passwords
 	
+	+ IP address owner (from internal users)
+	
 	+ Define Default Gateway for a Subnet
 	+ Run Discovery from Cron
 	+ Rewrite pagination

@@ -3,7 +3,7 @@
 if(!$settings['siteTitle']) { $settings['siteTitle'] = "phpipam IP management installation"; }
 
 /* destroy session */
-if ($_REQUEST['page'] == "logout") 	{ updateLogTable ('User '. $_SESSION['ipamusername'] .' has logged out', 0); }
+if ($_REQUEST['page'] == "logout") 	{ updateLogTable ('User has logged out', 0); }
 
 /* destroy session */
 session_start();

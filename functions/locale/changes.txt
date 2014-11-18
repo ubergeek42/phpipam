@@ -1189,3 +1189,11 @@ msgstr ""
 
 msgid "Save password"
 msgstr ""
+
+
+
+### 1.04.001 ###
+
+#: site/login/loginCheck.php
+msgid "You have been blocked for 5 minutes due to authentication failures"
+msgstr ""
