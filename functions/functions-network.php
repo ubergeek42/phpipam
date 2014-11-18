@@ -1240,7 +1240,7 @@ function verifySubnetOverlapping ($sectionId, $subnetNew, $vrfId = 0)
         $error =  $e->getMessage(); 
         print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
         return false;
-    }   
+    }
 
     /* set new Subnet array */
     $subnet['subnet'] = $subnetNew;
@@ -1333,7 +1333,7 @@ function verifyNestedSubnetOverlapping ($sectionId, $subnetNew, $vrfId, $masterS
                 	# check if it is nested properly - inside its own parent, otherwise check for overlapping
                 	$allParents = getAllParents ($masterSubnetId);
                 	foreach($allParents as $kp=>$p) {
-	                	if($existingSubnet['id'] = $kp) {
+	                	if($existingSubnet['id'] == $kp) {
 		                	$ignore = true;
 	                	}
                 	}
@@ -1359,7 +1359,7 @@ function verifyNestedSubnetOverlapping ($sectionId, $subnetNew, $vrfId, $masterS
                 # check if it is nested properly - inside its own parent, otherwise check for overlapping
                 $allParents = getAllParents ($masterSubnetId);
                 foreach($allParents as $kp=>$p) {
-	               	if($existingSubnet['id'] = $kp) {
+	               	if($existingSubnet['id'] == $kp) {
 		               	$ignore = true;
 	               	}
                 }

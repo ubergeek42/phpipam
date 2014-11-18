@@ -35,8 +35,8 @@ $('form#login').submit(function() {
     //get username
     var ipamusername = $('#username', this).val();
     var ipampassword = $('#password', this).val();
-    ipamusername = md5(ipamusername);
-    ipampassword = md5(ipampassword);
+    //ipamusername = md5(ipamusername);
+    //ipampassword = md5(ipampassword);
     //get login data
     var logindata = "ipamusername="+ipamusername+"&ipampassword="+ipampassword;
     

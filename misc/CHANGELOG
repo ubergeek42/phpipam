@@ -1,4 +1,4 @@
-== 1.04.001
+== 1.04.002
 
 	Enhancements:
 	----------------------------
@@ -29,7 +29,7 @@
 	+ Fixed known SQL injection vulnerabilities;
 	+ Fixed known XSS vulnerabilities;
 	+ Fixed known action XSS events;
-	+ Added hashing of username/password for user login;
+	//+ Added hashing of username/password for user login;
 	+ Added option to force user to change pass after first login;
 	+ Admin password must be changed after installation;
 	+ Added auth block for 5 minutes after 5x unsuccesfull login;
