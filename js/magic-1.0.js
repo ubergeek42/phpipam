@@ -729,6 +729,28 @@ $('form#cform').submit(function () {
     return false;
 });
 
+/* changePassRequired */
+$('form#changePassRequiredForm').submit(function() {
+	showSpinner();
+
+    //get username
+    var ipampassword1 = $('#ipampassword1', this).val();
+    var ipampassword2 = $('#ipampassword2', this).val();
+    //null?
+    if(ipampassword1.length > 0) {
+    	ipampassword1 = md5(ipampassword1);
+		ipampassword2 = md5(ipampassword2);
+    }
+    //get login data
+    var postData = "ipampassword1="+ipampassword1+"&ipampassword2="+ipampassword2;
+
+    $.post('site/tools/changePassRequiredResult.php', postData, function(data) {
+        $('div#changePassRequiredResult').html(data).fadeIn('fast');
+        hideSpinner();
+    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
+    return false;
+});
+
 
 /*    sort device address list
 *********************************************************/

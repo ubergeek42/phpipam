@@ -50,9 +50,9 @@ if(!function_exists(gettext)) {
 $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
 
 /* set latest version */
-define("VERSION", "1.02");									//version changes if database structure changes
+define("VERSION", "1.03");									//version changes if database structure changes
 /* set latest revision */
-define("REVISION", "009");									//revision always changes, verision only if database structure changes
+define("REVISION", "001");									//revision always changes, verision only if database structure changes
 /* set last possible upgrade */
 define("LAST_POSSIBLE", "0.9");								//minimum required version to be able to upgrade
 

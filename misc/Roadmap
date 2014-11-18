@@ -9,14 +9,10 @@ version - 1.1
 	
 	+ API !
 	
-	+ Per-admin mailing selection
 	+ Per-admin changelog mailing
-	
-	+ new user creating send link to set password
-	
+		
 	+ delete confirmation
 	
-	+ link to change password for new users in emails
 	+ search also covers sections
 	
 	+ Mark subnet as full
@@ -24,7 +20,6 @@ version - 1.1
 	+ Option in administration to not display free range
 		https://sourceforge.net/p/phpipam/feature-requests/204/
 	
-	+ Fix breaks in comment / custom fields
 	+ Fix ordering of custom fields defaults to varchar 256;
 	+ Fix IP ordering breaks editing;
 	

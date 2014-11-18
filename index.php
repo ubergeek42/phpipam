@@ -19,7 +19,7 @@ require('functions/functions.php');
 if(!isset($_REQUEST['page'])) { $_REQUEST['page'] = "dashboard"; }
 
 /* check for new installation */
-if($_REQUEST['page'] != "install") { require('functions/dbInstallCheck.php'); }
+if($_REQUEST['page']!="install") { require('functions/dbInstallCheck.php'); }
 if($_REQUEST['page'] == "install") { 
 	$settings['siteTitle'] = "phpIPAM"; 
 }
@@ -32,10 +32,10 @@ else {
 $_GET = filter_user_input ($_GET, true, true);
 
 /* verify login and permissions */
-if($_REQUEST['page'] != "login" && $_REQUEST['page'] != "request_ip"  && $_REQUEST['page'] != "upgrade" && $_REQUEST['page'] != "install") { isUserAuthenticatedNoAjax(); }
+if($_REQUEST['page']!="login" && $_REQUEST['page']!="request_ip"  && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install") { isUserAuthenticatedNoAjax(); }
 
 
-if($_REQUEST['page'] != 'upgrade' && $_REQUEST['page'] != "login" && $_REQUEST['page'] != "install") { 
+if($_REQUEST['page']!='upgrade' && $_REQUEST['page']!="login" && $_REQUEST['page']!="install") { 
 	include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 }
@@ -50,7 +50,7 @@ if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BA
 elseif(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
 elseif(isset($_SERVER['HTTP_X_SECURE_REQUEST'])  && $_SERVER['HTTP_X_SECURE_REQUEST'] == 'true') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
 /* custom port */
-elseif($_SERVER['SERVER_PORT'] != "80")  	{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
+elseif($_SERVER['SERVER_PORT']!="80")  	{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
 /* normal http */
 else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
@@ -88,8 +88,8 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 	<!-- js -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/jclock.jquery.js"></script>
-	<?php if($_GET['page']=="login" || $_GET['page'=="logout"]|| $_GET['page']=="request_ip") { ?>
 	<script type="text/javascript" src="js/md5.js"></script>
+	<?php if($_GET['page']=="login" || $_GET['page'=="logout"]|| $_GET['page']=="request_ip") { ?>
 	<script type="text/javascript" src="js/login.js"></script>
 	<?php } ?>
 <!-- 	<script type="text/javascript" src="js/magic-1.0.min.js"></script> -->
@@ -142,7 +142,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
 	<!-- usermenu -->
 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pull-right" id="user_menu">
-		<?php if($_REQUEST['page'] != "login" && $_REQUEST['page'] != "logout" && $_REQUEST['page'] != "request_ip" && $_REQUEST['page'] != "upgrade" && $_REQUEST['page'] != "install") include('site/userMenu.php');?>
+		<?php if($_REQUEST['page']!="login" && $_REQUEST['page']!="logout" && $_REQUEST['page']!="request_ip" && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install") include('site/userMenu.php');?>
 	</div>
   
  
@@ -160,7 +160,8 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <!-- page sections / menu -->
 <div class="content">
 <div id="sections_overlay">
-    <?php if($_REQUEST['page'] != "login" && $_REQUEST['page'] != "logout" && $_REQUEST['page'] != "request_ip" && $_REQUEST['page'] != "upgrade" && $_REQUEST['page'] != "install")  include('site/sections.php');?>
+	<?php $user = getActiveUserDetails(); ?>
+    <?php if($_REQUEST['page']!="login" && $_REQUEST['page']!="logout" && $_REQUEST['page']!="request_ip" && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
 </div>
 </div>
 
@@ -169,11 +170,18 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <div class="content_overlay">
 <div class="container-fluid" id="mainContainer">
 		<?php
+		
 		/* error */
 		if($_REQUEST['page'] == "error") {
 			print "<div id='error'>";
 			include_once('site/error.php');
 			print "</div>";
+		}
+		/* password reset required */
+		elseif($user['passChange']=="Yes" && $_REQUEST['page']!="logout") {
+			print "<div id='dashboard' class='container'>";
+			include_once("site/tools/changePassRequired.php");
+			print "</div>";					
 		}
 		/* upgrade */
 		elseif ($_REQUEST['page'] == "upgrade") {

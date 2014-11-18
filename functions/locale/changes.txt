@@ -1169,3 +1169,23 @@ msgstr ""
 
 msgid "Select yes to receive notification change mail for changelog"
 msgstr ""
+
+
+### 1.03.001 ###
+
+#: site/admin/usersEditPrint.php
+msgid "Require user to change password after initial login"
+msgstr ""
+
+#: site/tools/changePasswordRequired.php
+msgid "Password change required"
+msgstr ""
+
+msgid "You are required to change your password before you can access phpipam."
+msgstr ""
+
+msgid "Password change"
+msgstr ""
+
+msgid "Save password"
+msgstr ""

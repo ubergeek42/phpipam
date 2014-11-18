@@ -73,6 +73,25 @@ function filter_user_input ($input, $sql = true, $xss = true, $actions = false)
 }
 
 
+/**
+ *	Trim user input
+ */
+function trim_user_input($input)
+{
+	if(is_array($input)) {
+		foreach($input as $k=>$v) { $input[$k] = trim($v); }
+	}
+	else {
+		$input = $database->trim($input);
+	}
+	
+	return $input;
+}
+
+
+
+
+
 
 /* @user based functions ---------- */
 

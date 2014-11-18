@@ -1,11 +1,11 @@
-== 1.02.009
+== 1.03.001
 
 	Enhancements:
 	----------------------------
 	+ Caching of SQL results to avoid multiple queries;
 	+ Reduced number of DB queries;
 	+ Added selected mail notifications to admins to be notified on IP/subnet change;
-	+ Added new subnetId index to ipaddresses table that significantly improves widget loading;
+	+ Added new subnetId index to ipaddresses table that significantly improves network loading;
 	+ Now using only 1 network connection towards MySQL server;
 
 	Translations:
@@ -13,7 +13,7 @@
 	+ Added es_ES translation;
 
 	Bugfixes:
-	--------	
+	----------------------------
 	+ Fixed top 10 widgets not escaping strings;
 	+ Fixed section parent can be set to self that caused section to disapear;
 	+ Fixed username instead of password being sent to smtp server;
@@ -24,11 +24,14 @@
 	+ Fixed device custom field not populated on adding device;
 	
 	Security Fixes:
+	----------------------------
 	+ Fixed known command injection vulnerabilities in the scan functions;
 	+ Fixed known SQL injection vulnerabilities;
 	+ Fixed known XSS vulnerabilities;
 	+ Fixed known action XSS events;
 	+ Added hashing of username/password for user login;
+	+ Added option to force user to change pass after first login;
+	+ Admin password must be changed after installation;
 
 == 1.0
 	

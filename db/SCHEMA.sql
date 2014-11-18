@@ -30,7 +30,7 @@ CREATE TABLE `ipaddresses` (
   `subnetId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `ip_addr` varchar(100) NOT NULL,
   `description` varchar(64) DEFAULT NULL,
-  `dns_name` varchar(64) NOT NULL,
+  `dns_name` varchar(100) NOT NULL,
   `mac` varchar(20) DEFAULT NULL,
   `owner` varchar(32) DEFAULT NULL,
   `state` varchar(1) DEFAULT '1',
@@ -360,6 +360,7 @@ CREATE TABLE `users` (
   `favourite_subnets` VARCHAR(1024)  NULL  DEFAULT NULL,
   `mailNotify` SET('Yes','No')  NULL  DEFAULT 'No',
   `mailChangelog` SET('Yes','No')  NULL  DEFAULT 'No',
+  `passChange` SET('Yes','No')  NOT NULL  DEFAULT 'No',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`username`),
   UNIQUE KEY `id_2` (`id`),
@@ -369,9 +370,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `username`, `password`, `groups`, `role`, `real_name`, `email`, `domainUser`,`widgets`)
+INSERT INTO `users` (`id`, `username`, `password`, `groups`, `role`, `real_name`, `email`, `domainUser`,`widgets`, `passChange`)
 VALUES
-	(1,'Admin',X'6431306262383036653937643335333866623133623535383164623131653965',X'','Administrator','phpIPAM Admin','admin@domain.local',X'30','statistics;favourite_subnets;changelog;access_logs;error_logs;top10_hosts_v4');
+	(1,'Admin',X'6431306262383036653937643335333866623133623535383164623131653965',X'','Administrator','phpIPAM Admin','admin@domain.local',X'30','statistics;favourite_subnets;changelog;access_logs;error_logs;top10_hosts_v4', 'Yes');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -15,9 +15,6 @@ require_once('../../functions/functions-install.php');
 /* fetch username / pass if they are provided */
 if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 
-	// sanitize inputs
-	//$_POST['ipamusername'] = sanitize($_POST['ipamusername']);	
-
 	# initialize array
 	$ipampassword = array();
 

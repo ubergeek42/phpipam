@@ -280,7 +280,8 @@ function checkLogin ($md5username, $md5password, $rawpassword)
     //escape strings
     $username   	= mysqli_real_escape_string($database, $md5username);
     $md5password   	= mysqli_real_escape_string($database, $md5password);
-        
+    
+    //query check
     $query 		= 'select * from `users` where md5(`username`) = BINARY "'. $username .'" and `password` = BINARY "'. $md5password .'" and `domainUser` = "0" limit 1;';
 
     /* execute */
