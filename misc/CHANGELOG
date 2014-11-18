@@ -7,6 +7,7 @@
 	+ Added selected mail notifications to admins to be notified on IP/subnet change;
 	+ Added new subnetId index to ipaddresses table that significantly improves network loading;
 	+ Now using only 1 network connection towards MySQL server;
+	+ Updated pagination;
 
 	Translations:
 	----------------------------
@@ -32,7 +33,7 @@
 	//+ Added hashing of username/password for user login;
 	+ Added option to force user to change pass after first login;
 	+ Admin password must be changed after installation;
-	+ Added auth block for 5 minutes after 5x unsuccesfull login;
+	+ Added auth block for 5 minutes after 5x unsuccesfull login to prevent brute-force attacks
 
 == 1.0
 	

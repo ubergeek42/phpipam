@@ -125,7 +125,7 @@ $repeats   = ceil($sizeIP / $pageLimit); 		// times to repeat body
 
 # set page number from post
 $maxPages = round($sizeIP/$pageLimit,0);																								// set max number of pages
-if($_REQUEST['sPage']>$repeats || !isset($_REQUEST['sPage']))	{ $_REQUEST['sPage'] = 1; }												// reset to 1 if number too big
+if(@$_REQUEST['sPage']>$repeats || !isset($_REQUEST['sPage']))	{ $_REQUEST['sPage'] = 1; }												// reset to 1 if number too big
 elseif(!is_numeric($_REQUEST['sPage']))							{ $_REQUEST['sPage'] = str_replace("page", "", $_REQUEST['sPage']); }	// remove p from page
 
 ?>
@@ -133,38 +133,14 @@ elseif(!is_numeric($_REQUEST['sPage']))							{ $_REQUEST['sPage'] = str_replace
 
 <h4><?php print $title; ?>
 <?php if($sizeIP  > $pageLimit) { print " (<span class='stran'>"._('Page')." $_REQUEST[sPage]/$repeats</span>)"; }  ?>
-<?php
-# next / previous
-if($sizeIP  > $pageLimit) { ?>
-<div class='btn-toolbar pull-right'>
-	<div class="btn-group">
-		<?php
-		//prev page
-		if($_REQUEST['sPage']==1) 			{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']-1)."/' class='btn btn-xs btn-default disabled'><i class='fa fa-gray fa-chevron-left'></i></a>"; }
-		else								{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']-1)."/' class='btn btn-xs btn-default' rel='tooltip' data-container='body' title='". _('Previous page')."'><i class='fa fa-gray fa-chevron-left'></i></a>"; }
-		//next page
-		if($_REQUEST['sPage']==$repeats) 	{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']+1)."/' class='btn btn-xs btn-default disabled'><i class='fa fa-gray fa-chevron-right'></i></a>"; }
-		else								{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']+1)."/' class='btn btn-xs btn-default' rel='tooltip' data-container='body' title='". _('Next page')."'><i class='fa fa-gray fa-chevron-right'></i></a>"; }
-	
-		?>
-	</div>
-</div>
-<?php } ?>
+</h4>
 
-<?php
-# jump to page
-if($sizeIP  > $pageLimit) { 
-	print "<div class='pull-right'>";
-	print "<select name='jumptoPage' class='jumptoPage form-control input-sm' style='width:auto;'>";
-	for($m=1; $m<=$repeats; $m++) {
-		if($m==$_REQUEST['sPage'])		{ print "<option value='page$m' data-sectionId='$_REQUEST[section]' data-subnetId='$_REQUEST[subnetId]' selected='selected'>"._('Page')." $m</option>"; }
-		else 							{ print "<option value='page$m' data-sectionId='$_REQUEST[section]' data-subnetId='$_REQUEST[subnetId]'>"._('Page')." $m</option>"; }
-	}
-	print "</select>";
-	print "</div>";
+<?php 
+# pagination
+if($sizeIP  > $pageLimit) {
+	print_pagination ($_REQUEST['sPage'], $repeats);
 }
 ?>
-</h4>
 
 <table class="ipaddresses normalTable table table-striped table-condensed table-hover table-full table-top">
 
@@ -451,24 +427,14 @@ else {
 
 </table>	<!-- end IP address table -->
 
-<?php
-# next / previous
-if($sizeIP  > $pageLimit) { ?>
-<hr>
-<div class='btn-toolbar pull-right'>
-	<div class="btn-group">
-		<?php
-		//prev page
-		if($_REQUEST['sPage']==1) 			{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']-1)."/' class='btn btn-xs btn-default disabled'><i class='fa fa-gray fa-chevron-left'></i></a>"; }
-		else								{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']-1)."/' class='btn btn-xs btn-default' rel='tooltip' data-container='body' title='". _('Previous page')."'><i class='fa fa-gray fa-chevron-left'></i></a>"; }
-		//next page
-		if($_REQUEST['sPage']==$repeats) 	{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']+1)."/' class='btn btn-xs btn-default disabled'><i class='fa fa-gray fa-chevron-right'></i></a>"; }
-		else								{ print "<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($_REQUEST['sPage']+1)."/' class='btn btn-xs btn-default' rel='tooltip' data-container='body' title='". _('Next page')."'><i class='fa fa-gray fa-chevron-right'></i></a>"; }
-	
-		?>
-	</div>
-</div>
-<?php } ?>
+
+<?php 
+# pagination
+if($sizeIP  > $pageLimit) {
+	print_pagination ($_REQUEST['sPage'], $repeats);
+}
+?>
+
 
 
 <?php

@@ -7,7 +7,6 @@ version - 1.1
 	
 	+ Define Default Gateway for a Subnet
 	+ Run Discovery from Cron
-	+ Rewrite pagination
 	
 	+ API !
 	

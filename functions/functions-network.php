@@ -970,6 +970,8 @@ function getIpAddressesForVisual ($subnetId)
 {	
 	$ipaddresses = getIpAddressesBySubnetId ($subnetId);
     
+    $out = array();
+    
     /* reformat array */
     foreach($ipaddresses as $ip) {
 	    $out[$ip['ip_addr']]['state'] 		= $ip['state'];
@@ -1027,7 +1029,7 @@ function compressDHCPranges ($ipaddresses)
 				$ipFormatted[$c]['class'] = "ip";
 				
 				//check if state is same as next to start range
-				if($ipaddresses[$c]['state']==$ipaddresses[$c+1]['state'] &&  gmp_strval( @gmp_sub($ipaddresses[$c]['ip_addr'], $ipaddresses[$c+1]['ip_addr'])) == -1 && $ipaddresses[$c]['state']==3) {
+				if($ipaddresses[$c]['state']==@$ipaddresses[$c+1]['state'] &&  gmp_strval( @gmp_sub($ipaddresses[$c]['ip_addr'], $ipaddresses[$c+1]['ip_addr'])) == -1 && $ipaddresses[$c]['state']==3) {
 					$fIndex = $c;
 					$ipFormatted[$fIndex]['startIP'] = $ipaddresses[$c]['ip_addr'];
 					$ipFormatted[$c]['class'] = "range-dhcp";

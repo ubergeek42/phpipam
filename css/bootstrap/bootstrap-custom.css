@@ -912,6 +912,21 @@ div.ip_vis span.ip-3 {
 	color: white;
 }
 
+ul.pagination li.active a {
+	background: #aaa;
+	border-color: #aaa;
+}
+ul.pagination li.active:hover a {
+	background: #888;
+	border-color: #888;
+}
+ul.pagination li a {
+	color: #aaa;
+}
+ul.pagination li:hover a {
+	color: #aaa;
+}
+
 
 /* IP statuses */
 span.status {

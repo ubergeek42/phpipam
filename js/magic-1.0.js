@@ -32,6 +32,10 @@ $(document).on("click", "#hideError", function() {
 	hideError();
 	return false;
 });
+//disabled links
+$('.disabled a').click(function() {
+	return false;
+});
 
 /* tooltip hiding fix */
 function hideTooltips() { $('.tooltip').hide(); }

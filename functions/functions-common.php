@@ -1682,6 +1682,78 @@ function printBreadcrumbs ($req)
 
 
 
+/**
+ *	print pagination
+ *
+ *		$page = current page id
+ *		$pages = number of subpages
+ */
+function print_pagination ($page, $pages)
+{
+	
+	print "<hr>";
+	print "<div class='text-right'>";
+	print "<ul class='pagination pagination-sm'>";
+	
+	//previous - disabled?
+	if($page == 1)			{ print "<li class='disabled'><a href='#'>&laquo;</a></li>"; }
+	else					{ print "<li>				  <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($page-1)."/'>&laquo;</a></li>"; }
+	
+	# less than 8
+	if($pages<8) {
+		for($m=1; $m<=$pages; $m++) {
+			//active?
+			if($page==$m)	{ print "<li class='active'><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+			else			{ print "<li>				<a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+		}
+	}
+	# more than seven
+	else {	
+		//first page
+		if($page<=3) {
+			for($m=1; $m<=5; $m++) {
+				//active?
+				if($page==$m)	{ print "<li class='active'><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				else			{ print "<li>				<a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+			}	
+			print "<li class='disabled'><a href='#'>...</a></li>";	
+			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$pages/'>$pages</a></li>";				
+		}
+		//last pages
+		elseif($page>$pages-4) {
+			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page1/'>1</li>";
+			print "<li class='disabled'><a href='#'>...</a></li>";
+			for($m=$pages-4; $m<=$pages; $m++) {
+				//active?
+				if($page==$m)	{ print "<li class='active'><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				else			{ print "<li>				<a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+			}	
+		}
+		//page more than 2
+		else {
+			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page1/'>1</li>";
+			print "<li class='disabled'><a href='#'>...</a></li>";
+			for($m=$page-1; $m<=$page+1; $m++) {
+				//active?
+				if($page==$m)	{ print "<li class='active'><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				else			{ print "<li>				<a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+			}
+			print "<li class='disabled'><a href='#'>...</a></li>";	
+			print "<li><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$pages/'>$pages</li>";				
+		}
+	}
+	
+	//next - disabled?
+	if($page == $pages)		{ print "<li class='disabled'><a href='#'>&raquo;</a></li>"; }
+	else					{ print "<li>				  <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($page+1)."/'>&raquo;</a></li>"; }			
+	
+	print "</ul>";
+	print "</div>";
+}
+
+
+
+
 
 
 
