@@ -1,4 +1,4 @@
-== 1.04.002
+== 1.04.003
 
 	Enhancements:
 	----------------------------
@@ -23,6 +23,7 @@
 	+ Fixed top subnets missing on dashboard for non-admin users;
 	+ Fixed bug when installation was silently failing bacause pf missing _() function (missing gettext extension)
 	+ Fixed device custom field not populated on adding device;
+	+ Fixed XLS export silently failed when description longer than 31 characters;
 	
 	Security Fixes:
 	----------------------------

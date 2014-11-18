@@ -63,7 +63,10 @@ $colSize = $colSize + $myFieldsSize -2;
 
 
 // Create a worksheet
-$worksheet =& $workbook->addWorksheet($subnet['description']);
+//$worksheet =& $workbook->addWorksheet($subnet['description']);
+$worksheet_name = $subnet['description']; 
+$worksheet_name = (strlen($worksheet_name) > 30) ? substr($worksheet_name,0,27).'...' : $worksheet_name; 
+$worksheet =& $workbook->addWorksheet($worksheet_name); 
 
 $lineCount = 0;
 
