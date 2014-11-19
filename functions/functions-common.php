@@ -93,6 +93,50 @@ function trim_user_input($input)
 
 
 
+
+
+/* @crypt functions */
+
+/**
+ *	function to crypt user pass, randomly generates salt. Use sha256 if possible, otherwise Blowfish or md5 as fallback
+ *
+ *		types:	
+ *			CRYPT_MD5 == 1   		(Salt starting with $1$, 12 characters )
+ *			CRYPT_BLOWFISH == 1		(Salt starting with $2a$. The two digit cost parameter: 09. 22 characters )
+ *			CRYPT_SHA256 == 1		(Salt starting with $5$rounds=5000$, 16 character salt.)
+ *			CRYPT_SHA512 == 1		(Salt starting with $6$rounds=5000$, 16 character salt.)
+ *
+ */
+function crypt_user_pass($input)
+{
+	# initialize salt
+	$salt = "";
+	# set possible salt characters in array
+	$salt_chars = array_merge(range('A','Z'), range('a','z'), range(0,9));
+	# loop to create salt
+	for($i=0; $i < 22; $i++) { $salt .= $salt_chars[array_rand($salt_chars)]; }
+	# get prefix
+	$prefix = detect_crypt_type();
+	# return crypted variable
+	return crypt($input, $prefix.$salt);
+}
+
+/**
+ *	this function will detect highest crypt type to use for system
+ */
+function detect_crypt_type () {
+	if(CRYPT_SHA512 == 1)		{ return '$6$rounds=3000$'; }
+	elseif(CRYPT_SHA512 == 1)	{ return '$5$rounds=3000$'; }
+	elseif(CRYPT_BLOWFISH == 1)	{ return '$2y$'; }
+	elseif(CRYPT_MD5 == 1)		{ return '$5$rounds=3000$'; }
+	else						{ die("<div class='alert alert-danger'>No crypt types supported!</div>"); }
+}
+
+
+
+
+
+
 /* @user based functions ---------- */
 
 /**
