@@ -3364,8 +3364,9 @@ function getAllChangelogs($filter = false, $expr, $limit = 100)
 	//filter
 	else {
 		/* replace * with % */
-		if(substr($expr, 0, 1)=="*")	{ $expr[0] = "%"; }
-		if(substr($expr, -1, 1)=="*")	{ $expr = substr_replace($expr, "%", -1);  }
+		if(substr($expr, 0, 1)=="*")								{ $expr[0] = "%"; }
+		if(substr($expr, -1, 1)=="*")								{ $expr = substr_replace($expr, "%", -1);  }
+		if(substr($expr, 0, 1)!="*" && substr($expr, -1, 1)!="*")	{ $expr = "%".$expr."%"; }
 		
 	    $query = "select * from (
 					select `cid`, `coid`,`ctype`,`real_name`,`caction`,`cresult`,`cdate`,`cdiff`,`ip_addr`,'mask',`sectionId`,`subnetId`,`ip`.`id` as `tid`,`u`.`id` as `userid`,`su`.`isFolder` as `isFolder`,`su`.`description` as `sDescription`

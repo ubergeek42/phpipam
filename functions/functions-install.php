@@ -21,6 +21,7 @@ else{
 
 
 
+
 /**
  * Update log table
  */
@@ -263,29 +264,35 @@ function getADSettings()
 }
 
 
-
 /**
  * Login authentication
  *
  * First we try to authenticate via local database
  * if it fails we querry the AD, if set in config file
  */
-function checkLogin ($md5username, $md5password, $rawpassword) 
+function checkLogin ($username, $md5password, $rawpassword) 
 {
     global $db;
     
     # set failed flag to update authFailed table
-    $authFailed = false;
+    $authFailed = true;
+    $updatepass = false;
+    $uerror		= "";
+    $lerror		= "";
+
+    # fetch settings to get auth types
+    $settings = getAllSettings(); 
     
     # for login check
     $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
-                     
-    //escape strings
-    $username   	= mysqli_real_escape_string($database, $md5username);
-    $md5password   	= mysqli_real_escape_string($database, $md5password);
     
-    //query check
-    $query 		= 'select * from `users` where `username` = BINARY "'. $username .'" and `password` = BINARY "'. $md5password .'" and `domainUser` = "0" limit 1;';
+	# escape vars to prevent SQL injection
+	$username 	 = $database->real_escape_string($username);
+	$md5password = $database->real_escape_string($md5password);
+	$rawpassword = $database->real_escape_string($rawpassword);
+
+    # try to fetch user
+    $query 		= 'select * from `users` where `username` = "'. $username .'" limit 1;';
 
     /* execute */
     try { $result = $database->getArray( $query ); }
@@ -295,141 +302,160 @@ function checkLogin ($md5username, $md5password, $rawpassword)
         return false;
     } 
     
-   	/* locally registered */
-    if (sizeof($result) !=0 ) 	{ 
-
-    	# get user lang
-    	$lang = getLangById ($result[0]['lang']);
-    	
-    	/* start session and set variables */
-    	session_start();
-    	$_SESSION['ipamusername'] = $username;
-    	$_SESSION['ipamlanguage'] = $lang['l_code'];
-    	session_write_close();
-    	
-    	# print success
-    	print('<div class="alert alert-success">'._('Login successful').'!</div>');	
-    	# write log file
-    	updateLogTable ('User logged in.', "", 0); 
-    }
-    /* locally failed, try domain */
-    else {
-    	/* fetch settings */
-    	$settings = getAllSettings();  
-    	
-    	/* if local failed and AD/OpenLDAP is selected try to authenticate */
-    	if ( $settings['domainAuth'] != "0") {
-    		
-    		/* verify that user is in database! */
-    		$query 		= 'select * from `users` where `username` = binary "'. $username .'" and `domainUser` = "1" limit 1;';
-    		
-    		/* execute */
-    		try { $result = $database->getArray( $query ); }
-    		catch (Exception $e) { 
-	    		$error =  $e->getMessage(); 
-	    		print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
-	    		return false;
-	    	} 
-    		
-    		if(sizeof($result)!=0) {
-
-				/* check if user exist in database and has domain user flag */		
-				$authAD = checkADLogin ($username, $rawpassword);
-		
-				if($authAD == "ok") {
-					# get user lang
-					$lang = getLangById ($result[0]['lang']);
-
-	    			/* start session and set variables */
-	    			session_start();
-	    			$_SESSION['ipamusername'] = $username;
-	    			$_SESSION['ipamlanguage'] = $lang['l_code'];
-	    			session_write_close();
-	    		
-	    			# print success
-	    			if($settings['domainAuth'] == "1") {
-		    			print('<div class="alert alert-success">'._('AD login successful').'!</div>');	
-		    			updateLogTable ('User logged in.', "", 0); 	
-		    		}
-		    		else {
-		    			print('<div class="alert alert-success">'._('LDAP login successful').'!</div>');	
-		    			updateLogTable ('User logged in.', "", 0); 			    	
-		    		}
-		    	}
-		    	# failed to connect
-		    	else if ($authAD == 'Failed to connect to AD!') {
-					# print error
-					if($settings['domainAuth'] == "1") {
-					    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to connect to AD server').'!</div>');	
-					    updateLogTable ('Failed to connect to AD!', "", 2); 	
-					}
-					else {
-				    	print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to connect to LDAP server').'!</div>');	
-				    	updateLogTable ('Failed to connect to LDAP!', "", 2); 						
-				    }
-				}
-				# failed to authenticate
-				else if ($authAD == 'Failed to authenticate user via AD!') {
-					# print error
-					if($settings['domainAuth'] == "1") {
-					    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to authenticate user against AD').'!</div>');	
-					    updateLogTable ('User failed to authenticate against AD.', "", 2); 	
-					    $authFailed = true;
-					}
-					else {
-				    	print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to authenticate user against LDAP').'!</div>');	
-				    	updateLogTable ('User failed to authenticate against LDAP.', "", 2); 	
-				    	$authFailed = true;				
-				    }
-				}
-				# wrong user/pass
-				else {
-					# print error
-					if($settings['domainAuth'] == "1") {
-					    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-					    updateLogTable ('User failed to authenticate against AD.', "", 2); 
-					    $authFailed = true;
-					}
-					else {
-				    	print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    	updateLogTable ('User failed to authenticate against LDAP.', "", 2); 			
-				    	$authFailed = true;		
-				    }
-				}
+   	# verify type and password
+    if (sizeof($result)>0) 	{
+    	# reset var
+    	$user = $result[0];
+    
+    	/**
+    	 * local auth
+    	 */
+    	if($user['domainUser']=="0") {
+			# try crypt
+			if(substr($user['password'], 0,1)=="$") {
+				if($user['password']==crypt($rawpassword, $user['password'])) 	{ $authFailed = false; }
 			}
-			# user not in db
 			else {
-				# print error
-				if($settings['domainAuth'] == "1") {
-				    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    updateLogTable ('User failed to authenticate against AD.', "", 2); 
-				    $authFailed = true;
-				}
-				else {
-				    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Wrong username or password').'!</div>');
-				    updateLogTable ('User failed to authenticate against LDAP.', "", 2); 	
-				    $authFailed = true;				
-				}				
+		    	if($user['password']==$md5password) 							{ $authFailed = false; $updatepass = true; }	//second md5 - standard, update passwords!
+				else															{ $authFailed = true; }							//no math, fail				
+			}
+			
+			# ok
+			if($authFailed == false) {
+			
+				# try to update pass to crypt
+				if($updatepass) { update_user_pass_to_crypt($username, $rawpassword); }
+		    	
+		    	# save results
+		    	$uerror = 'Login successful';	
+		    	$lerror = 'User '.$user['real_name'].' logged in.'; 
+			}
+			# fail
+			else {
+				$uerror = 'Failed to log in';	
+		    	$lerror = 'User '.$username.' failed to log in.';
+			}	    	
+    	}
+    	/**
+    	 *	AD Domain auth
+    	 */
+    	elseif($settings['domainAuth']== "1" && $user['domainUser']=="1") {
+
+			# try to authenticate against AD		
+			$authAD = checkADLogin ($username, $rawpassword);
+	
+			/**
+			 *	AD auth suceeded
+			 */
+			if($authAD == "ok") {
+				# set flag
+				$authFailed = false;
+    			
+		    	# save results
+		    	$uerror = 'AD Login successful';	
+		    	$lerror = 'User '.$user['real_name'].' logged in.'; 
+	    	}
+	    	# failed to connect
+	    	else if ($authAD == 'Failed to connect to AD!') {
+				$uerror = 'Failed to connect to AD server';	
+				$lerror = 'Failed to connect to AD!'; 	
+			}
+			# failed to authenticate
+			else if ($authAD == 'Failed to authenticate user via AD!') {
+			    $uerror = 'Failed to authenticate user against AD';	
+			    $lerror = 'User failed to authenticate against AD.'; 	
+			}
+			# wrong user/pass
+			else {
+			    $uerror = 'Wrong username or password';
+			    $lerror = 'User failed to authenticate against AD.'; 
 			}
     	}
-    	/* only local set, print error! */
+    	/**
+    	 *	LDAP auth
+    	 */
+    	elseif($settings['domainAuth']== "2" && $user['domainUser']=="1") {
+
+			# try to authenticate against AD		
+			$authAD = checkADLogin ($username, $rawpassword);
+	
+			/**
+			 *	AD auth suceeded
+			 */
+			if($authAD == "ok") {
+				# set flag
+				$authFailed = false;
+    			
+		    	# save results
+		    	$uerror = 'LDAP Login successful';	
+		    	$lerror = 'User '.$user['real_name'].' logged in.'; 
+	    	}
+	    	# failed to connect
+	    	else if ($authAD == 'Failed to connect to AD!') {
+				$uerror = 'Failed to connect to LDAP server';	
+				$lerror = 'Failed to connect to LDAP!'; 	
+			}
+			# failed to authenticate
+			else if ($authAD == 'Failed to authenticate user via AD!') {
+			    $uerror = 'Failed to authenticate user against LDAP';	
+			    $lerror = 'User failed to authenticate against LDAP.'; 	
+			}
+			# wrong user/pass
+			else {
+			    $uerror = 'Wrong username or password';
+			    $lerror = 'User failed to authenticate against LDAP.'; 
+			}
+    	}
+    	/**
+    	 *	Username ok, but no password match in local database, other not configured
+    	 */
     	else {
-    		# print error
-			print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._('Failed to log in').'!</div>');	
-			# write log file
-	    	updateLogTable ('User failed to log in.', "", 2);
-	    	$authFailed = true;
-    	}   
+			$uerror = 'Failed to log in';	
+	    	$lerror = 'User '.$username.' failed to log in.';
+    	}
     }
-    
-    # update failed table
-    if($authFailed) {
+	# fail - no username match
+	else {
+		$uerror = 'Failed to log in';	
+    	$lerror = 'User '.$username.' failed to log in.';
+	}
+	
+	
+	/**
+	 * print errors
+	 */
+	if($authFailed == true) {
+    	# print success
+	    print('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'._($uerror).'!</div>');
+    	# write log file
+	    updateLogTable ($lerror, "", 2); 
+	    
+	    # also update blocked IP table
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))	{ $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; }
 		else										{ $ip = $_SERVER['REMOTE_ADDR']; }
-		//add block count
-		block_ip ($ip);
+		# add block count
+		block_ip ($ip);	    
+	}
+	/**
+	 * print success
+	 */
+	else {
+		# get user lang
+		$lang = getLangById ($user['lang']);
+
+		/* start session and set variables */
+		session_start();
+		$_SESSION['ipamusername'] = $username;
+		$_SESSION['ipamlanguage'] = $lang['l_code'];
+		session_write_close();
+    			
+    	# print success
+    	print('<div class="alert alert-success">'._($uerror).'!</div>');	
+    	# write log file
+    	updateLogTable ($lerror, "", 0); 		
 	}
 }
+
 
 
 
@@ -438,66 +464,43 @@ function checkLogin ($md5username, $md5password, $rawpassword)
  */
 function checkADLogin ($username, $password)
 {
-	/* first checked if it is defined in database - username and ad option */
-    global $db;
-    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);                                                                      
-    
-    /* check if user exists in local database */
-    $query 		= 'select count(*) as count from users where `username` = binary "'. $username .'" and `domainUser` = "1";';
-    
-    /* execute */
-    try { $result = $database->getArray( $query ); }
-    catch (Exception $e) { 
-        $error =  $e->getMessage(); 
-        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
-        return false;
-    } 
-
     /* get All settings */
     $settings = getAllSettings();
     
-    /* if yes try with AD */
-    if($result[0]['count'] == "1") {
-		//include login script
-		include (dirname(__FILE__) . "/adLDAP/src/adLDAP.php");
-	
-		//open connection
-		try {
-			//get settings for connection
-			$ad = getADSettings();
-			
-			//AD
-	    	$adldap = new adLDAP(array( 'base_dn'=>$ad['base_dn'], 'account_suffix'=>$ad['account_suffix'], 
-	    								'domain_controllers'=>$ad['domain_controllers'], 'use_ssl'=>$ad['use_ssl'],
-	    								'use_tls'=> $ad['use_tls'], 'ad_port'=> $ad['ad_port']
-	    								));
-	    	
-	    	// set OpenLDAP flag
-	    	if($settings['domainAuth'] == "2") { $adldap->setUseOpenLDAP(true); }
-	    	
-		}
-		catch (adLDAPException $e) {
-			die('<div class="alert alert-danger">'. $e .'</div>');
-		}
+	# include login script
+	include (dirname(__FILE__) . "/adLDAP/src/adLDAP.php");
 
-		//user authentication
-		$authUser = $adldap->authenticate($username, $password);
+	# open connection
+	try {
+		# get settings for connection
+		$ad = getADSettings();
 		
-		if($authUser == true) { 
-			updateLogTable ('User '. $username .' authenticated against AD.', "", 0);
-			return 'ok'; 
-		}
-		else { 
-			updateLogTable ('User '. $username .' failed to authenticate against AD.', "", 2);
-			$err = $adldap->getLastError();
-			print "<div class='alert alert-danger'>$err</div>";
-			return 'Failed to authenticate user via AD!'; 
-		}
-    }
-    //user not defined as AD user or user not existing
-    else {
-    	return false;
-    }
+		# AD
+    	$adldap = new adLDAP(array( 'base_dn'=>$ad['base_dn'], 'account_suffix'=>$ad['account_suffix'], 
+    								'domain_controllers'=>$ad['domain_controllers'], 'use_ssl'=>$ad['use_ssl'],
+    								'use_tls'=> $ad['use_tls'], 'ad_port'=> $ad['ad_port']
+    								));
+    	
+    	# set OpenLDAP flag
+    	if($settings['domainAuth'] == "2") { $adldap->setUseOpenLDAP(true); }
+    	
+	}
+	catch (adLDAPException $e) {
+		die('<div class="alert alert-danger">'. $e .'</div>');
+	}
+
+	# user authentication
+	$authUser = $adldap->authenticate($username, $password);
+	
+	# result
+	if($authUser == true) { 
+		return 'ok'; 
+	}
+	else { 
+		$err = $adldap->getLastError();
+		print "<div class='alert alert-danger'>$err</div>";
+		return 'Failed to authenticate user via AD!'; 
+	}
 }
 
 
@@ -538,6 +541,73 @@ function checkAdmin ($die = true)
     }      
 }
 
+
+
+
+
+/* @crypt functions */
+if(!function_exists(crypt_user_pass))
+{
+/**
+ *	function to crypt user pass, randomly generates salt. Use sha256 if possible, otherwise Blowfish or md5 as fallback
+ *
+ *		types:	
+ *			CRYPT_MD5 == 1   		(Salt starting with $1$, 12 characters )
+ *			CRYPT_BLOWFISH == 1		(Salt starting with $2a$. The two digit cost parameter: 09. 22 characters )
+ *			CRYPT_SHA256 == 1		(Salt starting with $5$rounds=5000$, 16 character salt.)
+ *			CRYPT_SHA512 == 1		(Salt starting with $6$rounds=5000$, 16 character salt.)
+ *
+ */
+function crypt_user_pass($input)
+{
+	# initialize salt
+	$salt = "";
+	# set possible salt characters in array
+	$salt_chars = array_merge(range('A','Z'), range('a','z'), range(0,9));
+	# loop to create salt
+	for($i=0; $i < 22; $i++) { $salt .= $salt_chars[array_rand($salt_chars)]; }
+	# get prefix
+	$prefix = detect_crypt_type();
+	# return crypted variable
+	return crypt($input, $prefix.$salt);
+}
+
+/**
+ *	this function will detect highest crypt type to use for system
+ */
+function detect_crypt_type () 
+{
+	if(CRYPT_SHA512 == 1)		{ return '$6$rounds=3000$'; }
+	elseif(CRYPT_SHA512 == 1)	{ return '$5$rounds=3000$'; }
+	elseif(CRYPT_BLOWFISH == 1)	{ return '$2y$'; }
+	elseif(CRYPT_MD5 == 1)		{ return '$5$rounds=3000$'; }
+	else						{ die("<div class='alert alert-danger'>No crypt types supported!</div>"); }
+}
+
+/**
+ * update users pass from md5 to crypt
+ */
+function update_user_pass_to_crypt($username, $rawpassword) 
+{
+   	global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+    
+    # crypt pass
+    $password = crypt_user_pass($rawpassword);
+	$password = $database->real_escape_string($password);
+    
+    # set check query and get result
+    $query = "update `users` set `password`='$password' where `username` = '$username';";
+    
+    # execute
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) { 
+        return false;
+    }
+	return true;
+}
+
+}
 
 
 

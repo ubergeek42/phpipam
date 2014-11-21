@@ -12,6 +12,18 @@ require_once( dirname(__FILE__) . '/../../../functions/functions.php' );
 /* verify that user is authenticated! */
 isUserAuthenticated ();
 
+# change parameters - search string provided
+if(isset($_GET['sPage'])) {
+	$_REQUEST['cfilter']  = $_REQUEST['subnetId'];
+	$_REQUEST['climit']  = $_REQUEST['sPage'];
+}
+elseif(isset($_GET['subnetId'])) {
+	$_REQUEST['climit']  = $_REQUEST['subnetId'];
+}
+else {
+	$_REQUEST['climit']  = 50;
+}
+
 # get clog entries
 if(!isset($_REQUEST['cfilter'])) 	{ $clogs = getAllChangelogs(false, "", $_REQUEST['climit']); }
 else								{ $clogs = getAllChangelogs(true, $_REQUEST['cfilter'], $_REQUEST['climit']); }

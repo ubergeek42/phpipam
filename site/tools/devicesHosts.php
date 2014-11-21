@@ -10,7 +10,7 @@
 isUserAuthenticated ();
 
 /* get hosts under device */
-$device = getDeviceById($_GET['deviceid']);
+$device = getDeviceById($_GET['sPage']);
 
 /* Get all IP addresses belonging to switch */
 $ipaddresses = getIPaddressesBySwitchName ( $device['id'] );

@@ -16,11 +16,11 @@ require('config.php');
 require('functions/functions.php');
 
 # set default page
-if(!isset($_REQUEST['page'])) { $_REQUEST['page'] = "dashboard"; }
+if(!isset($_GET['page'])) { $_GET['page'] = "dashboard"; }
 
 /* check for new installation */
-if($_REQUEST['page']!="install") { require('functions/dbInstallCheck.php'); }
-if($_REQUEST['page'] == "install") { 
+if($_GET['page']!="install") { require('functions/dbInstallCheck.php'); }
+if($_GET['page'] == "install") { 
 	$settings['siteTitle'] = "phpIPAM"; 
 }
 else {
@@ -32,15 +32,15 @@ else {
 $_GET = filter_user_input ($_GET, true, true);
 
 /* verify login and permissions */
-if($_REQUEST['page']!="login" && $_REQUEST['page']!="request_ip"  && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install") { isUserAuthenticatedNoAjax(); }
+if($_GET['page']!="login" && $_GET['page']!="request_ip"  && $_GET['page']!="upgrade" && $_GET['page']!="install") { isUserAuthenticatedNoAjax(); }
 
 
-if($_REQUEST['page']!='upgrade' && $_REQUEST['page']!="login" && $_REQUEST['page']!="install") { 
+if($_GET['page']!='upgrade' && $_GET['page']!="login" && $_GET['page']!="install") { 
 	include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 }
 # verify requirements for installation
-elseif ($_REQUEST['page'] == "install") {
+elseif ($_GET['page'] == "install") {
 	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 }
 
@@ -50,7 +50,7 @@ if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BA
 elseif(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
 elseif(isset($_SERVER['HTTP_X_SECURE_REQUEST'])  && $_SERVER['HTTP_X_SECURE_REQUEST'] == 'true') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
 /* custom port */
-elseif($_SERVER['SERVER_PORT']!="80")  	{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
+elseif($_SERVER['SERVER_PORT']!="80")  		{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
 /* normal http */
 else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
@@ -142,7 +142,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
 	<!-- usermenu -->
 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pull-right" id="user_menu">
-		<?php if($_REQUEST['page']!="login" && $_REQUEST['page']!="logout" && $_REQUEST['page']!="request_ip" && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install") include('site/userMenu.php');?>
+		<?php if($_GET['page']!="login" && $_GET['page']!="logout" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") include('site/userMenu.php');?>
 	</div>
   
  
@@ -150,7 +150,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 	<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
 		<div class="hero-pusher hidden-xs hidden-sm"></div>
 		<div class="hero-unit">
-			<a href=""><?php print $settings['siteTitle']; if($_REQUEST['page'] == "login") { print " | "._('login'); } if($_REQUEST['page'] == "install") { print " | "._('installation'); } ?></a>
+			<a href=""><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
 		</div>
 	</div>
 	
@@ -161,7 +161,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <div class="content">
 <div id="sections_overlay">
 	<?php $user = getActiveUserDetails(); ?>
-    <?php if($_REQUEST['page']!="login" && $_REQUEST['page']!="logout" && $_REQUEST['page']!="request_ip" && $_REQUEST['page']!="upgrade" && $_REQUEST['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
+    <?php if($_GET['page']!="login" && $_GET['page']!="logout" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
 </div>
 </div>
 
@@ -172,45 +172,45 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 		<?php
 		
 		/* error */
-		if($_REQUEST['page'] == "error") {
+		if($_GET['page'] == "error") {
 			print "<div id='error'>";
 			include_once('site/error.php');
 			print "</div>";
 		}
 		/* password reset required */
-		elseif($user['passChange']=="Yes" && $_REQUEST['page']!="logout") {
+		elseif($user['passChange']=="Yes" && $_GET['page']!="logout") {
 			print "<div id='dashboard' class='container'>";
 			include_once("site/tools/changePassRequired.php");
 			print "</div>";					
 		}
 		/* upgrade */
-		elseif ($_REQUEST['page'] == "upgrade") {
+		elseif ($_GET['page'] == "upgrade") {
 			print "<div id='dashboard'>";
 			include_once("site/upgrade/index.php");
 			print "</div>";			
 		}
 		/* install */
-		elseif ($_REQUEST['page'] == "install") {
+		elseif ($_GET['page'] == "install") {
 			print "<div id='dashboard'>";
 			include_once("site/install/index.php");
 			print "</div>";			
 		}
 		/* login, logout, ipRequest */
-		elseif($_REQUEST['page'] == "login" || $_REQUEST['page'] == "logout" || $_REQUEST['page'] == "request_ip") {
+		elseif($_GET['page'] == "login" || $_GET['page'] == "logout" || $_GET['page'] == "request_ip") {
 			print "<div id='dashboard'>";
 			include_once("site/login/index.php");
 			print "</div>";			
 		}
 		/* dashboard */
-		elseif(!isset($_REQUEST['page']) || $_REQUEST['page'] == "dashboard") {
+		elseif(!isset($_GET['page']) || $_GET['page'] == "dashboard") {
 			print "<div id='dashboard'>";
 			include_once("site/dashboard/index.php");
 			print "</div>";
 		}
 		/* widgets */
-		elseif(@$_REQUEST['page']=="widgets") {
+		elseif(@$_GET['page']=="widgets") {
 			print "<div id='dashboard'>";
-			include_once("site/dashboard/widgets/".$_REQUEST['subpage'].".php");
+			include_once("site/dashboard/widgets/".$_GET['section'].".php");
 			print "</div>";			
 		}
 		/* side menus */
@@ -219,30 +219,31 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 			print "<tr>";
 			
 			print "<td id='subnetsLeft'>";
-			print "<div id='leftMenu' class='menu-$_REQUEST[page]'>";
-				if($_REQUEST['page'] == "subnets" || $_REQUEST['page'] == "vlan" || 
-				   $_REQUEST['page'] == "vrf" 	  || $_REQUEST['page'] == "folder")										{ include_once("site/subnets.php"); }
-				else if ($_REQUEST['page'] == "tools")																	{ include_once("site/tools/toolsMenu.php"); }
-				else if ($_REQUEST['page'] == "administration")															{ include_once("site/admin/adminMenu.php"); }	
+			print "<div id='leftMenu' class='menu-$_GET[page]'>";
+				if($_GET['page'] == "subnets" || $_GET['page'] == "vlan" || 
+				   $_GET['page'] == "vrf" 	  || $_GET['page'] == "folder")										{ include_once("site/subnets.php"); }
+				else if ($_GET['page'] == "tools")																{ include_once("site/tools/toolsMenu.php"); }
+				else if ($_GET['page'] == "administration")														{ include_once("site/admin/adminMenu.php"); }	
 			print "</div>";		
 			print "</td>";
 			
 			print "<td id='subnetsContent'>";
 			print "<div class='row' id='content'>";
-				if( isset($_REQUEST['toolsId']) && (strlen($_REQUEST['toolsId']) == 0) )	{ unset($_REQUEST['toolsId']); }
+				if( isset($_GET['section']) && (strlen($_GET['section']) == 0) )								{ unset($_GET['section']); }
 				# subnet changelog
-				if($_REQUEST['page'] == "subnets" && $_REQUEST['sPage'] == "changelog")									{ include_once("site/ipaddr/subnetChangelog.php"); }
+				if($_GET['page'] == "subnets" && $_GET['sPage'] == "changelog")									{ include_once("site/ipaddr/subnetChangelog.php"); }
 				# subnets
-				elseif($_REQUEST['page'] == "subnets" && !isset($_REQUEST['subnetId']))									{ include_once("site/ipaddr/sectionAllSubnets.php"); }
+				elseif($_GET['page'] == "subnets" && !isset($_GET['subnetId']))									{ include_once("site/ipaddr/sectionAllSubnets.php"); }
 				# subnets, vrf, vlan, folder
-				else if($_REQUEST['page'] == "subnets" || $_REQUEST['page'] == "vlan" 
-					 || $_REQUEST['page'] == "vrf"	   || $_REQUEST['page'] == "folder")								{ include_once("site/ipaddr/ipAddressSwitch.php"); }
+				else if($_GET['page'] == "subnets" || $_GET['page'] == "vlan" 
+					 || $_GET['page'] == "vrf"	   || $_GET['page'] == "folder")								{ include_once("site/ipaddr/ipAddressSwitch.php"); }
 				# tools		
-				else if ($_REQUEST['page'] == "tools" && !isset($_REQUEST['toolsId']))									{ print "<div class='alert alert-info alert-dash'><i class='icon-gray icon-chevron-left'></i> "._('Please select tool from left menu!')."</div>"; }
-				else if ($_REQUEST['page'] == "tools")																	{ include_once("site/tools/$_REQUEST[toolsId].php"); }
+				else if ($_GET['page'] == "tools" && !isset($_GET['section']))									{ include_once("site/tools/showAll.php"); }
+				else if ($_GET['page'] == "tools")																{ include_once("site/tools/$_GET[section].php"); }
 				# admin
-				else if ($_REQUEST['page'] == "administration"  && !isset($_REQUEST['adminId']))						{ print "<div class='alert alert-info alert-dash'><i class='icon-gray icon-chevron-left'></i> "._('Please select setting from left menu!')."</div>"; }    	
-				else if ($_REQUEST['page'] == "administration")															{ include_once("site/admin/$_REQUEST[adminId].php"); }    	
+				else if ($_GET['page'] == "administration"  && !isset($_GET['section']))						{ include_once("site/admin/showAll.php"); }    	
+				else if ($_GET['page'] == "administration"  && ($_GET['subnetId']=="sectionChangelog"))			{ include_once("site/admin/sectionChangelog.php"); }  
+				else if ($_GET['page'] == "administration")														{ include_once("site/admin/$_GET[section].php"); }  	
 			print "</div>";
 			print "</td>";
 			

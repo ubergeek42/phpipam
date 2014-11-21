@@ -1,11 +1,7 @@
 version - 1.1
 
-	+ status - available, trash (preveri kako)
-	+ salting passwords
-	
-	+ IP address owner (from internal users)
-	
-	+ Define Default Gateway for a Subnet
+	+ Rewrite all links :/
+
 	+ Run Discovery from Cron
 	
 	+ API !
@@ -16,6 +12,21 @@ version - 1.1
 	
 	+ search also covers sections
 	
+	+ Option in administration to not display free range
+		https://sourceforge.net/p/phpipam/feature-requests/204/
+	
+	+ Change install script
+	
+
+
+version - 1.2
+
+	+ status - available, trash (preveri kako)
+	
+	+ IP address owner (from internal users)
+	
+	+ Define Default Gateway for a Subnet
+				
 	+ Mark subnet as full
 	
 	+ Option in administration to not display free range
@@ -24,8 +35,7 @@ version - 1.1
 	+ Fix ordering of custom fields defaults to varchar 256;
 	+ Fix IP ordering breaks editing;
 	
-	+ Extend API
-	+ Update languages
+	+ Change install script
 			
 
 features for next releases:

@@ -17,15 +17,10 @@ if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 
 	# initialize array
 	$ipampassword = array();
-
-	$ipamusername = $_POST['ipamusername'];
-	$ipampassword['raw'] = $_POST['ipampassword'];
-	$ipampassword['md5'] = md5($_POST['ipampassword']);
 	
 	// verify that there are no invalid characters
-	if(strpos($ipamusername, " ") >0 ) 			{ die("<div class='alert alert-danger'>"._("Invalid characters in username")."!</div>"); }
-	if(strpos($$ipampassword['raw'], " ") >0 ) 	{ die("<div class='alert alert-danger'>"._("Invalid characters in password")."!</div>"); }
-	
+	if(strpos($_POST['ipamusername'], " ") >0 ) 	{ die("<div class='alert alert-danger'>"._("Invalid characters in username")."!</div>"); }
+	if(strpos($_POST['ipampassword'], " ") >0 ) 	{ die("<div class='alert alert-danger'>"._("Invalid characters in password")."!</div>"); }
 	
 	// check failed table
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))	{ $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; }
@@ -37,7 +32,7 @@ if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 	}
 		
 	/* check local login */
-	checkLogin ($ipamusername, $ipampassword['md5'], $ipampassword['raw']);
+	checkLogin ($_POST['ipamusername'], md5($_POST['ipampassword']), $_POST['ipampassword']);
 }
 //Username / pass not provided
 else {

@@ -19,7 +19,7 @@ function verifyUserModInput ($userModDetails)
     # real name must be entered
     if (!$userModDetails['real_name']) 																			{ $errors[] = _('Real name field is mandatory!'); }
     # Both passwords must be same
-    if ($userModDetails['password1'] != $userModDetails['password2']) 											{ $errors[] = _("Passwords do not match!"); }
+    if ($userModDetails['password1orig'] != $userModDetails['password2orig']) 									{ $errors[] = _("Passwords do not match!"); }
     # pass must be at least 8 chars long for non-domain users
     if($userModDetails['domainUser'] != 1 ) { 
     	if ((strlen($userModDetails['password1orig']) < 8 ) && (strlen($userModDetails['password1orig']) != 0)) { $errors[] = _("Password must be at least 8 characters long!"); }
@@ -2382,7 +2382,7 @@ function verifyDatabase()
 	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "isFolder");
 	$fields['devices'] 	  	  = array("hostname", "ip_addr", "type", "vendor", "model", "version", "description", "sections");
 	$fields['deviceTypes'] 	  = array("tid", "tname", "tdescription");
-	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify", "mailChangelog", "passChanged");
+	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify", "mailChangelog", "passChange");
 	$fields['vrf'] 	  	  	  = array("vrfId","name", "rd", "description");
 	$fields['vlans']   	  	  = array("vlanId", "name", "number", "description");
 	$fields['userGroups']     = array("g_id", "g_name", "g_desc");

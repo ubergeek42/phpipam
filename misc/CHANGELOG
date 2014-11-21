@@ -1,4 +1,4 @@
-== 1.04.003
+== 1.05.001
 
 	Enhancements:
 	----------------------------
@@ -8,6 +8,17 @@
 	+ Added new subnetId index to ipaddresses table that significantly improves network loading;
 	+ Now using only 1 network connection towards MySQL server;
 	+ Updated pagination;
+
+	Security Fixes:
+	----------------------------
+	+ Fixed known command injection vulnerabilities in the scan functions;
+	+ Fixed known SQL injection vulnerabilities;
+	+ Fixed known XSS vulnerabilities;
+	+ Fixed known action XSS events;
+	+ Moved to crypt method for storing password in database with salting;
+	+ Added option to force user to change pass after first login;
+	+ Admin password must be changed after installation;
+	+ Added auth block for 5 minutes after 5x unsuccesfull login to prevent brute-force attacks
 
 	Translations:
 	----------------------------
@@ -24,17 +35,6 @@
 	+ Fixed bug when installation was silently failing bacause pf missing _() function (missing gettext extension)
 	+ Fixed device custom field not populated on adding device;
 	+ Fixed XLS export silently failed when description longer than 31 characters;
-	
-	Security Fixes:
-	----------------------------
-	+ Fixed known command injection vulnerabilities in the scan functions;
-	+ Fixed known SQL injection vulnerabilities;
-	+ Fixed known XSS vulnerabilities;
-	+ Fixed known action XSS events;
-	//+ Added hashing of username/password for user login;
-	+ Added option to force user to change pass after first login;
-	+ Admin password must be changed after installation;
-	+ Added auth block for 5 minutes after 5x unsuccesfull login to prevent brute-force attacks
 
 == 1.0
 	

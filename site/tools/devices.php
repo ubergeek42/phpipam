@@ -26,7 +26,7 @@ elseif($admin) {
 
 
 /* print hosts? */
-if(isset($_GET['deviceid'])) {
+if(isset($_GET['subnetId'])) {
 	include('devicesHosts.php');
 	
 } else {
