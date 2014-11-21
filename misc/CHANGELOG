@@ -1,4 +1,4 @@
-== 1.05.001
+== 1.06.001
 
 	Enhancements:
 	----------------------------
@@ -8,6 +8,7 @@
 	+ Added new subnetId index to ipaddresses table that significantly improves network loading;
 	+ Now using only 1 network connection towards MySQL server;
 	+ Updated pagination;
+	+ mod_rewrite no longer required, selectable URL structure under settings;
 
 	Security Fixes:
 	----------------------------

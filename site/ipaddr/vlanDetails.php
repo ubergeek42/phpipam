@@ -7,7 +7,7 @@
 isUserAuthenticated ();
 
 # get VLAN details
-$vlan = getVLANbyId($_REQUEST['vlanId']);
+$vlan = getVLANbyId($_GET['subnetId']);
 
 # not existing
 if(!$vlan) {

@@ -171,6 +171,7 @@ CREATE TABLE `settings` (
   `enableChangelog` TINYINT(1)  NOT NULL  DEFAULT '1',
   `scanPingPath` VARCHAR(64)  NULL  DEFAULT '/bin/ping',
   `scanMaxThreads` INT(4)  NULL  DEFAULT '128',
+  `prettyLinks` SET("Yes","No")  NOT NULL  DEFAULT 'No',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -179,7 +180,7 @@ LOCK TABLES `settings` WRITE;
 
 INSERT INTO `settings` (`id`, `siteTitle`, `siteAdminName`, `siteAdminMail`, `siteDomain`, `siteURL`, `domainAuth`, `enableIPrequests`, `enableVRF`, `enableDNSresolving`, `version`, `donate`, `IPfilter`, `printLimit`, `vlanDuplicate`, `subnetOrdering`, `visualLimit`, `dhcpCompress`)
 VALUES
-	(1, 'phpipam IP address management', 'Sysadmin', 'admin@domain.local', 'domain.local', 'http://yourpublicurl.com', 0, 0, 0, 0, '1.0', 0, 'mac;owner;state;switch;note', 50, 1, 'subnet,asc', 24, 1);
+	(1, 'phpipam IP address management', 'Sysadmin', 'admin@domain.local', 'domain.local', 'http://yourpublicurl.com', 0, 0, 0, 0, '1.1', 0, 'mac;owner;state;switch;note', 50, 1, 'subnet,asc', 24, 1);
 	
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -555,4 +556,4 @@ CREATE TABLE `loginAttempts` (
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.05';
+UPDATE `settings` set `version` = '1.06';

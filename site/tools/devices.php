@@ -18,10 +18,10 @@ print "<hr>";
 
 # print link to manage
 if(isset($_GET['deviceid'])) {
-	print "<a class='btn btn-sm btn-default' href='tools/devices/' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-chevron-left'></i> ". _('Back')."</a>";
+	print "<a class='btn btn-sm btn-default' href='".create_link("tools","devices")."' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-chevron-left'></i> ". _('Back')."</a>";
 }
 elseif($admin) {
-	print "<a class='btn btn-sm btn-default' href='administration/manageDevices/' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
+	print "<a class='btn btn-sm btn-default' href='".create_link("administration","manageDevices")."' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
 }
 
 

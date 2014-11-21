@@ -91,7 +91,7 @@ $mySize 	= sizeof($myFields);
 $colSpan 	= $fieldSize + $mySize + 4;
 ?>
 
-<h4> <?php print _('Search results (IP address list)');?>: <?php if(sizeof($result) != 0) { print('<a href="" id="exportSearch" rel="tooltip" title="'._('Export All results to XLS').'"><button class="btn btn-xs btn-default"><i class="fa fa-download"></i></button></a>');} ?></h4>
+<h4> <?php print _('Search results (IP address list)');?>: <?php if(sizeof($result) != 0) { print('<a href="'.create_link(null).'" id="exportSearch" rel="tooltip" title="'._('Export All results to XLS').'"><button class="btn btn-xs btn-default"><i class="fa fa-download"></i></button></a>');} ?></h4>
 <hr>
 
 <!-- export holder -->
@@ -154,7 +154,7 @@ if(sizeof($result) > 0) {
 			//detect section change and print headers
 			if ($result[$m]['subnetId'] != $result[$m-1]['subnetId']) {
 				print '<tr>' . "\n";
-				print '	<th colspan="'. $colSpan .'">'. $section['name'] . ' :: <a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/" style="font-weight:300">' . $subnet['description'] .' ('. transform2long($subnet['subnet']) .'/'. $subnet['mask'] .')</a></th>' . "\n";
+				print '	<th colspan="'. $colSpan .'">'. $section['name'] . ' :: <a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id']).'" style="font-weight:300">' . $subnet['description'] .' ('. transform2long($subnet['subnet']) .'/'. $subnet['mask'] .')</a></th>' . "\n";
 				print '</tr>';
 			}
 			$m++;
@@ -169,7 +169,7 @@ if(sizeof($result) > 0) {
 			//print table
 			print '<tr class="ipSearch '.$stateClass.'" id="'. $line['id'] .'" subnetId="'. $line['subnetId'] .'" sectionId="'. $subnet['sectionId'] .'" link="'. $section['name'] .'|'. $subnet['id'] .'">'. "\n";
 	
-			print ' <td><a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/ipdetails/'.$line['id'].'/">'. transform2long($line['ip_addr'])."</a>";
+			print ' <td><a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id'],"ipdetails",$line['id']).'">'. transform2long($line['ip_addr'])."</a>";
 			if(in_array('state', $setFields)) 				{ print reformatIPState($line['state']); }	
 			print ' </td>' . "\n";
 			print ' <td>'. $vlan['number']  .'</td>' . "\n";
@@ -308,11 +308,11 @@ if(sizeof($subnets) > 0) {
 				print '	<td>'. $section['name'] . '</td>'. "\n"; 
 				//folder?
 				if($line['isFolder']==1) {
-				print '	<td><a href="subnets/'.$line['sectionId'].'/'.$line['id'].'/"><i class="fa fa-folder-o fa fa-gray"></i> '.$line['description'].'</a></td>'. "\n"; 
+				print '	<td><a href="'.create_link("subnets",$line['sectionId'],$line['id']).'"><i class="fa fa-folder-o fa fa-gray"></i> '.$line['description'].'</a></td>'. "\n"; 
 				} else {
-				print '	<td><a href="subnets/'.$line['sectionId'].'/'.$line['id'].'/">'. transform2long($line['subnet']) . '/'.$line['mask'].'</a></td>'. "\n"; 					
+				print '	<td><a href="'.create_link("subnets",$line['sectionId'],$line['id']).'">'. transform2long($line['subnet']) . '/'.$line['mask'].'</a></td>'. "\n"; 					
 				}
-				print ' <td><a href="subnets/'.$line['sectionId'].'/'.$line['id'].'/">'. $line['description'] .'</a></td>' . "\n";
+				print ' <td><a href="'.create_link("subnets",$line['sectionId'],$line['id']).'">'. $line['description'] .'</a></td>' . "\n";
 				print ' <td>'. $line['masterSubnetId'] .'</td>' . "\n";
 				print ' <td>'. $vlan['number'] .'</td>' . "\n";
 				print ' <td>'. _($line['allowRequests']) .'</td>' . "\n";

@@ -73,8 +73,8 @@ foreach ($slaves as $slave) {
 	
 	print "<tr>";
     print "	<td class='small'>$slave[VLAN]</td>";
-    print "	<td class='small description'><a href='subnets/$section[id]/$slave[id]/'>$slave[description]</a></td>";
-    print "	<td><a href='subnets/$section[id]/$slave[id]/'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
+    print "	<td class='small description'><a href='".create_link("subnets",$section['id'],$slave['id'])."'>$slave[description]</a></td>";
+    print "	<td><a href='".create_link("subnets",$section['id'],$slave['id'])."'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
     
     # count IP addresses
 	$hasSlaves = getAllSlaveSubnetsBySubnetId ($slave['id']); 

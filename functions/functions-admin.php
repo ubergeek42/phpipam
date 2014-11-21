@@ -1038,22 +1038,22 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
 				$html[] = "<tr>";
 				# folder
 				if($option['value']['isFolder']==1) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> <a href='folder/".$option['value']['sectionId']."/".$option['value']['id']."/'>$description</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> <a href='".create_link("folder",$option['value']['sectionId'],$option['value']['id'])."'>$description</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> $description</td>";
 				} 
 				else {
 				if($count==1) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i> $description</td>";	
 				} 
 				else {
 					# last?
 					if(!empty( $children[$option['value']['id']])) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i> <a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i> <a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i> $description</td>";	
 					}
 					else {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i> <a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i> <a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i> $description</td>";	
 					}
 				}
@@ -1778,6 +1778,8 @@ function updateVLANDetails($vlan, $lastId = false)
 function updateSettings($settings)
 {
     global $database;
+    
+    filter_user_input ($settings, true, true, false);
         
     /* first update request */
     $query    = 'update `settings` set ' . "\n";
@@ -1801,6 +1803,7 @@ function updateSettings($settings)
     $query   .= '`pingStatus` 	  	  = "'. $settings['pingStatus'] .'", ' . "\n"; 
     $query   .= '`scanPingPath` 	  = "'. $settings['scanPingPath'] .'", ' . "\n"; 
     $query   .= '`scanMaxThreads` 	  = "'. $settings['scanMaxThreads'] .'", ' . "\n"; 
+    $query   .= '`prettyLinks` 	  	  = "'. $settings['prettyLinks'] .'", ' . "\n"; 
     $query   .= '`defaultLang` 	  	  = "'. $settings['defaultLang'] .'" ' . "\n"; 
 	$query   .= 'where id = 1;' . "\n"; 
 

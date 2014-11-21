@@ -19,7 +19,7 @@ $custom = getCustomFields('devices');
 <hr>
 <div class="btn-group">
 	<button class='btn btn-sm btn-default editSwitch' data-action='add'   data-switchid='' style='margin-bottom:10px;'><i class='fa fa-plus'></i> <?php print _('Add device'); ?></button>
-	<a href="administration/manageDeviceTypes/" class="btn btn-sm btn-default"><i class="fa fa-tablet"></i> <?php print _('Manage device types'); ?></a>
+	<a href="<?php print create_link("administration", "manageDeviceTypes"); ?>" class="btn btn-sm btn-default"><i class="fa fa-tablet"></i> <?php print _('Manage device types'); ?></a>
 </div>
 
 <?php

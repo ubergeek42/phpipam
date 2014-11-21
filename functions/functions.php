@@ -27,7 +27,7 @@ $cache = array();
 /**
  * Translations
  *
- * 	recode .po to .mo > msgfmt env_cp.po -o env_cp.mo
+ * 	recode .po to .mo > msgfmt phpipam.po -o phpipam.mo
  *	lang codes locale -a
  */
  
@@ -51,7 +51,7 @@ if(!function_exists(gettext)) {
 $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NULL, false);
 
 /* set latest version */
-define("VERSION", "1.05");									//version changes if database structure changes
+define("VERSION", "1.06");									//version changes if database structure changes
 /* set latest revision */
 define("REVISION", "001");									//revision always changes, verision only if database structure changes
 /* set last possible upgrade */

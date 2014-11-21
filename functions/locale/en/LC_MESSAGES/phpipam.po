@@ -4,7 +4,7 @@
 # miha petkovsek <miha.petkovsek@gmail.com>, 2013.
 #
 
-# "Project-Id-Version: 1.04.001\n"
+# "Project-Id-Version: 1.06.001\n"
 # "Report-Msgid-Bugs-To: Miha Petkovsek <miha.petkovsek@gmail.com>\n"
 # "POT-Creation-Date: 2013-04-02 14:33+0200\n"
 # "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -4664,4 +4664,11 @@ msgstr ""
 
 #: site/login/loginCheck.php
 msgid "You have been blocked for 5 minutes due to authentication failures"
+msgstr ""
+
+#: site/admin/settings.php
+msgid "Use nicer URL structure"
+msgstr ""
+
+msgid "Please note that mod_rewrite is required with appropriate settings if pretified links are selected."
 msgstr ""

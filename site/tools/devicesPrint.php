@@ -142,7 +142,7 @@ if(sizeof($devices) == 0) {
 		}
 	}
 	
-	print '	<td class="actions"><a href="tools/devices/hosts/'.$device['id'].'/" class="btn btn-sm btn-default"><i class="fa fa-angle-right"></i> '._('Show all hosts').'</a></td>';	
+	print '	<td class="actions"><a href="'.create_link("tools","devices","hosts",$device['id']).'" class="btn btn-sm btn-default"><i class="fa fa-angle-right"></i> '._('Show all hosts').'</a></td>';	
 	print '</tr>'. "\n";
 	
 	}
@@ -167,7 +167,7 @@ if(sizeof($devices) == 0) {
 			print "<td class='hidden-sm hidden-xs hidden-md'></td>";
 		}
 	}
-	print '	<td class="actions"><a href="tools/devices/hosts/0/" class="btn btn-sm btn-default"><i class="fa fa-angle-right"></i> '._('Show all hosts').'</a></td>';		
+	print '	<td class="actions"><a href="'.create_link("tools","devices","hosts","0").'" class="btn btn-sm btn-default"><i class="fa fa-angle-right"></i> '._('Show all hosts').'</a></td>';		
 	print '</tr>'. "\n";	
 }	
 

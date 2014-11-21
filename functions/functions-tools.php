@@ -500,21 +500,21 @@ function printToolsSubnets( $subnets, $custom )
 				$html[] = "<tr>";
 				# folder
 				if($option['value']['isFolder']==1) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> <a href='folder/".$option['value']['sectionId']."/".$option['value']['id']."/'>$description</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> <a href='".create_link("folder",$option['value']['sectionId'],$option['value']['id'])."'>$description</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-folder-open'></i> $description</td>";
 				} 
 				else {
 				if($count==1) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-folder-open-o'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-folder-open-o'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-folder-open-o'></i> $description</td>";	
 				} else {
 					# last?
 					if(!empty( $children[$option['value']['id']])) {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-folder-open-o'></i> $description</td>";	
 					}
 					else {
-					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 					$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-angle-right'></i> $description</td>";							
 					}
 				}
@@ -530,9 +530,9 @@ function printToolsSubnets( $subnets, $custom )
 				else {
 					$master = getSubnetDetailsById ($option['value']['masterSubnetId']);
 					if($master['isFolder'])
-						$html[] = "	<td><i class='fa fa-gray fa-folder-open-o'></i> <a href='subnets/".$option['value']['sectionId']."/$master[id]/'>$master[description]</a></td>" . "\n";
+						$html[] = "	<td><i class='fa fa-gray fa-folder-open-o'></i> <a href='".create_link("subnets",$option['value']['sectionId'],$master['id'])."'>$master[description]</a></td>" . "\n";
 					else {
-						$html[] = "	<td><a href='subnets/".$option['value']['sectionId']."/$master[id]/'>".transform2long($master['subnet']) .'/'. $master['mask'] .'</a></td>' . "\n";
+						$html[] = "	<td><a href='".create_link("folder",$option['value']['sectionId'],$master['id'])."'>".transform2long($master['subnet']) .'/'. $master['mask'] .'</a></td>' . "\n";
 					}
 				}
 				

@@ -54,7 +54,7 @@ else
 		
 		foreach($subsections as $ss) {
 			print "<tr>";
-			print "	<td><i class='fa fa-gray fa-folder'></i> <a href='subnets/$ss[id]/' rel='tooltip' data-placement='right' title='$ss[description]'>$ss[name]</a></td>";
+			print "	<td><i class='fa fa-gray fa-folder'></i> <a href='".create_link("subnets",$ss['id'])."' rel='tooltip' data-placement='right' title='$ss[description]'>$ss[name]</a></td>";
 			print "</tr>";
 		}
 		
@@ -87,7 +87,7 @@ else
     	$mSection = getSectionDetailsById ($sectionName['masterSection']);
     	
 	    print "<div class='subnets' style='padding-top:10px;'>";
-	    print "	<a href='subnets/$mSection[id]/'><i class='fa fa-gray fa-angle-left fa-pad-left'></i> "._('Back to')." $mSection[name]</a><hr>";
+	    print "	<a href='".create_link("subnets",$mSection['id'])."'><i class='fa fa-gray fa-angle-left fa-pad-left'></i> "._('Back to')." $mSection[name]</a><hr>";
 	    print "</div>";
     }
     

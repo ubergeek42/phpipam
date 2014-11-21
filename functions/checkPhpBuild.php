@@ -47,13 +47,13 @@ if (sizeof($missingExt) != 1) {
     $error   = "<html>";
     $error  .= "<head>";
     $error  .= "<base href='$url' />";
-    $error  .= '<link rel="stylesheet" type="text/css" href="/css/bootstrap/bootstrap.min.css">';
-	$error  .= '<link rel="stylesheet" type="text/css" href="/css/bootstrap/bootstrap-custom.css">';
+    $error  .= '<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css">';
+	$error  .= '<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-custom.css">';
 	$error  .= "</head>";
     $error  .= "<body style='margin:0px;'>";
     $error  .= '<div id="header">';
     $error  .= '<div class="hero-unit">';
-	$error  .= '<a href="/">phpIPAM error</a>';
+	$error  .= '<a href="'.create_link(null).'">phpIPAM error</a>';
 	$error  .= '</div>';
 	$error  .= '</div>';
     /* error */

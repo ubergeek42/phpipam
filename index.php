@@ -116,7 +116,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <div class="jqueryError">
 	<div class='alert alert-danger' style="width:400px;margin:auto">jQuery error!</div>
 	<div class="jqueryErrorText"></div><br>
-	<a href="" class="btn btn-sm btn-default" id="hideError" style="margin-top:0px;">Hide</a>
+	<a href="<?php print create_link(null); ?>" class="btn btn-sm btn-default" id="hideError" style="margin-top:0px;">Hide</a>
 </div>
 
 <!-- Popups -->
@@ -150,7 +150,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 	<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
 		<div class="hero-pusher hidden-xs hidden-sm"></div>
 		<div class="hero-unit">
-			<a href=""><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
+			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
 		</div>
 	</div>
 	
@@ -239,11 +239,11 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 					 || $_GET['page'] == "vrf"	   || $_GET['page'] == "folder")								{ include_once("site/ipaddr/ipAddressSwitch.php"); }
 				# tools		
 				else if ($_GET['page'] == "tools" && !isset($_GET['section']))									{ include_once("site/tools/showAll.php"); }
-				else if ($_GET['page'] == "tools")																{ include_once("site/tools/$_GET[section].php"); }
+				else if ($_GET['page'] == "tools")																{ if(!file_exists("site/tools/$_GET[section].php")) { header("Location: ".create_link("error","404")); } else include_once("site/tools/$_GET[section].php"); }
 				# admin
 				else if ($_GET['page'] == "administration"  && !isset($_GET['section']))						{ include_once("site/admin/showAll.php"); }    	
 				else if ($_GET['page'] == "administration"  && ($_GET['subnetId']=="sectionChangelog"))			{ include_once("site/admin/sectionChangelog.php"); }  
-				else if ($_GET['page'] == "administration")														{ include_once("site/admin/$_GET[section].php"); }  	
+				else if ($_GET['page'] == "administration")														{ if(!file_exists("site/admin/$_GET[section].php")) { header("Location: ".create_link("error","404")); } else include_once("site/admin/$_GET[section].php"); }  	
 			print "</div>";
 			print "</td>";
 			
@@ -263,6 +263,9 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
 <!-- end wrapper -->
 </div>
+
+<!-- weather prettyLinks are user, for JS! -->
+<div id="prettyLinks" style="display:none"><?php print $settings['prettyLinks']; ?></div>
 
 <!-- Page footer -->
 <div class="footer"><?php include('site/footer.php'); ?></div>

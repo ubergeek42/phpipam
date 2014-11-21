@@ -48,8 +48,8 @@ else {
 		if($permission > 0) {
 		
 			print "<tr>";
-		    print "	<td class='small description'><a href='subnets/$_REQUEST[section]/$slave[id]/'>$slave[description]</a></td>";
-		    print "	<td><a href='subnets/$_REQUEST[section]/$slave[id]/'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
+		    print "	<td class='small description'><a href='".create_link("subnets",$_GET['section'],$slave['id'])."'>$slave[description]</a></td>";
+		    print "	<td><a href='".create_link("subnets",$_GET['section'],$slave['id'])."'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
 
 			# host check
 			if($slave['pingSubnet'] == 1) 				{ print '<td class="allowRequests small hidden-xs hidden-sm"><i class="fa fa-gray fa-check"></i></td>'; }

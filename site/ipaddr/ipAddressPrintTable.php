@@ -292,7 +292,7 @@ else {
 					    $hTooltip = "";
 				    }   
 				    			    
-				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/ipdetails/".$ipaddress[$n]['id']."/'>".Transform2long( $ipaddress[$n]['ip_addr']);
+				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='".create_link("subnets",$_REQUEST['section'],$_REQUEST['subnetId'],"ipdetails",$ipaddress[$n]['id'])."'>".Transform2long( $ipaddress[$n]['ip_addr']);
 				    if(in_array('state', $setFields)) 				{ print reformatIPState($ipaddress[$n]['state']); }	
 				    print "</td>";
 		
@@ -376,7 +376,7 @@ else {
 					{
 						print "<a class='edit_ipaddress   btn btn-xs btn-default modIPaddr' data-action='edit'   data-subnetId='".$ipaddress[$n]['subnetId']."' data-id='".$ipaddress[$n]['id']."' href='#' >															<i class='fa fa-gray fa-pencil'></i></a>";
 						print "<a class='ping_ipaddress   btn btn-xs btn-default' data-subnetId='".$ipaddress[$n]['subnetId']."' data-id='".$ipaddress[$n]['id']."' href='#' rel='tooltip' data-container='body' title='"._('Check avalibility')."'>					<i class='fa fa-gray fa-cogs'></i></a>"; 
-						print "<a class='search_ipaddress btn btn-xs btn-default         "; if(strlen($dnsResolved['name']) == 0) { print "disabled"; } print "' href='tools/search/$dnsResolved[name]' "; if(strlen($dnsResolved['name']) != 0)   { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
+						print "<a class='search_ipaddress btn btn-xs btn-default         "; if(strlen($dnsResolved['name']) == 0) { print "disabled"; } print "' href='".create_link("tools","search",$dnsResolved['name'])."' "; if(strlen($dnsResolved['name']) != 0)   { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
 						print "<a class='mail_ipaddress   btn btn-xs btn-default          ' href='#' data-id='".$ipaddress[$n]['id']."' rel='tooltip' data-container='body' title='"._('Send mail notification')."'>																																		<i class='fa fa-gray fa-envelope-o'></i></a>";
 						print "<a class='delete_ipaddress btn btn-xs btn-default modIPaddr' data-action='delete' data-subnetId='".$ipaddress[$n]['subnetId']."' data-id='".$ipaddress[$n]['id']."' href='#' id2='".Transform2long($ipaddress[$n]['ip_addr'])."'>		<i class='fa fa-gray fa-times'>  </i></a>";											
 					}
@@ -395,7 +395,7 @@ else {
 					{
 						print "<a class='edit_ipaddress   btn btn-xs btn-default disabled' rel='tooltip' data-container='body' title='"._('Edit IP address details (disabled)')."'>													<i class='fa fa-gray fa-pencil'></i></a>";
 						print "<a class='				   btn btn-xs btn-default disabled'  data-id='".$ipaddress[$n]['id']."' href='#' rel='tooltip' data-container='body' title='"._('Check avalibility')."'>					<i class='fa fa-gray fa-cogs'></i></a>";
-						print "<a class='search_ipaddress btn btn-xs btn-default         "; if(strlen($dnsResolved['name']) == 0) { print "disabled"; } print "' href='tools/search/$dnsResolved[name]' "; if(strlen($dnsResolved['name']) != 0) { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
+						print "<a class='search_ipaddress btn btn-xs btn-default         "; if(strlen($dnsResolved['name']) == 0) { print "disabled"; } print "' href='".create_link("tools","search",$dnsResolved['name'])."' "; if(strlen($dnsResolved['name']) != 0) { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
 						print "<a class='mail_ipaddress   btn btn-xs btn-default          ' href='#' data-id='".$ipaddress[$n]['id']."' rel='tooltip' data-container='body' title='"._('Send mail notification')."'>				<i class='fa fa-gray fa-envelope-o'></i></a>";
 						print "<a class='delete_ipaddress btn btn-xs btn-default disabled' rel='tooltip' data-container='body' title='"._('Delete IP address (disabled)')."'>														<i class='fa fa-gray fa-times'></i></a>";				
 					}

@@ -4713,3 +4713,10 @@ msgstr "Shrani geslo"
 #: site/login/loginCheck.php
 msgid "You have been blocked for 5 minutes due to authentication failures"
 msgstr "Zaradi neuspesne avtentikacije ste bili blokirani za 5 minut"
+
+#: site/admin/settings.php
+msgid "Use nicer URL structure"
+msgstr "Uporabi lepšo strukturo URL zapisa"
+
+msgid "Please note that mod_rewrite is required with appropriate settings if pretified links are selected."
+msgstr "Za uporabo lepših URL zapisov je zahtevan mod_rewrite modul s pravilnimi nastavitvami."

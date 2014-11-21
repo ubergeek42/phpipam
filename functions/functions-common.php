@@ -29,7 +29,45 @@ function CheckReferrer()
 
 
 /**
- * protect against injections\
+ * create links function
+ *
+ *	if rewrite is enabled in settings use rewrite, otherwise ugly links
+ *
+ *	levels: page=$1&section=$2&subnetId=$3&sPage=$4&ipaddrid=$5
+ */
+function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null )
+{
+	# get settings
+	global $settings;
+	if(!isset($settings)) { $settings = getAllSettings(); }
+	
+	# set rewrite
+	if($settings['prettyLinks']=="Yes") {
+		if(!is_null($l5))		{ $link = "$l1/$l2/$l3/$l4/$l5/"; }
+		elseif(!is_null($l4))	{ $link = "$l1/$l2/$l3/$l4/"; }
+		elseif(!is_null($l3))	{ $link = "$l1/$l2/$l3/"; }
+		elseif(!is_null($l2))	{ $link = "$l1/$l2/"; }
+		elseif(!is_null($l1))	{ $link = "$l1/"; }
+		else					{ $link = "/"; }
+	}
+	# normal
+	else {
+		if(!is_null($l5))		{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4&ipaddrid=$l5"; }
+		elseif(!is_null($l4))	{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4"; }
+		elseif(!is_null($l3))	{ $link = "?page=$l1&section=$l2&subnetId=$l3"; }
+		elseif(!is_null($l2))	{ $link = "?page=$l1&section=$l2"; }
+		elseif(!is_null($l1))	{ $link = "?page=$l1"; }
+		else					{ $link = ""; }
+	}
+	
+	# result
+	return $link;
+}
+
+
+
+/**
+ * protect against injections
  *
  *	sql protects against SQL injections (mysql_escape_string)
  *	xss protects agains XSS injections (strip_tags)
@@ -156,8 +194,8 @@ function isUserAuthenticated($die = true)
     	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
     	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# die
-    	if($die) { die('<div class="alert alert-danger"><a href="'.$url.'login/">'._('Please login first').'!</a></div>'); }
-    	else	 { die("<div class='pHeader'>"._('Error')."</div><div class='pContent'><div class='alert alert-danger'>"._('Please login first')."!</div></div><div class='pFooter'><a class='btn btn-sm btn-default' href='".$url."login/'>"._('Login')."</a>"); }
+    	if($die) { die('<div class="alert alert-danger"><a href="'.$url.create_link("login").'">'._('Please login first').'!</a></div>'); }
+    	else	 { die("<div class='pHeader'>"._('Error')."</div><div class='pContent'><div class='alert alert-danger'>"._('Please login first')."!</div></div><div class='pFooter'><a class='btn btn-sm btn-default' href='".$url.create_link("login")."'>"._('Login')."</a>"); }
     }
     /* close session */
     session_write_close();
@@ -182,7 +220,7 @@ function isUserAuthenticatedNoAjax ()
     	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
     	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# redirect
-    	header("Location:".$url."login/");    
+    	header("Location:".$url.create_link("login"));    
     }
     /* close session */
     session_write_close();    
@@ -208,7 +246,7 @@ function checkAdmin ($die = true, $startSession = true)
     	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
     	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# redirect
-    	header("Location:".$url."login/");  
+    	header("Location:".$url.create_link("login"));  
 	}
 
 	/* set query if database exists! */
@@ -874,7 +912,6 @@ function getAllSettings()
 	# check if it already exists
 	if(isset($settings)) {
 		return $settings;
-		print_r($settings);
 	} 
 	else {
 
@@ -1150,17 +1187,17 @@ function get_menu_html( $subnets, $rootId = 0 )
 					# folder
 					if($option['value']['isFolder'] == 1) {
 						$html[] = '<li class="folderF folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-sfolder fa-folder'.$openf.'" rel="tooltip" data-placement="right" data-html="true" title="'._('Folder contains more subnets').'<br>'._('Click on folder to open/close').'"></i>';
-						$html[] = '<a href="folder/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/">'.$option['value']['description'].'</a>'; 				
+						$html[] = '<a href="'.create_link("folder",$option['value']['sectionId'],$option['value']['id']).'">'.$option['value']['description'].'</a>'; 				
 					}
 					# print name
 					elseif($option['value']['showName'] == 1) {
 						$html[] = '<li class="folder folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-folder-'.$open.'-o" rel="tooltip" data-placement="right" data-html="true" title="'._('Subnet contains more subnets').'<br>'._('Click on folder to open/close').'"></i>';
-						$html[] = '<a href="subnets/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/" rel="tooltip" data-placement="right" title="'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'">'.$option['value']['description'].'</a>'; 				
+						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'">'.$option['value']['description'].'</a>'; 				
 					}
 					# print subnet
 					else {
 						$html[] = '<li class="folder folder-'.$open.' '.$active.'""><i class="fa fa-gray fa-folder-'.$open.'-o" rel="tooltip" data-placement="right" data-html="true" title="'._('Subnet contains more subnets').'<br>'._('Click on folder to open/close').'"></i>';
-						$html[] = '<a href="subnets/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/" rel="tooltip" data-placement="right" title="'.$option['value']['description'].'">'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'</a>'; 										
+						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.$option['value']['description'].'">'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'</a>'; 										
 					}
 
 					# print submenu
@@ -1177,17 +1214,17 @@ function get_menu_html( $subnets, $rootId = 0 )
 					# folder - opened
 					if($option['value']['isFolder'] == 1) {
 						$html[] = '<li class="leaf '.$active.'"><i class="fa fa-gray fa-sfolder fa-folder'.$openf.'"></i>';
-						$html[] = '<a href="folder/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/">'.$option['value']['description'].'</a></li>';
+						$html[] = '<a href="'.create_link("folder",$option['value']['sectionId'],$option['value']['id']).'">'.$option['value']['description'].'</a></li>';
 					}
 					# print name
 					elseif($option['value']['showName'] == 1) {				
 						$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-						$html[] = '<a href="subnets/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/" rel="tooltip" data-placement="right" title="'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'">'.$option['value']['description'].'</a></li>';
+						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'">'.$option['value']['description'].'</a></li>';
 					}
 					# print subnet
 					else {
 						$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-						$html[] = '<a href="subnets/'.$option['value']['sectionId'].'/'.$option['value']['id'].'/" rel="tooltip" data-placement="right" title="'.$option['value']['description'].'">'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'</a></li>';					
+						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.$option['value']['description'].'">'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'</a></li>';					
 					}
 				}
 		}
@@ -1233,7 +1270,7 @@ function get_menu_vlan( $vlans, $sectionId )
 			
 			# new item
 			$html[] = '<li class="folder folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-folder-'.$open.'-o" rel="tooltip" data-placement="right" data-html="true" title="'._('VLAN contains subnets').'.<br>'._('Click on folder to open/close').'"></i>';
-			$html[] = '<a href="vlan/'.$sectionId.'/'.$item['vlanId'].'/" rel="tooltip" data-placement="right" title="'.$item['description'].'">'.$item['number'].' ('.$item['name'].')</a>'; 				
+			$html[] = '<a href="'.create_link("vlan",$sectionId,$item['vlanId']).'" rel="tooltip" data-placement="right" title="'.$item['description'].'">'.$item['number'].' ('.$item['name'].')</a>'; 				
 
 			# fetch all subnets in VLAN
 			$subnets = getAllSubnetsInSectionVlan ($item['vlanId'], $sectionId);
@@ -1258,11 +1295,11 @@ function get_menu_vlan( $vlans, $sectionId )
 						# check if showName is set
 						if($subnet['showName'] == 1) {
 							$html[] = '<li class="leaf '.$active.'"><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-							$html[] = '<a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/" rel="tooltip" data-placement="right" title="'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'">'.$subnet['description'].'</a></li>';						
+							$html[] = '<a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id']).'" rel="tooltip" data-placement="right" title="'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'">'.$subnet['description'].'</a></li>';						
 						}
 						else {
 							$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-							$html[] = '<a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/" rel="tooltip" data-placement="right" title="'.$subnet['description'].'">'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'</a></li>';												
+							$html[] = '<a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id']).'" rel="tooltip" data-placement="right" title="'.$subnet['description'].'">'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'</a></li>';												
 						}
 					
 					}
@@ -1315,7 +1352,7 @@ function get_menu_vrf( $vrfs, $sectionId )
 			
 			# new item
 			$html[] = '<li class="folder folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-folder-'.$open.'-o" rel="tooltip" data-placement="right" data-html="true" title="'._('VRF contains subnets').'.<br>'._('Click on folder to open/close').'"></i>';
-			$html[] = '<a href="vrf/'.$sectionId.'/'.$item['vrfId'].'/" rel="tooltip" data-placement="right" title="'.$item['description'].'">'.$item['name'].'</a>'; 				
+			$html[] = '<a href="'.create_link("vrf",$sectionId,$item['vrfId']).'" rel="tooltip" data-placement="right" title="'.$item['description'].'">'.$item['name'].'</a>'; 				
 
 			# fetch all subnets in VLAN
 			$subnets = getAllSubnetsInSectionVrf ($item['vrfId'], $sectionId);
@@ -1340,11 +1377,11 @@ function get_menu_vrf( $vrfs, $sectionId )
 						# check if showName is set
 						if($subnet['showName'] == 1) {
 							$html[] = '<li class="leaf '.$active.'"><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-							$html[] = '<a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/" rel="tooltip" data-placement="right" title="'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'">'.$subnet['description'].'</a></li>';						
+							$html[] = '<a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id']).'" rel="tooltip" data-placement="right" title="'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'">'.$subnet['description'].'</a></li>';						
 						}
 						else {
 							$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
-							$html[] = '<a href="subnets/'.$subnet['sectionId'].'/'.$subnet['id'].'/" rel="tooltip" data-placement="right" title="'.$subnet['description'].'">'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'</a></li>';												
+							$html[] = '<a href="'.create_link("subnets",$subnet['sectionId'],$subnet['id']).'" rel="tooltip" data-placement="right" title="'.$subnet['description'].'">'.Transform2long($subnet['subnet']).'/'.$subnet['mask'].'</a></li>';												
 						}
 					
 					}
@@ -1456,17 +1493,17 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 					if($count==1) {
 						# is folder?
 						if($option['value']['isFolder']==1) {
-						$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-pad-right-3 fa-folder-open'></i> <a href='folder/".$option['value']['sectionId']."/".$option['value']['id']."/'> $description</a></td>";						
+						$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-pad-right-3 fa-folder-open'></i> <a href='".create_link("folder",$option['value']['sectionId'],$option['value']['id'])."'> $description</a></td>";						
 						$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-sfolder fa-pad-right-3 fa-folder-open'></i>  $description</td>";						
 	
 						}
 						else {
 							# last?
 							if(!empty( $children[$option['value']['id']])) {
-								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i> $description</td>";						
 							} else {
-								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i><a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i><a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i> $description</td>";						
 							}
 					}
@@ -1474,17 +1511,17 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 						# is folder?
 						if($option['value']['isFolder']==1) {
 							# last?
-								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open'></i> <a href='folder/".$option['value']['sectionId']."/".$option['value']['id']."/'> $description</a></td>";						
+								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open'></i> <a href='".create_link("folder",$option['value']['sectionId'],$option['value']['id'])."'> $description</a></td>";						
 								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open'></i> $description</td>";						
 						}
 						else {
 							# last?
 							if(!empty( $children[$option['value']['id']])) {							
-								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i> <a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i> <a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-folder-open-o'></i> $description</td>";						
 							}
 							else {
-								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i> <a href='subnets/".$option['value']['sectionId']."/".$option['value']['id']."/'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
+								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i> <a href='".create_link("subnets",$option['value']['sectionId'],$option['value']['id'])."'>  ".transform2long($option['value']['subnet']) ."/".$option['value']['mask']."</a></td>";
 								$html[] = "	<td class='level$count'><span class='structure' style='padding-left:$padding; margin-left:$margin;'></span><i class='fa fa-gray fa-pad-right-3 fa-angle-right'></i> $description</td>";						
 								
 							}
@@ -1636,19 +1673,19 @@ function printBreadcrumbs ($req)
 			if(is_numeric($req['section']))	{ $section = getSectionDetailsById($req['section']); }					# if id is provided
 			else							{ $section = getSectionDetailsByName($req['section']); }				# if name is provided
 			
-			print "	<li><a href='subnets/$section[id]/'>$section[name]</a> <span class='divider'></span></li>";	# section name
+			print "	<li><a href='".create_link("subnets",$section['id'])."'>$section[name]</a> <span class='divider'></span></li>";	# section name
 			
 			foreach($parents as $parent) {
 			$subnet = getSubnetDetailsById($parent);
 			if($subnet['isFolder']==1) {
-				print "	<li><a href='subnets/$section[id]/$parent/'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
+				print "	<li><a href='".create_link("subnets",$section['id'],$parent)."'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
 			} else {
-				print "	<li><a href='subnets/$section[id]/$parent/'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";								# subnets in between				
+				print "	<li><a href='".create_link("subnets",$section['id'],$parent)."'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";								# subnets in between				
 			}
 			}
 			# parent subnet
 			$subnet = getSubnetDetailsById($req['subnetId']);
-			print "	<li><a href='subnets/$section[id]/$subnet[id]/'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";																# active subnet
+			print "	<li><a href='".create_link("subnets",$section['id'],$subnet['id'])."'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";																# active subnet
 			# ip
 			$ip = getIpAddrDetailsById($req['ipaddrid']);
 			print "	<li class='active'>$ip[ip_addr]</li>";																# IP address
@@ -1668,14 +1705,14 @@ function printBreadcrumbs ($req)
 			if(is_numeric($req['section']))	{ $section = getSectionDetailsById($req['section']); }					# if id is provided
 			else							{ $section = getSectionDetailsByName($req['section']); }				# if name is provided
 			
-			print "	<li><a href='subnets/$section[id]/'>$section[name]</a> <span class='divider'></span></li>";	# section name
+			print "	<li><a href='".create_link("subnets",$section['id'])."'>$section[name]</a> <span class='divider'></span></li>";	# section name
 			
 			foreach($parents as $parent) {
 			$subnet = getSubnetDetailsById($parent);
 			if($subnet['isFolder']==1) {
-				print "	<li><a href='subnets/$section[id]/$parent/'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
+				print "	<li><a href='".create_link("subnets",$section['id'],$parent)."'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
 			} else {
-				print "	<li><a href='subnets/$section[id]/$parent/'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";								# subnets in between				
+				print "	<li><a href='".create_link("subnets",$section['id'],$parent)."'>$subnet[description] (".Transform2long($subnet['subnet']).'/'.$subnet['mask'].")</a> <span class='divider'></span></li>";								# subnets in between				
 			}
 			}
 			$subnet = getSubnetDetailsById($req['subnetId']);
@@ -1696,11 +1733,11 @@ function printBreadcrumbs ($req)
 			if(is_numeric($req['section']))	{ $section = getSectionDetailsById($req['section']); }					# if id is provided
 			else							{ $section = getSectionDetailsByName($req['section']); }				# if name is provided
 			
-			print "	<li><a href='subnets/$section[id]/'>$section[name]</a> <span class='divider'></span></li>";	# section name
+			print "	<li><a href='".create_link("subnets",$section['id'])."'>$section[name]</a> <span class='divider'></span></li>";	# section name
 			
 			foreach($parents as $parent) {
 			$subnet = getSubnetDetailsById($parent);
-			print "	<li><a href='subnets/$section[id]/$parent/'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
+			print "	<li><a href='".create_link("subnets",$section['id'],$parent)."'><i class='icon-folder-open icon-gray'></i> $subnet[description]</a> <span class='divider'></span></li>";								# subnets in between
 			}
 			$subnet = getSubnetDetailsById($req['subnetId']);
 			print "	<li class='active'>$subnet[description]</li>";																# active subnet
@@ -1716,7 +1753,7 @@ function printBreadcrumbs ($req)
 	else if ($req['page'] == "tools") {
 		if(isset($req['tpage'])) {
 			print "<ul class='breadcrumb'>";
-			print "	<li><a href='tools/'>"._('Tools')."</a> <span class='divider'></span></li>";
+			print "	<li><a href='".create_link("tools")."'>"._('Tools')."</a> <span class='divider'></span></li>";
 			print "	<li class='active'>$req[tpage]></li>";
 			print "</ul>";
 		}
@@ -1741,14 +1778,14 @@ function print_pagination ($page, $pages)
 	
 	//previous - disabled?
 	if($page == 1)			{ print "<li class='disabled'><a href='#'>&laquo;</a></li>"; }
-	else					{ print "<li>				  <a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($page-1)."/'>&laquo;</a></li>"; }
+	else					{ print "<li>				<a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page".($page-1))."'>&laquo;</a></li>"; }
 	
 	# less than 8
 	if($pages<8) {
 		for($m=1; $m<=$pages; $m++) {
 			//active?
-			if($page==$m)	{ print "<li class='active'><a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
-			else			{ print "<li>				<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+			if($page==$m)	{ print "<li class='active'><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
+			else			{ print "<li>				<a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
 		}
 	}
 	# more than seven
@@ -1757,39 +1794,39 @@ function print_pagination ($page, $pages)
 		if($page<=3) {
 			for($m=1; $m<=5; $m++) {
 				//active?
-				if($page==$m)	{ print "<li class='active'><a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
-				else			{ print "<li>				<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				if($page==$m)	{ print "<li class='active'><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
+				else			{ print "<li>				<a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
 			}	
 			print "<li class='disabled'><a href='#'>...</a></li>";	
-			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$pages/'>$pages</a></li>";				
+			print "<li>				    <a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$pages")."'>$pages</a></li>";				
 		}
 		//last pages
 		elseif($page>$pages-4) {
-			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page1/'>1</li>";
+			print "<li>				    <a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page1")."'>1</li>";
 			print "<li class='disabled'><a href='#'>...</a></li>";
 			for($m=$pages-4; $m<=$pages; $m++) {
 				//active?
-				if($page==$m)	{ print "<li class='active'><a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
-				else			{ print "<li>				<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				if($page==$m)	{ print "<li class='active'><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
+				else			{ print "<li>				<a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
 			}	
 		}
 		//page more than 2
 		else {
-			print "<li>				    <a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page1/'>1</li>";
+			print "<li>				    <a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page1")."'>1</li>";
 			print "<li class='disabled'><a href='#'>...</a></li>";
 			for($m=$page-1; $m<=$page+1; $m++) {
 				//active?
-				if($page==$m)	{ print "<li class='active'><a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
-				else			{ print "<li>				<a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$m/'>$m</a></li>"; }
+				if($page==$m)	{ print "<li class='active'><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
+				else			{ print "<li>				<a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$m")."'>$m</a></li>"; }
 			}
 			print "<li class='disabled'><a href='#'>...</a></li>";	
-			print "<li><a href='/subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page$pages/'>$pages</li>";				
+			print "<li><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page$pages")."'>$pages</li>";				
 		}
 	}
 	
 	//next - disabled?
 	if($page == $pages)		{ print "<li class='disabled'><a href='#'>&raquo;</a></li>"; }
-	else					{ print "<li>				  <a href='subnets/$_REQUEST[section]/$_REQUEST[subnetId]/page".($page+1)."/'>&raquo;</a></li>"; }			
+	else					{ print "<li>				  <a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"page".($page+1))."'>&raquo;</a></li>"; }			
 	
 	print "</ul>";
 	print "</div>";

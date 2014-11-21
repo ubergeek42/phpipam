@@ -25,7 +25,7 @@ function hideSpinner() {
 
 /*	Login redirect function if success
 ****************************************/
-function loginRedirect() { window.location="dashboard/"; }
+function loginRedirect() { window.location="/"; }
 
 /*	submit login 
 *********************/

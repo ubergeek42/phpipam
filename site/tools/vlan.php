@@ -21,7 +21,7 @@ print "<h4>"._('Available VLANs:')."</h4>";
 print "<hr>";
 
 if($admin) {
-	print "<a class='btn btn-sm btn-default' href='administration/manageVLANs/' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
+	print "<a class='btn btn-sm btn-default' href='".create_link("administration","manageVLANs")."' data-action='add'  data-switchid='' style='margin-bottom:10px;'><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
 }
 
 # table
@@ -87,10 +87,10 @@ foreach ($vlans as $vlan) {
 
 		if ($vlan['subnetId'] != null) {
 			# subnet
-			print " <td><a href='subnets/$section[id]/$vlan[subnetId]/'>". transform2long($vlan['subnet']) ."/$vlan[mask]</a></td>";
+			print " <td><a href='".create_link("subnets",$section['id'],$vlan['subnetId'])."'>". transform2long($vlan['subnet']) ."/$vlan[mask]</a></td>";
 
 			# section
-			print " <td><a href='subnets/$section[id]/'>$section[name]</a></td>";
+			print " <td><a href='".create_link("subnets",$section['id'])."'>$section[name]</a></td>";
 
 			# details
 			if( (!$masterSubnet) || (!subnetContainsSlaves($vlan['subnetId']))) {

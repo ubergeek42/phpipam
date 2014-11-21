@@ -24,10 +24,10 @@ $userDetails = getActiveUserDetails ();
 	</div>
 
 	<!-- settings -->
-	<a href="tools/userMenu/"><?php print _('Hi'); ?>,    <?php print $userDetails['real_name'];  ?></a><br>
+	<a href="<?php print create_link("tools","userMenu"); ?>"><?php print _('Hi'); ?>,    <?php print $userDetails['real_name'];  ?></a><br>
 	<span class="info"><?php print _('Logged in as'); ?>  <?php print "&nbsp;"._("$userDetails[role]"); ?></span><br>
 	
 	<!-- logout -->
-	<a  href="logout/"><?php print _('Logout'); ?>  <i class="fa fa-pad-left fa-sign-out"></i></a>
+	<a  href="<?php print create_link("logout"); ?>"><?php print _('Logout'); ?>  <i class="fa fa-pad-left fa-sign-out"></i></a>
 	
 </div>

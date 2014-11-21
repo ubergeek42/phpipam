@@ -1,16 +1,12 @@
 version - 1.1
 
-	+ Rewrite all links :/
+	+ Per-admin changelog mailing
 
 	+ Run Discovery from Cron
 	
 	+ API !
-	
-	+ Per-admin changelog mailing
 		
 	+ delete confirmation
-	
-	+ search also covers sections
 	
 	+ Option in administration to not display free range
 		https://sourceforge.net/p/phpipam/feature-requests/204/

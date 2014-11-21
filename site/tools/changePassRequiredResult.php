@@ -25,5 +25,5 @@ $_POST['ipampassword1'] = crypt_user_pass($_POST['ipampassword1']);
 
 /* all good, update password! */
 if(!update_user_password($user['id'],$_POST['ipampassword1']))	{ }
-else															{ print "<div class='alert alert-success'>Hi, $user[real_name], your password was updated. <a class='btn btn-sm btn-default' href='dashboard/'>Dashboard</a>"; }
+else															{ print "<div class='alert alert-success'>Hi, $user[real_name], your password was updated. <a class='btn btn-sm btn-default' href='".create_link("dashboard")."'>Dashboard</a>"; }
 ?>

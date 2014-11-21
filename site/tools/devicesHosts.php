@@ -81,7 +81,7 @@ print "<table id='switchMainTable' class='devices table table-striped table-top 
 			print "<tr>";
 			print "	<td class='ip'>".transform2long($ip['ip_addr'])."/$subnet[mask]</td>";
 			print "	<td class='port'>$ip[port]</td>";
-			print "	<td class='subnet'><a href='subnets/$section[id]/$subnet[id]/'>$subnet[description]</a></td>";
+			print "	<td class='subnet'><a href='".create_link("subnets",$section['id'],$subnet['id'])."'>$subnet[description]</a></td>";
 			print "	<td class='description'>$ip[description]</td>";
 
 			# print info button for hover

@@ -83,13 +83,13 @@ else {
 			
 			# subnet, section or ip address
 			if($l['ctype']=="IP address")	{
-				print "	<td><a href='subnets/$l[sectionId]/$l[subnetId]/ipdetails/$l[tid]/'>".transform2long($l['ip_addr'])."</a></td>";			
+				print "	<td><a href='".create_link("subnets",$l['sectionId'],$l['subnetId'],"ipdetails",$l['tid'])."'>".transform2long($l['ip_addr'])."</a></td>";			
 			} 
 			elseif($l['ctype']=="Subnet")   {
-				print "	<td><a href='subnets/$l[sectionId]/$l[tid]/'>".transform2long($l['ip_addr'])."/$l[mask]</a></td>";							
+				print "	<td><a href='".create_link("subnets",$l['sectionId'],$l['tid'])."'>".transform2long($l['ip_addr'])."/$l[mask]</a></td>";							
 			}
 			elseif($l['ctype']=="Folder")   {
-				print "	<td><a href='folder/$l[sectionId]/$l[tid]/'>$l[sDescription]</a></td>";						
+				print "	<td><a href='".create_link("folder",$l['sectionId'],$l['tid'])."'>$l[sDescription]</a></td>";						
 			}
 			
 			print "	<td>"._("$l[caction]")."</td>";

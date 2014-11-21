@@ -48,7 +48,7 @@
 if($settings['enableIPrequests'] == 1) {
 ?>
 <div class="iprequest">
-	<a href="request_ip/">
+	<a href="<?php print create_link("request_ip"); ?>">
 	<i class="fa fa-plus fa-pad-right"></i> <?php print _('Request new IP address'); ?>
 	</a>	
 </div>

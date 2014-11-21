@@ -17,13 +17,13 @@
 
 // not logged in users
 if (isUserAuthenticatedNoAjax()) {
-	header("Location: login/");	
+	header("Location: ".create_link("login"));	
 }
 // logged in, but not admins
 elseif (!checkAdmin(false)) {
 	//version ok
 	if ($settings['version'] == VERSION) {
-		header("Location: login/");
+		header("Location: ".create_link("login"));
 	} 
 	//upgrade needed
 	else {
@@ -37,7 +37,7 @@ elseif(checkAdmin(false)) {
 	if ($settings['version'] == VERSION) {
 		print "<h4>Database upgrade script</h4><hr>";
 		print "<div class='alert alert-success'>Database seems up to date and doesn't need to be upgraded!</div>";
-		print '<a href=""><button class="btn btn-sm btn-default">Go to dashboard</button></a>';		
+		print '<a href="'.create_link(null).'"><button class="btn btn-sm btn-default">Go to dashboard</button></a>';		
 	}
 	//version too old
 	elseif ($settings['version'] < LAST_POSSIBLE) {
@@ -50,12 +50,12 @@ elseif(checkAdmin(false)) {
 	}
 	//upgrade not needed
 	else {
-		header("Location: login/");		
+		header("Location: ".create_link("login"));		
 	}
 }
 //default, smth is wrong
 else {
-	header("Location: login/");		
+	header("Location: ".create_link("login"));		
 }
 
 ?>

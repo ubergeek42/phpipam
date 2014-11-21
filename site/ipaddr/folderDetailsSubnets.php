@@ -42,7 +42,7 @@ if(sizeof($folders)>0)
 	/* print HTML list */
 	print "<ul style='margin-bottom:35px;list-style:none'>";
 	foreach($folders as $f) {
-		print "<li><a href='folder/$section[id]/$f[id]/'><i class='fa fa-folder fa-sfolder'></i> $f[description]</a></li>";
+		print "<li><a href='".create_link("folder",$section['id'],$f['id'])."'><i class='fa fa-folder fa-sfolder'></i> $f[description]</a></li>";
 	}
 	print "</ul>";
 }
@@ -85,8 +85,8 @@ if(sizeof($subnets)>0) {
 		
 		print "<tr>";
 	    print "	<td class='small'>$slave[VLAN]</td>";
-	    print "	<td class='small description'><a href='subnets/$section[id]/$slave[id]/'>$slave[description]</a></td>";
-	    print "	<td><a href='subnets/$section[id]/$slave[id]/'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
+	    print "	<td class='small description'><a href='".create_link("subnets",$section['id'],$slave['id'])."'>$slave[description]</a></td>";
+	    print "	<td><a href='".create_link("subnets",$section['id'],$slave['id'])."'>".transform2long($slave['subnet'])."/$slave[mask]</a></td>";
 	    
 	    # count IP addresses
 		$hasSlaves = getAllSlaveSubnetsBySubnetId ($slave['id']); 

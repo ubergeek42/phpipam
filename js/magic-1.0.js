@@ -84,11 +84,6 @@ function randomPass() {
     return pass;
 }
 
-/* reload */
-function reloadPage() {
-	window.location.reload();
-}
-
 /* remove self on click */
 $(document).on("click", ".selfDestruct", function() {
 	$(this).parent('div').fadeOut('fast');
@@ -616,19 +611,6 @@ $(document).on("click", "button#requestIPAddressSubmit", function() {
 
 
 
-//jump to page
-$('select.jumptoPage').change(function() {
-	var active    = $(this).find(":selected");
-	var sectionId = active.attr('data-sectionId');
-	var subnetId  = active.attr('data-subnetId');
-    var page 	  = active.val(); 
-    window.location.href = "subnets/"+sectionId+"/"+subnetId+"/"+page+"/";
-});
-
-
-
-
-
 
 
 
@@ -668,7 +650,9 @@ $('.searchSubmit').click(function () {
     if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) 	{ var base = $('.iebase').html(); } 
     else 																{ var base = ""; } 
     //go to search page
-	window.location = base + "tools/search/" + ip;
+    var prettyLinks = $('#prettyLinks').html();
+	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/" + ip; }
+	else					{ window.location = base + "?page=tools&section=search&ip=" + ip; }
     return false;
 });
 //submit form - topmenu
@@ -684,7 +668,9 @@ $('form#userMenuSearch').submit(function () {
     if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) 	{ var base = $('.iebase').html(); } 
     else 																{ var base = ""; } 
     //go to search page
-	window.location = base + "tools/search/" + ip;
+    var prettyLinks = $('#prettyLinks').html();
+	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/" + ip; }
+	else					{ window.location = base + "?page=tools&section=search&ip=" + ip; }
     return false;
 
 });
@@ -693,7 +679,9 @@ $('form#search').submit(function () {
     showSpinner();
     var ip = $('form#search .search').val();
     //update search page
-    window.location = "tools/search/" + ip;
+    var prettyLinks = $('#prettyLinks').html();
+	if(prettyLinks=="Yes")	{ window.location = "tools/search/" + ip; }
+	else					{ window.location = "?page=tools&section=search&ip=" + ip; }
     return false;
 });
 //search export
@@ -708,7 +696,10 @@ $('a#exportSearch').click(function() {
 $('#hosts').submit(function() {
     showSpinner();
     var hostname = $('input.hostsFilter').val();    
-    window.location = "tools/hosts/"+hostname;
+
+    var prettyLinks = $('#prettyLinks').html();
+	if(prettyLinks=="Yes")	{ window.location = base + "tools/hosts/" + hostname; }
+	else					{ window.location = base + "?page=tools&section=hosts&ip=" + hostname; }
     return false;
 });
 
@@ -738,7 +729,9 @@ $('form#cform').submit(function () {
     var limit = $('form#cform .climit').val();
     var filter = $('form#cform .cfilter').val();
     //update search page
-    window.location = "tools/changelog/"+filter+"/"+limit+"/";
+    var prettyLinks = $('#prettyLinks').html();
+	if(prettyLinks=="Yes")	{ window.location = "tools/changelog/"+filter+"/"+limit+"/"; }
+	else					{ window.location = "?page=tools&section=changelog&subnetId="+filter+"sPage"+limit; }
     return false;
 });
 

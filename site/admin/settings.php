@@ -52,6 +52,29 @@ $langs = getLanguages ();
 	</td>
 	<td class="info2"><?php print _('Set site URL'); ?></td>
 </tr>
+<!-- prettyLinks -->
+<tr>
+	<td class="title"><?php print _('Prettify links'); ?></td>
+	<td>
+		<select name="prettyLinks" class="form-control input-sm input-w-auto">
+		<?php
+			print "<option value='No'>"._('No')."</option>";
+			if($settings['prettyLinks']=="Yes") { print "<option value='Yes' selected='selected'>"._('Yes')."</option>"; }
+			else								{ print "<option value='Yes'>"._('Yes')."</option>"; }
+		?>
+		</select>
+	</td>
+	<td class="info2">
+		<?php print _('Use nicer URL structure'); ?>?<br>
+		<ul>
+			<li><?php print _("No"); ?>:  ?page=administration&link2=settings</li>
+			<li><?php print _("Yes"); ?>: /administration/settings/</li>
+		</ul>
+		<?php print _("Please note that mod_rewrite is required with appropriate settings if pretified links are selected."); ?><br>
+		<a href="http://phpipam.net/prettified-links-with-mod_rewrite/">http://phpipam.net/prettified-links-with-mod_rewrite/</a>
+		</td>
+</tr>
+
 <!-- Default language -->
 <tr>
 	<td class="title"><?php print _('Default language'); ?></td>

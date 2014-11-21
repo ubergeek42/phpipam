@@ -215,10 +215,10 @@ if(sizeof($stateDiff)>0 && $email)
 			}
 			
 			$html[] = "<tr>";
-			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]subnets/$section[id]/$subnet[id]/'>".Transform2long($change['ip_addr'])."</a></td>";
+			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]".create_link("subnets",$section['id'],$subnet['id'])."'>".Transform2long($change['ip_addr'])."</a></td>";
 			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'>$change[description]</td>";
-			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]subnets/$section[id]/$subnet[id]/'>$subnetPrint</a></td>";
-			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]subnets/$section[id]/'>$sectionPrint</a></td>";
+			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]".create_link("subnets",$section['id'],$subnet['id'])."'>$subnetPrint</a></td>";
+			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'><a href='$settings[siteURL]".create_link("subnets",$section['id'])."'>$sectionPrint</a></td>";
 			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'>$ago</td>";
 			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'>$oldStatus</td>";
 			$html[] = "	<td style='padding:3px 8px;border:1px solid silver;'>$newStatus</td>";

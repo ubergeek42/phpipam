@@ -114,7 +114,7 @@ mysql -u root -p my_root_pass < db/SCHEMA.sql</pre>
 }
 else {
 	# already installed
-	header("Location: /");
+	header("Location: ".create_link(null));
 }
 ?>
 </div>

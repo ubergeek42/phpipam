@@ -20,7 +20,7 @@ $version = $settings['version'];
 /* try to upgrade database */
 if(upgradeDatabase($version)) {
 	print '<div class="alert alert-success">Database upgraded successfully!</div>';
-	print '<a href="login/"><button class="btn btn-sm btn-default">Go to login</button></a>';
+	print '<a href="'.create_link("login").'"><button class="btn btn-sm btn-default">Go to login</button></a>';
 }
 
 ?>
