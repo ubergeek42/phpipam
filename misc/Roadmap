@@ -1,5 +1,7 @@
 version - 1.1
 
+	+ Max VLANs: highest vlan number possible can be set (e.g. 1024)
+
 	+ Per-admin changelog mailing
 
 	+ Run Discovery from Cron
@@ -11,11 +13,12 @@ version - 1.1
 	+ Option in administration to not display free range
 		https://sourceforge.net/p/phpipam/feature-requests/204/
 	
-	+ Change install script
-	
+	+ Change install script, add more options (eg drop database, set user permissions, ...)
 
 
 version - 1.2
+
+	+ assign a state to a subnet, ipaddr, vlan, user-editable
 
 	+ status - available, trash (preveri kako)
 	
@@ -48,8 +51,6 @@ features for next releases:
 			NMAP scan
 		
 		+ Subnets import with vlan information;
-				
-		+ User actvity display;
 		
 		+ VLAN header ordering;
 		

@@ -1,4 +1,4 @@
-== 1.06.001
+== 1.06.002
 
 	Enhancements:
 	----------------------------
@@ -36,6 +36,7 @@
 	+ Fixed bug when installation was silently failing bacause pf missing _() function (missing gettext extension)
 	+ Fixed device custom field not populated on adding device;
 	+ Fixed XLS export silently failed when description longer than 31 characters;
+	+ Fixed overlapping check not working;
 
 == 1.0
 	

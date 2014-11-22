@@ -1379,6 +1379,124 @@ function verifyNestedSubnetOverlapping ($sectionId, $subnetNew, $vrfId, $masterS
 
 
 /**
+ * verify ip address /mask 10.10.10.10./24 - CIDR 
+ *
+ * if subnet == 0 we dont check if IP is subnet -> needed for ipCalc
+ */
+function getSubnetNetworkAddress($newSubnet) {
+    $type = IdentifyAddress($cidr);
+ 
+    /* IPv4 */
+    if ($type == "IPv4") {
+        $resized = getIpv4NetworkAddress($newSubnet);
+        if (verifyCidr($resized, 0)) {
+            return false;
+        }
+    } else {
+        // TODO: IPv6 not yet supported here
+        return false;
+    }
+    return $resized;
+}
+
+
+
+/**
+ * Check if resized subnet already exists in section!
+ * 
+ * Subnet policy:
+ *      - inside section subnets cannot overlap!
+ *      - same subnet can be configured in different sections
+ *              - $subnetNew is exception because it is the 
+ */
+function verifyResizedSubnetOverlapping($subnetOld, $subnetNew) {
+    /* we need to get all subnets in section */
+    global $db;
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+
+    /* first we must get all subnets in section (by sectionId) */
+    $querySubnets = 'select `id`,`subnet`,`mask`,`description`,`vrfId` from `subnets` where sectionId = "' . $subnetOld['sectionId'] . '" and `masterSubnetId` != "0" and `masterSubnetId` IS NOT NULL;';
+
+    /* execute */
+    try {
+        $allSubnets = $database->getArray($querySubnets);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+        print ("<div class='alert alert-danger'>" . _('Error') . ": $error</div>");
+        return false;
+    }
+
+    /* set new Subnet array */
+    $subnet['subnet'] = $subnetNew;
+
+    /* IPv4 or ipv6? */
+    $type = IdentifyAddress($subnet['subnet']);
+
+    /* we need network and broadcast address and check for both if the exist in any network! */
+    if ($type == "IPv4") {
+        /* verify new against each existing if they exist */
+        if (!empty($allSubnets)) {
+            foreach ($allSubnets as $existingSubnet) {
+
+                /* we need cidr format! */
+                $existingSubnet['subnet'] = Transform2long($existingSubnet['subnet']) . '/' . $existingSubnet['mask'];
+                $ignore = false;
+                /* only check if vrfId's match */
+                if ($existingSubnet['vrfId'] == $subnetOld['vrfId']) {
+                    # check if it is nested properly - inside its own parent, otherwise check for overlapping
+                    $allParents = getAllParents($subnetOld['masterSubnetId']);
+                    foreach ($allParents as $kp => $p) {
+                        if ($existingSubnet['id'] == $p) {
+                            $ignore = true;
+                        }
+                    }
+                    if ($subnetOld['masterSubnetId'] == $existingSubnet['id']) {
+                        $ignore = true;
+                    }
+                    # exclude subnet to be resized from checking
+                    if ($subnetOld['id'] == $existingSubnet['id']) {
+                        $ignore = true;
+                    }
+                    if ($ignore == false) {
+                        if (verifyIPv4SubnetOverlapping($subnetNew, $existingSubnet['subnet'])) {
+                            return _('Subnet overlapps with') . ' ' . $existingSubnet['subnet'] . " ($existingSubnet[description])";
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        /* verify new against each existing */
+        foreach ($allSubnets as $existingSubnet) {
+
+            /* we need cidr format! */
+            $existingSubnet['subnet'] = Transform2long($existingSubnet['subnet']) . '/' . $existingSubnet['mask'];
+
+            /* only check if vrfId's match */
+            if ($existingSubnet['vrfId'] == $subnetOld['vrfId']) {
+                # check if it is nested properly - inside its own parent, otherwise check for overlapping
+                $allParents = getAllParents($subnetOld['masterSubnetId']);
+                foreach ($allParents as $kp => $p) {
+                    if ($existingSubnet['id'] = $kp) {
+                        $ignore = true;
+                    }
+                }
+                if ($ignore == false) {
+                    if (verifyIPv6SubnetOverlapping($subnetNew, $existingSubnet['subnet'])) {
+                        return _('Subnet overlapps with') . ' ' . $existingSubnet['subnet'] . " ($existingSubnet[description])";
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+
+
+
+/**
  * Check if subnet contains slaves
  */
 function subnetContainsSlaves($subnetId)
@@ -1786,22 +1904,24 @@ function MaxHosts( $mask, $type = 0 )
     if($type == 0) { 
     	//31 and 31 networks
     	if($mask==31 || $mask == 32) {
-	    	return pow(2, (32 - $mask)); 
+	    	$max_hosts = pow(2, (32 - $mask)); 
     	}
     	else {
-	    	return pow(2, (32 - $mask)) -2;	
+	    	$max_hosts = pow(2, (32 - $mask)) -2;	
     	} 
     }
      /* IPv6 address */
 	else {
     	//31 and 31 networks
     	if($mask==127 || $mask == 128) {
-	    	return gmp_strval(gmp_pow(2, 128 - $mask));
+	    	$max_hosts = gmp_strval(gmp_pow(2, 128 - $mask));
     	}
     	else {
-	    	return gmp_strval(gmp_sub(gmp_pow(2, 128 - $mask) ,2));
+	    	$max_hosts = gmp_strval(gmp_sub(gmp_pow(2, 128 - $mask) ,2));
     	}   
     }
+    
+    return (string) $max_hosts;
 }
 
 
