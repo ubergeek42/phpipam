@@ -1,5 +1,4 @@
 <?php
-
 /* set cookie parameters for max lifetime */
 /*
 ini_set('session.gc_maxlifetime', '86400');
@@ -39,7 +38,7 @@ $_REQUEST 	= filter_user_input ($_REQUEST, true, true);
 
 
 /* verify login and permissions */
-if($_GET['page']!="login" && $_GET['page']!="request_ip"  && $_GET['page']!="upgrade" && $_GET['page']!="install") { isUserAuthenticatedNoAjax(); }
+if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") { isUserAuthenticatedNoAjax(); }
 
 
 if($_GET['page']!='upgrade' && $_GET['page']!="login" && $_GET['page']!="install") { 

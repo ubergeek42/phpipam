@@ -28,6 +28,7 @@ if(isset($settings['defaultLang']) && !is_null($settings['defaultLang']) ) {
 ?>
 	
 <?php 
+	
 if($_GET['page'] == "login") 				{ include_once('loginForm.php'); }
 else if ($_GET['page'] == "request_ip") 	{ include_once('requestIPform.php'); }
 else 										{ $_GET['subnetId'] = "404"; print "<div id='error'>"; include_once('site/error.php'); print "</div>"; }

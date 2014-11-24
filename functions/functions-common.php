@@ -48,7 +48,7 @@ function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null 
 		elseif(!is_null($l3))	{ $link = "$l1/$l2/$l3/"; }
 		elseif(!is_null($l2))	{ $link = "$l1/$l2/"; }
 		elseif(!is_null($l1))	{ $link = "$l1/"; }
-		else					{ $link = "/"; }
+		else					{ $link = ""; }
 	}
 	# normal
 	else {
@@ -76,7 +76,7 @@ function validate_get ($get)
 {
 	# l1 check
 	if(isset($get['page']))	{
-		$valid = array("administration","dashboard","install","ipaddr","login","tools","upgrade","error","subnets","folder","vlan","vrf");
+		$valid = array("administration","dashboard","install","ipaddr","login","tools","upgrade","error","subnets","folder","vlan","vrf","request_ip");
 		if(!in_array($get['page'], $valid)) {
 			header("Location:".create_link("error","406"));
 		}
@@ -84,7 +84,7 @@ function validate_get ($get)
 	# validate all post vars
 	if(sizeof($get)>0) {
 	foreach($get as $g) {
-	    if(preg_match('/[^A-Za-z0-9.#\\-$]/', $g)) {
+	    if(preg_match('/[^A-Za-z0-9_.#\\-$]/', $g)) {
 	    	# permit for search
 	    	if($get['section']!="search") {
 		    header("Location:".create_link("error","406"));
