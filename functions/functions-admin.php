@@ -974,9 +974,10 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
 		$parent_stack = array();
 		
 		# display selected subnet as opened
-		if(isset($_REQUEST['subnetId']))
-		$allParents = getAllParents ($_REQUEST['subnetId']);
-		
+		if(isset($_GET['subnetId'])) {
+			if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }		
+			$allParents = getAllParents ($_GET['subnetId']);
+		}
 		# return table content (tr and td's)
 		while ( $loop && ( ( $option = each( $children[$parent] ) ) || ( $parent > $rootId ) ) )
 		{

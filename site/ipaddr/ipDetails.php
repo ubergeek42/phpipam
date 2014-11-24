@@ -10,10 +10,19 @@ isUserAuthenticated ();
 # get site settings
 if(sizeof($settings) == 0) { $settings = getAllSettings(); }
 
+/* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
+
+/* must be numeric */
+if(!is_numeric($_GET['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_GET['section']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_GET['ipaddrid']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
+
 # get IP address details
-$ip      = getIpAddrDetailsById($_REQUEST['ipaddrid']);
-$subnet  = getSubnetDetailsById($_REQUEST['subnetId']);
-$section = getSectionDetailsById($_REQUEST['section']);
+$ip      = getIpAddrDetailsById($_GET['ipaddrid']);
+$subnet  = getSubnetDetailsById($_GET['subnetId']);
+$section = getSectionDetailsById($_GET['section']);
 
 # get all selected fields for IP print
 $setFieldsTemp = getSelectedIPaddrFields();
@@ -27,9 +36,9 @@ $myFields = getCustomFields('ipaddresses');
 $statuses = explode(";", $settings['pingStatus']);
 
 # permissions
-$permission = checkSubnetPermission ($_REQUEST['subnetId']);
+$permission = checkSubnetPermission ($_GET['subnetId']);
 # section permissions
-$permissionsSection = checkSectionPermission ($_REQUEST['section']);
+$permissionsSection = checkSectionPermission ($_GET['section']);
 
 # if 0 die
 if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not have permission to access this network')."!</div>"); }
@@ -69,7 +78,7 @@ if(sizeof($ip)>1) {
 	print "<tr>";
 	print "	<th>"._('Hierarchy')."</th>";
 	print "	<td>";
-	printBreadCrumbs($_REQUEST);
+	printBreadCrumbs($_GET);
 	print "</td>";
 	print "</tr>";
 	

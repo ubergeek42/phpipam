@@ -10,9 +10,7 @@ isUserAuthenticated ();
 $vlan = getVLANbyId($_GET['subnetId']);
 
 # not existing
-if(!$vlan) {
-	die("<div class='alert alert-danger'>"._('Invalid VLAN id')."!</div>");
-}
+if(!$vlan) { die("<h4>"._('Error')."</h4><div class='alert alert-danger'>"._('Invalid VLAN id')."!</div>"); }
 
 # get all site settings
 $settings = getAllSettings();

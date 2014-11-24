@@ -731,7 +731,7 @@ $('form#cform').submit(function () {
     //update search page
     var prettyLinks = $('#prettyLinks').html();
 	if(prettyLinks=="Yes")	{ window.location = "tools/changelog/"+filter+"/"+limit+"/"; }
-	else					{ window.location = "?page=tools&section=changelog&subnetId="+filter+"sPage"+limit; }
+	else					{ window.location = "?page=tools&section=changelog&subnetId="+filter+"&sPage="+limit; }
     return false;
 });
 

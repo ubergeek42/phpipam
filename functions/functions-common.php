@@ -67,6 +67,34 @@ function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null 
 
 
 /**
+ *	verify GET parameters
+ *
+ *		we need to make sure that GET parameters are valid for phpipam scheme
+ */
+validate_get ($_GET);
+function validate_get ($get)
+{
+	# l1 check
+	if(isset($get['page']))	{
+		$valid = array("administration","dashboard","install","ipaddr","login","tools","upgrade","error","subnets","folder","vlan","vrf");
+		if(!in_array($get['page'], $valid)) {
+			header("Location:".create_link("error","406"));
+		}
+	}
+	# validate all post vars
+	if(sizeof($get)>0) {
+	foreach($get as $g) {
+	    if(preg_match('/[^A-Za-z0-9.#\\-$]/', $g)) {
+	    	# permit for search
+	    	if($get['section']!="search") {
+		    header("Location:".create_link("error","406"));
+	}	}	}	}
+}
+
+
+
+
+/**
  * protect against injections
  *
  *	sql protects against SQL injections (mysql_escape_string)
@@ -100,7 +128,7 @@ function filter_user_input ($input, $sql = true, $xss = true, $actions = false)
 	
 	# actions
 	if($actions) {
-		$permitted = array("add", "edit", "delete");
+		$permitted = array("add", "edit", "delete", "truncate", "split", "resize");
 		if(!in_array($input, $permitted)) {
 			die("<div class='alert alert-danger'>Invalid action!</div>");
 		}
@@ -184,7 +212,7 @@ function detect_crypt_type () {
 function isUserAuthenticated($die = true) 
 {	
     /* open session and get username / pass */
-	if (!isset($_SESSION)) {  session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
     /* redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) {
     	# save requested page
@@ -210,7 +238,7 @@ function isUserAuthenticated($die = true)
 function isUserAuthenticatedNoAjax () 
 {
     /* open session and get username / pass */
-	if (!isset($_SESSION)) { session_start(); }
+	if (!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
     /* redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) {
     	# save requested page
@@ -233,7 +261,7 @@ function isUserAuthenticatedNoAjax ()
 function checkAdmin ($die = true, $startSession = true) 
 {    
     /* first get active username */
-    if(!isset($_SESSION)) { session_start(); }
+    if(!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
     $ipamusername = $_SESSION['ipamusername'];
     session_write_close();
     
@@ -279,8 +307,7 @@ function checkAdmin ($die = true, $startSession = true)
  */
 function getActiveUserDetails ()
 {
-/*     session_start(); */
-	if (!isset($_SESSION)) { session_start(); }
+	if (!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
 
 	if(isset($_SESSION['ipamusername'])) {
     	return getUserDetailsByName ($_SESSION['ipamusername']);
@@ -426,13 +453,24 @@ function getUserDetailsByName ($username)
 	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
 	        return false;
 	    } 
-
-	    # save cache - id and name
-	    writeCache("user", $details[0]['id'], $details[0]);
-	    writeCache("user", $username, $details[0]);
 	    
-	    /* return results */
-	    return($details[0]);		
+	    # result must be more than 1!
+	    if(!isset($details[0]))	{
+	    	global $phpsessname; 
+	    	session_name($phpsessname); 
+	    	session_start();
+	    	session_destroy();
+		  	return false;  
+	    }
+	    else {
+		    # save cache - id and name
+		    writeCache("user", $details[0]['id'], $details[0]);
+		    writeCache("user", $username, $details[0]);
+		    
+		    /* return results */
+		    return($details[0]);		    
+	    }
+		
 	}
 }
 
@@ -785,7 +823,7 @@ function getFullFieldData($table, $field)
 function checkSectionPermission ($sectionId)
 {
     # open session and get username / pass
-	if (!isset($_SESSION)) {  session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
     # redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) 	{ return "0"; }
     else									{ $username = $_SESSION['ipamusername']; }
@@ -830,7 +868,7 @@ function checkSectionPermission ($sectionId)
 function checkSubnetPermission ($subnetId)
 {
     # open session and get username / pass
-	if (!isset($_SESSION)) {  session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
     # redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) 	{ return "0"; }
     else									{ $username = $_SESSION['ipamusername']; }
@@ -1132,9 +1170,14 @@ function get_menu_html( $subnets, $rootId = 0 )
 		$parent = $rootId;
 		$parent_stack = array();
 		
+		# verify subnetId
+		if(isset($_GET['subnetId']))	{
+			if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+		}
+		
 		# display selected subnet as opened
-		if(isset($_REQUEST['subnetId'])) 	{ $allParents = getAllParents ($_REQUEST['subnetId']); }
-		else 								{ $allParents = array(); }
+		if(isset($_GET['subnetId'])) 	{ $allParents = getAllParents ($_GET['subnetId']); }
+		else 							{ $allParents = array(); }
 		
 		# Menu start
 		$html[] = '<ul id="subnets">';
@@ -1145,26 +1188,26 @@ function get_menu_html( $subnets, $rootId = 0 )
 			$count = count( $parent_stack ) + 1;
 
 			# set opened or closed tag for displaying proper folders
-			if(in_array($option['value']['id'], $allParents))			{ $open = "open";	$openf = "-open"; }
-			else														{ $open = "close";	$openf = ""; }
+			if(in_array($option['value']['id'], $allParents))		{ $open = "open";	$openf = "-open"; }
+			else													{ $open = "close";	$openf = ""; }
 						
 			# show also child's by default
-			if($option['value']['id']==$_REQUEST['subnetId']) {
-				if(subnetContainsSlaves($_REQUEST['subnetId']))			{ $open = "open";	$openf = "-open"; }
-				else													{ $open = "close";	$openf = ""; }
+			if($option['value']['id']==$_GET['subnetId']) {
+				if(subnetContainsSlaves($_GET['subnetId']))			{ $open = "open";	$openf = "-open"; }
+				else												{ $open = "close";	$openf = ""; }
 			}			
 			
 			# override if cookie is set
 			if(isset($_COOKIE['expandfolders'])) {
-				if($_COOKIE['expandfolders'] == "1")					{ $open='open';		$openf = "-open"; }
+				if($_COOKIE['expandfolders'] == "1")				{ $open='open';		$openf = "-open"; }
 			}
 			
 			# for active class
-			if(isset($_REQUEST['subnetId']) && ($option['value']['id'] == $_REQUEST['subnetId']))	{ $active = "active";	$leafClass=""; }
+			if($_GET['page']=="subnets" && ($option['value']['id'] == $_GET['subnetId']))			{ $active = "active";	$leafClass=""; }
 			else 																					{ $active = ""; 		$leafClass="icon-gray" ;}
 			
 			# override folder
-			if($option['value']['isFolder'] == 1 && ($option['value']['id'] == $_REQUEST['subnetId']))	{ $open = "open"; $openf = "-open"; }
+			if($option['value']['isFolder'] == 1 && ($option['value']['id'] == $_GET['subnetId']))	{ $open = "open"; $openf = "-open"; }
 			
 			# check for permissions if id is provided
 			if($option['value']['id'] != "") {
@@ -1245,6 +1288,10 @@ function get_menu_vlan( $vlans, $sectionId )
 {
 		$html = array();
 
+		# must be numberic
+		if(isset($_GET['vlanId']))		{ if(!is_numeric($_GET['vlanId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+
 		# Menu start
 		$html[] = '<ul id="subnets">';
 		
@@ -1252,12 +1299,12 @@ function get_menu_vlan( $vlans, $sectionId )
 		foreach ( $vlans as $item ) {	
 		
 			# set open / closed -> vlan directly
-			if($_REQUEST['vlanId'] == $item['vlanId'] && !isset($_REQUEST['subnetId'])) {
+			if($_GET['subnetId'] == $item['vlanId'] && $_GET['page']=="vlan") {
 				$open = "open";
 				$active = "active";
 				$leafClass="fa-gray";					
 			}
-			elseif(isSubnetIdVlan ($_REQUEST['subnetId'], $item['vlanId'])) {
+			elseif(isSubnetIdVlan ($_GET['subnetId'], $item['vlanId'])) {
 				$open = "open";
 				$active = "";
 				$leafClass="fa-gray";				
@@ -1289,8 +1336,8 @@ function get_menu_vlan( $vlans, $sectionId )
 					if($permission > 0) {
 					
 						# for active class
-						if(isset($_REQUEST['subnetId']) && ($subnet['id'] == $_REQUEST['subnetId']))	{ $active = "active";	$leafClass=""; }
-						else 																			{ $active = ""; 		$leafClass="icon-gray" ;}		
+						if(isset($_GET['subnetId']) && ($subnet['id'] == $_GET['subnetId']))	{ $active = "active";	$leafClass=""; }
+						else 																	{ $active = ""; 		$leafClass="icon-gray" ;}		
 						
 						# check if showName is set
 						if($subnet['showName'] == 1) {
@@ -1330,16 +1377,20 @@ function get_menu_vrf( $vrfs, $sectionId )
 		# Menu start
 		$html[] = '<ul id="subnets">';
 		
+		# vrfId must be numberic
+		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+		if(isset($_GET['vrfIf']))		{ if(!is_numeric($_GET['vrfId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+		
 		# loop through vlans
 		foreach ( $vrfs as $item ) {	
-		
+					
 			# set open / closed -> vlan directly
-			if($_REQUEST['vrfId'] == $item['vrfId'] && !isset($_REQUEST['subnetId'])) {
+			if($_GET['subnetId'] == $item['vrfId'] && $_GET['page']=="vrf") {
 				$open = "open";
 				$active = "active";
 				$leafClass="fa-gray";					
 			}
-			elseif(isSubnetIdVrf ($_REQUEST['subnetId'], $item['vrfId'])) {
+			elseif(isSubnetIdVrf ($_GET['subnetId'], $item['vrfId'])) {
 				$open = "open";
 				$active = "";
 				$leafClass="fa-gray";				
@@ -1371,8 +1422,8 @@ function get_menu_vrf( $vrfs, $sectionId )
 					if($permission > 0) {
 					
 						# for active class
-						if(isset($_REQUEST['subnetId']) && ($subnet['id'] == $_REQUEST['subnetId']))	{ $active = "active";	$leafClass=""; }
-						else 																			{ $active = ""; 		$leafClass="icon-gray" ;}		
+						if(isset($_GET['subnetId']) && ($subnet['id'] == $_GET['subnetId']))	{ $active = "active";	$leafClass=""; }
+						else 																	{ $active = ""; 		$leafClass="icon-gray" ;}		
 						
 						# check if showName is set
 						if($subnet['showName'] == 1) {
@@ -1415,6 +1466,9 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 		}
 		}
 		
+		# must be numeric
+		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+		
 		# loop will be false if the root has no children (i.e., an empty menu!)
 		$loop = !empty( $children[$rootId] );
 		
@@ -1423,8 +1477,8 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 		$parent_stack = array();
 		
 		# display selected subnet as opened
-		if(isset($_REQUEST['subnetId']))
-		$allParents = getAllParents ($_REQUEST['subnetId']);
+		if(isset($_GET['subnetId']))
+		$allParents = getAllParents ($_GET['subnetId']);
 		
 		# return table content (tr and td's)
 		while ( $loop && ( ( $option = each( $children[$parent] ) ) || ( $parent > $rootId ) ) )

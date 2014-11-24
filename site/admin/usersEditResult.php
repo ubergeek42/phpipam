@@ -9,7 +9,13 @@ require_once('../../functions/functions.php');
 
 /* verify that user is admin */
 checkAdmin();
- 
+
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+$_POST['action'] = filter_user_input($_POST['action'], false, false, true);
+
+/* must be numeric */
+if(!is_numeric($_POST['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
 
 /**
  * First get posted variables

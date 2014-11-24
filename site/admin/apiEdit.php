@@ -13,6 +13,9 @@ checkAdmin();
 /* get all settings */
 $settings = getAllSettings();
 
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+$_POST['action'] = filter_user_input($_POST['action'], false, false, true);
 ?>
 
 

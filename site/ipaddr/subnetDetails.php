@@ -6,8 +6,14 @@
 /* verify that user is authenticated! */
 isUserAuthenticated ();
 
+
+/* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
+/* must be numeric */
+if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
 /* get posted subnet, die if it is not provided! */
-if($_REQUEST['subnetId']) { $subnetId = $_REQUEST['subnetId']; }
+if($_GET['subnetId']) { $subnetId = $_GET['subnetId']; }
 
 /* get custom subnet fields */
 $customSubnetFields = getCustomFields('subnets');

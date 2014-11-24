@@ -14,32 +14,36 @@ CheckReferrer();
 /* verify that user is authenticated! */
 isUserAuthenticated (true);
 
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+$_POST['action'] = filter_user_input($_POST['action'], false, false, true);
+
 /* verify that user has write access */
-$subnetPerm = checkSubnetPermission ($_REQUEST['subnetId']);
+$subnetPerm = checkSubnetPermission ($_POST['subnetId']);
 if($subnetPerm < 2) 	{ die('<div class="alert alert-danger">'._('Cannot edit IP address').'!</div>'); }
 
 /* get posted values */
-if ( !empty($_REQUEST['ip_addr']) ) 	{ $ip['ip_addr'] = $_REQUEST['ip_addr']; }
+if ( !empty($_POST['ip_addr']) ) 		{ $ip['ip_addr'] = $_POST['ip_addr']; }
 else 									{ $ip['ip_addr'] = "";}
 //description
-if ( !empty($_REQUEST['description']) ) { $ip['description'] = htmlentities($_REQUEST['description'], ENT_COMPAT | ENT_HTML401, "UTF-8"); } //prevent XSS
-else 									{ $ip['description'] = ""; }
+if ( !empty($_POST['description']) ) 	{}
+else 								 	{ $ip['description'] = ""; }
 //hostname
-if ( !empty($_REQUEST['dns_name']) ) 	{ $ip['dns_name'] = htmlentities($_REQUEST['dns_name'], ENT_COMPAT | ENT_HTML401, "UTF-8"); }	//prevent XSS
+if ( !empty($_POST['dns_name']) ) 		{}
 else 									{ $ip['dns_name'] = ""; }
 //mac
-if ( !empty($_REQUEST['mac']) ) 		{ $ip['mac'] = htmlentities($_REQUEST['mac'], ENT_COMPAT | ENT_HTML401, "UTF-8"); }			//prevent XSS
+if ( !empty($_POST['mac']) ) 			{}
 else 									{ $ip['mac'] = ""; }
 //owner
-if ( !empty($_REQUEST['owner']) ) 		{ $ip['owner'] = htmlentities($_REQUEST['owner'], ENT_COMPAT | ENT_HTML401, "UTF-8"); }		//prevent XSS
+if ( !empty($_POST['owner']) ) 			{}
 else 									{ $ip['owner'] = ""; }
 //switch
-$ip['switch'] = @$_REQUEST['switch'];
+$ip['switch'] = @$_POST['switch'];
 //port
-if ( !empty($_REQUEST['port']) ) 		{ $ip['port'] = htmlentities($_REQUEST['port'], ENT_COMPAT | ENT_HTML401, "UTF-8"); }		//prevent XSS
+if ( !empty($_POST['port']) ) 			{}
 else 									{ $ip['port'] = ""; }
 //note
-if ( !empty($_REQUEST['note']) ) 		{ $ip['note'] = htmlentities($_REQUEST['note'], ENT_COMPAT | ENT_HTML401, "UTF-8"); }		//prevent XSS
+if ( !empty($_POST['note']) ) 			{}
 else 									{ $ip['note'] = ""; }
 
 //custom
@@ -66,18 +70,18 @@ if(sizeof($myFields) > 0) {
 }
 
 // those values must be present	
-$ip['action']  		= $_REQUEST['action'];
-$ip['subnet']  		= $_REQUEST['subnet'];
-$ip['subnetId']		= $_REQUEST['subnetId'];
-$ip['section'] 		= $_REQUEST['section'];
-$ip['id']      		= $_REQUEST['id'];
-$ip['state']   		= $_REQUEST['state'];
-$ip['excludePing']	= $_REQUEST['excludePing'];
+$ip['action']  		= $_POST['action'];
+$ip['subnet']  		= $_POST['subnet'];
+$ip['subnetId']		= $_POST['subnetId'];
+$ip['section'] 		= $_POST['section'];
+$ip['id']      		= $_POST['id'];
+$ip['state']   		= $_POST['state'];
+$ip['excludePing']	= $_POST['excludePing'];
 
 
 //we need old values for mailing
 if($ip['action']=="edit" || $ip['action']=="delete") {
-	$ipold = getIpAddrDetailsById($_REQUEST['id']);
+	$ipold = getIpAddrDetailsById($_POST['id']);
 }
 
 //replace ' in all instances
@@ -90,14 +94,14 @@ foreach($ip as $k=>$v) {
 if($ip['excludePing'] != "1") { $ip['excludePing'] = "0"; }
 
 //delete form visual
-if(isset($_REQUEST['action-visual'])) {
+if(isset($_POST['action-visual'])) {
 	/* replace action to delete if action-visual == delete */
-	if($_REQUEST['action-visual'] == "delete") { $ip['action'] = "delete"; }	
+	if($_POST['action-visual'] == "delete") { $ip['action'] = "delete"; }	
 }
 
 //detect proper hostname
 /*
-if(strlen($_POST['dns_name'])>0 && !validateHostname($_REQUEST['dns_name'])) {
+if(strlen($_POST['dns_name'])>0 && !validateHostname($_POST['dns_name'])) {
 	die('<div class="alert alert-danger">'._('Invalid hostname').'!</div>');
 }
 */
@@ -194,11 +198,11 @@ else {
 
 	/* verify ip address */
 	if($ip['action'] == "move")	{ 
-		$subnet = getSubnetDetailsById($_REQUEST['newSubnet']);
+		$subnet = getSubnetDetailsById($_POST['newSubnet']);
 		$subnet = transform2long($subnet['subnet'])."/".$subnet['mask'];
 		$verify = VerifyIpAddress( $ip['ip_addr'], $subnet, $nostrict ); 
 		
-		$ip['newSubnet'] = $_REQUEST['newSubnet'];
+		$ip['newSubnet'] = $_POST['newSubnet'];
 	}
 	else { 
 		$verify = VerifyIpAddress( $ip['ip_addr'], $ip['subnet'], $nostrict ); 
@@ -220,7 +224,7 @@ else {
 		/* check for duplicate entry on edit! */
 	    if ($ip['action'] == "edit") {  
 	    	# if IP is the same than it can already exist!
-	    	if($ip['ip_addr'] != $_REQUEST['ip_addr_old']) {
+	    	if($ip['ip_addr'] != $_POST['ip_addr_old']) {
 	        	if (checkDuplicate ($ip['ip_addr'], $ip['subnetId'])) {
 	        	    die ('<div class="alert alert-danger">'._('IP address').' '. $ip['ip_addr'] .' '._('already existing in database').'!</div>');
 	        	}	

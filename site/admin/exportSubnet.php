@@ -19,8 +19,11 @@ require_once '../../functions/PEAR/Spreadsheet/Excel/Writer.php';
 $filename = "phpipam_subnet_export.xls";
 $workbook = new Spreadsheet_Excel_Writer();
 
+/* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
+
 //get requested subnet Id
-$subnetId = $_REQUEST['subnetId'];
+$subnetId = $_GET['subnetId'];
 
 //get all subnet details
 $subnet = getSubnetDetailsById ($subnetId);

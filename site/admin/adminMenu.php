@@ -8,6 +8,9 @@ checkAdmin();
 
 /* get all site settings */
 $settings = getAllSettings();
+
+/* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
 ?>
 
 

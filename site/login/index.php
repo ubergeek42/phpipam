@@ -1,13 +1,19 @@
 <?php 
 /* if title is missing set it to install */
-if(!$settings['siteTitle']) { $settings['siteTitle'] = "phpipam IP management installation"; }
+if(strlen(@$settings['siteTitle'])==0) { $settings['siteTitle'] = "phpipam IP management installation"; }
 
-/* destroy session */
-if ($_REQUEST['page'] == "logout") 	{ updateLogTable ('User has logged out', 0); }
+# start session if not set
+if(!isset($_SESSION)) { session_start(); }
 
-/* destroy session */
-session_start();
-session_destroy();
+/* logout? */
+if (isset($_SESSION['ipamusername'])) 	{ 
+	# destroy session 
+	session_destroy();	
+	# update table
+	updateLogTable ('User has logged out', 0); 
+	# set logout flag
+	$logout = true;
+}
 
 # set default language
 if(isset($settings['defaultLang']) && !is_null($settings['defaultLang']) ) {
@@ -22,10 +28,10 @@ if(isset($settings['defaultLang']) && !is_null($settings['defaultLang']) ) {
 ?>
 	
 <?php 
-if($_REQUEST['page'] == "login" || $_REQUEST['page'] == "logout") 	{ include_once('loginForm.php'); }
-else if ($_REQUEST['page'] == "request_ip") 						{ include_once('requestIPform.php'); }
-else 																{ $_REQUEST['eid'] = "404"; print "<div id='error'>"; include_once('site/error.php'); print "</div>"; }
+if($_GET['page'] == "login") 				{ include_once('loginForm.php'); }
+else if ($_GET['page'] == "request_ip") 	{ include_once('requestIPform.php'); }
+else 										{ $_GET['subnetId'] = "404"; print "<div id='error'>"; include_once('site/error.php'); print "</div>"; }
 ?>
 
 <!-- login response -->
-<div id="loginCheck"><?php if ($_REQUEST['page'] == "logout") print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?></div>
+<div id="loginCheck"><?php if ($logout) print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?></div>

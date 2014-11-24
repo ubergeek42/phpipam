@@ -1,5 +1,8 @@
 <?php
 
+/* @config file ------------------- */
+require_once( dirname(__FILE__) . '/../config.php' );
+
 /* fix for ajax-loaded windows */
 if(!isset($_SESSION)) {
 	/* set cookie parameters for max lifetime */
@@ -7,11 +10,9 @@ if(!isset($_SESSION)) {
 	ini_set('session.gc_maxlifetime', '86400');
 	ini_set('session.save_path', '/tmp/php_sessions/');
 	*/
+	session_name($phpsessname); 
 	session_start();
 }
-
-/* @config file ------------------- */
-require_once( dirname(__FILE__) . '/../config.php' );
 
 /* @database functions ------------------- */
 require_once( dirname(__FILE__) . '/dbfunctions.php' );
@@ -53,7 +54,7 @@ $database = new database($db['host'], $db['user'], $db['pass'], $db['name'], NUL
 /* set latest version */
 define("VERSION", "1.06");									//version changes if database structure changes
 /* set latest revision */
-define("REVISION", "002");									//revision always changes, verision only if database structure changes
+define("REVISION", "003");									//revision always changes, verision only if database structure changes
 /* set last possible upgrade */
 define("LAST_POSSIBLE", "0.9");								//minimum required version to be able to upgrade
 

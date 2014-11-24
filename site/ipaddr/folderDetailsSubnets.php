@@ -8,8 +8,16 @@ $('body').tooltip({ selector: '[rel=tooltip]' });
  * Script to display all slave IP addresses and subnets in content div of subnets table!
  ***************************************************************************************/
 
+
+/* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
+
+/* must be numeric */
+if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_GET['section']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
 /* get master subnet ID */
-$subnetId = $_REQUEST['subnetId'];
+$subnetId = $_GET['subnetId'];
 
 /* get all slaves */
 $slaves = getAllSlaveSubnetsBySubnetId ($subnetId);

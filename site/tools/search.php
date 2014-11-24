@@ -4,8 +4,11 @@
 isUserAuthenticated ();
 
 /* get posted search term */
-if($_REQUEST['ip']) { $searchTerm = $_REQUEST['ip']; }
-else				{ $searchTerm = ""; }
+if($_GET['ip']) { $searchTerm = $_GET['ip']; }
+else			{ $searchTerm = ""; }
+
+/* filter input */
+$_GET['ip'] = filter_user_input($_GET['ip'], true, true);
 
 ?>
 

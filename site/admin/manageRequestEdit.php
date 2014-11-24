@@ -10,6 +10,9 @@ require_once('../../config.php');
 /* verify that user is admin */
 checkAdmin();
 
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+
 /* get posted request id */
 $requestId = $_POST['requestId'];
 

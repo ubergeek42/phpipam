@@ -1400,6 +1400,20 @@ function getSubnetNetworkAddress($newSubnet) {
 }
 
 
+function getIpv4NetworkAddress($cidr) {
+    /* split it to network and subnet */
+    $temp = explode("/", $cidr);
+ 
+    $ip = $temp[0];
+    $netmask = $temp[1];
+
+    $netaddr = long2ip((ip2long($ip)) & ((-1 << (32 - (int) $netmask))));
+
+    return $netaddr . "/" . $netmask;
+}
+
+
+
 
 /**
  * Check if resized subnet already exists in section!
@@ -1724,6 +1738,9 @@ function printDropdownMenuBySection($sectionId, $subnetMasterId = "0")
 		$html = array();
 		
 		$rootId = 0;									# root is 0
+		
+		# must be integer
+		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
 
 		# folders
 		foreach ( $folders as $item )
@@ -1744,7 +1761,7 @@ function printDropdownMenuBySection($sectionId, $subnetMasterId = "0")
 		$parent_stack  = array();
 		
 		# display selected subnet as opened
-		$allParents = getAllParents ($_REQUEST['subnetId']);
+		$allParents = getAllParents ($_GET['subnetId']);
 		
 		
 		# structure
@@ -2070,6 +2087,10 @@ function printDropdownMenuBySectionFolders($sectionId, $subnetMasterId = "0")
 		
 		$rootId = 0;									# root is 0
 		
+		# must be integer
+		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
+
+		
 		foreach ( $subnets as $item )
 			$children[$item['masterSubnetId']][] = $item;
 		
@@ -2081,7 +2102,7 @@ function printDropdownMenuBySectionFolders($sectionId, $subnetMasterId = "0")
 		$parent_stack = array();
 		
 		# display selected subnet as opened
-		$allParents = getAllParents ($_REQUEST['subnetId']);
+		$allParents = getAllParents ($_GET['subnetId']);
 		
 		# structure
 		$html[] = "<select name='masterSubnetId' class='form-control input-w-auto input-sm'>";

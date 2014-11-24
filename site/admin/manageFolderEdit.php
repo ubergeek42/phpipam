@@ -10,6 +10,15 @@ require_once('../../functions/functions.php');
 /* verify that user is logged in */
 isUserAuthenticated(false);
 
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+$_POST['action'] = filter_user_input($_POST['action'], false, false, true);
+
+/* must be numeric */
+if(!is_numeric($_POST['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_POST['sectionId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
+
 /* verify that user has permissions if add */
 if($_POST['action'] == "add") {
 	$sectionPerm = checkSectionPermission ($_POST['sectionId']);
@@ -38,7 +47,7 @@ if ($_POST['action'] != "add") {
 # we are adding new subnet - get section details
 else {
 	# for selecting master subnet if added from subnet details!
-	if(strlen($_REQUEST['subnetId']) > 0) {
+	if(strlen($_POST['subnetId']) > 0) {
     	$tempData = getSubnetDetailsById ($_POST['subnetId']);	
     	$subnetDataOld['masterSubnetId'] = $tempData['id'];			// same master subnet ID for nested
     	$subnetDataOld['vlanId'] 		 = $tempData['vlanId'];		// same default vlan for nested

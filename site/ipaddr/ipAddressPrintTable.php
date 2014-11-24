@@ -9,8 +9,14 @@ $('body').tooltip({ selector: '[rel=tooltip]' });
  * Print sorted IP addresses
  ***********************************************************************/
  
+ /* filter input */
+$_GET = filter_user_input($_GET, true, true, false);
+/* must be numeric */
+if(!is_numeric($_GET['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_GET['section']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+ 
 /* get posted subnet, die if it is not provided! */
-if($_REQUEST['subnetId']) { $subnetId = $_REQUEST['subnetId']; }
+if($_GET['subnetId']) { $subnetId = $_GET['subnetId']; }
 
 /* direct call */
 if(!isset($_POST['direction'])) {
@@ -125,20 +131,20 @@ $repeats   = ceil($sizeIP / $pageLimit); 		// times to repeat body
 
 # set page number from post
 $maxPages = round($sizeIP/$pageLimit,0);																								// set max number of pages
-if(@$_REQUEST['sPage']>$repeats || !isset($_REQUEST['sPage']))	{ $_REQUEST['sPage'] = 1; }												// reset to 1 if number too big
-elseif(!is_numeric($_REQUEST['sPage']))							{ $_REQUEST['sPage'] = str_replace("page", "", $_REQUEST['sPage']); }	// remove p from page
+if(@$_GET['sPage']>$repeats || !isset($_GET['sPage']))	{ $_GET['sPage'] = 1; }												// reset to 1 if number too big
+elseif(!is_numeric($_GET['sPage']))							{ $_GET['sPage'] = str_replace("page", "", $_GET['sPage']); }	// remove p from page
 
 ?>
 <br>
 
 <h4><?php print $title; ?>
-<?php if($sizeIP  > $pageLimit) { print " (<span class='stran'>"._('Page')." $_REQUEST[sPage]/$repeats</span>)"; }  ?>
+<?php if($sizeIP  > $pageLimit) { print " (<span class='stran'>"._('Page')." $_GET[sPage]/$repeats</span>)"; }  ?>
 </h4>
 
 <?php 
 # pagination
 if($sizeIP  > $pageLimit) {
-	print_pagination ($_REQUEST['sPage'], $repeats);
+	print_pagination ($_GET['sPage'], $repeats);
 }
 ?>
 
@@ -209,7 +215,7 @@ else {
 	
 	foreach($ipaddressesChunk as $ipaddresses2) {
 	
-		if($c == $_REQUEST['sPage']) 	{ $show = true;  $display = "display:block;";}
+		if($c == $_GET['sPage']) 	{ $show = true;  $display = "display:block;";}
 		else 							{ $show = false; $display = "display:none";  }
 
 		foreach($ipaddresses2 as $ipaddress2)  
@@ -292,7 +298,7 @@ else {
 					    $hTooltip = "";
 				    }   
 				    			    
-				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='".create_link("subnets",$_REQUEST['section'],$_REQUEST['subnetId'],"ipdetails",$ipaddress[$n]['id'])."'>".Transform2long( $ipaddress[$n]['ip_addr']);
+				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"ipdetails",$ipaddress[$n]['id'])."'>".Transform2long( $ipaddress[$n]['ip_addr']);
 				    if(in_array('state', $setFields)) 				{ print reformatIPState($ipaddress[$n]['state']); }	
 				    print "</td>";
 		
@@ -431,7 +437,7 @@ else {
 <?php 
 # pagination
 if($sizeIP  > $pageLimit) {
-	print_pagination ($_REQUEST['sPage'], $repeats);
+	print_pagination ($_GET['sPage'], $repeats);
 }
 ?>
 

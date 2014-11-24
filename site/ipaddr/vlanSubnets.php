@@ -5,7 +5,7 @@
  ***************************************************************************************/
 
 /* get all slaves */
-$slaves = getAllSubnetsInSectionVlan ($_REQUEST['vlanId'], $_REQUEST['section']);
+$slaves = getAllSubnetsInSectionVlan ($_GET['subnetId'], $_GET['section']);
 
 
 /* if none */

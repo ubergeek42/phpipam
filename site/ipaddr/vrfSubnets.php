@@ -5,7 +5,7 @@
  ***************************************************************************************/
 
 /* get all slaves */
-$slaves = getAllSubnetsInSectionVRF ($_REQUEST['vrfId'], $_REQUEST['section']);
+$slaves = getAllSubnetsInSectionVRF ($_GET['subnetId'], $_GET['section']);
 
 
 /* if none */

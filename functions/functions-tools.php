@@ -447,8 +447,8 @@ function printToolsSubnets( $subnets, $custom )
 		$parent_stack = array();
 		
 		# display selected subnet as opened
-		if(isset($_REQUEST['subnetId']))
-		$allParents = getAllParents ($_REQUEST['subnetId']);
+		if(isset($_GET['subnetId']))
+		$allParents = getAllParents ($_GET['subnetId']);
 		
 		# return table content (tr and td's)
 		while ( $loop && ( ( $option = each( $children[$parent] ) ) || ( $parent > $rootId ) ) )

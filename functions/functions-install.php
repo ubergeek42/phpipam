@@ -104,7 +104,6 @@ function getUserDetailsByName ($username)
  */
 function getActiveUserDetails ()
 {
-/*     session_start(); */
 	if(isset($_SESSION['ipamusername'])) {
     	return getUserDetailsByName ($_SESSION['ipamusername']);
     }
@@ -444,6 +443,8 @@ function checkLogin ($username, $md5password, $rawpassword)
 		$lang = getLangById ($user['lang']);
 
 		/* start session and set variables */
+		global $phpsessname; 
+		session_name($phpsessname); 
 		session_start();
 		$_SESSION['ipamusername'] = $username;
 		$_SESSION['ipamlanguage'] = $lang['l_code'];
@@ -512,6 +513,8 @@ function checkAdmin ($die = true)
 	global $database;   
     
     /* first get active username */
+    global $phpsessname; 
+    session_name($phpsessname); 
     session_start();
     $ipamusername = $_SESSION['ipamusername'];
     session_write_close();

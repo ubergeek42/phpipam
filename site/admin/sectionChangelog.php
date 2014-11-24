@@ -8,7 +8,7 @@
 isUserAuthenticated ();
 
 # get clog entries
-$clogs = getChangelogEntries("section", $_REQUEST['sPage']);
+$clogs = getChangelogEntries("section", $_GET['sPage']);
 
 /* verify that user is admin */
 if (!checkAdmin()) die('');

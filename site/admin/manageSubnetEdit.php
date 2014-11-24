@@ -49,7 +49,7 @@ if ($_POST['action'] != "add") {
 # we are adding new subnet - get section details
 else {
 	# for selecting master subnet if added from subnet details!
-	if(strlen($_REQUEST['subnetId']) > 0) {
+	if(strlen($_POST['subnetId']) > 0) {
     	$tempData = getSubnetDetailsById ($_POST['subnetId']);	
     	$subnetDataOld['masterSubnetId'] = $tempData['id'];			// same master subnet ID for nested
     	$subnetDataOld['vlanId'] 		 = $tempData['vlanId'];		// same default vlan for nested

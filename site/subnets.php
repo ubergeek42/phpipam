@@ -11,8 +11,10 @@
 isUserAuthenticated ();
 
 
+if(!is_numeric($_GET['section']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
 /* get requested section and format it to nice output */
-$sectionId = $_REQUEST['section'];
+$sectionId = $_GET['section'];
 
 /* if it is not numeric than get ID from provided name */
 if ( (!is_numeric($sectionId)) && ($sectionId != "Administration") ) {
@@ -36,7 +38,7 @@ else
 {    
 
 	/* print subsections if they exist */
-	$subsections = getAllSubSections($_REQUEST['section']);
+	$subsections = getAllSubSections($_GET['section']);
 	
 	# permissions
 	foreach($subsections as $k=>$ss) {
@@ -143,7 +145,7 @@ else
 $sectionPermission = checkSectionPermission ($sectionId);
 if($sectionPermission == 3) {
 	print "<div class='action'>";
-	if(isset($_REQUEST['subnetId'])) {
+	if(isset($_GET['subnetId'])) {
 	print "	<button class='btn btn-xs btn-default pull-left' id='hideSubnets' rel='tooltip' title='"._('Hide subnet list')."' data-placement='right'><i class='fa fa-gray fa-sm fa-chevron-left'></i></button>";
 	}
 	print "	<span>"._('Add new');

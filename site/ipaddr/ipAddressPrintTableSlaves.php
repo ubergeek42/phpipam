@@ -9,7 +9,7 @@ $('body').tooltip({ selector: '[rel=tooltip]' });
  ***************************************************************************************/
 
 /* get master subnet ID */
-$subnetId = $_REQUEST['subnetId'];
+$subnetId = $_GET['subnetId'];
 
 /* get all slaves */
 $slaves = getAllSlaveSubnetsBySubnetId ($subnetId);

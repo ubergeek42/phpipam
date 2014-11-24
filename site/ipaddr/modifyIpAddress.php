@@ -14,9 +14,9 @@ require_once('../../functions/functions.php');
 CheckReferrer();
 
 /* get posted values */
-$subnetId= $_REQUEST['subnetId'];
-$action  = $_REQUEST['action'];
-$id      = $_REQUEST['id'];
+$subnetId= $_POST['subnetId'];
+$action  = $_POST['action'];
+$id      = $_POST['id'];
 
 /* set subnet -> for adding new only */
 $subnet = getSubnetDetailsById($subnetId);
@@ -117,7 +117,7 @@ $myFieldsSize = sizeof($myFields);
 		<td><?php print _('IP address'); ?> *</td>
 		<td>
 		<div class="input-group">
-			<input type="text" name="ip_addr" class="ip_addr form-control input-sm" value="<?php print $details['ip_addr']; if(is_numeric($_REQUEST['stopIP'])>0) print "-".transform2long($_REQUEST['stopIP']); ?>" placeholder="<?php print _('IP address'); ?>">
+			<input type="text" name="ip_addr" class="ip_addr form-control input-sm" value="<?php print $details['ip_addr']; if(is_numeric($_POST['stopIP'])>0) print "-".transform2long($_POST['stopIP']); ?>" placeholder="<?php print _('IP address'); ?>">
     		<span class="input-group-addon">
     			<i class="fa fa-gray fa-info" rel="tooltip" data-html='true' data-placement="left" title="<?php print _('You can add,edit or delete multiple IP addresses<br>by specifying IP range (e.g. 10.10.0.0-10.10.0.25)'); ?>"></i>
     		</span>

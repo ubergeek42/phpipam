@@ -10,8 +10,9 @@ require_once('../../functions/functions.php');
 /* verify that user is admin */
 checkAdmin();
 
-/* prevent XSS in action */
-$_POST['action'] = filter_user_input ($_POST['action'], false, true, true);
+/* filter input */
+$_POST = filter_user_input($_POST, true, true, false);
+$_POST['action'] = filter_user_input($_POST['action'], false, false, true);
 
 /* get lang details */
 $w = getwidgetById ($_POST['wid']);

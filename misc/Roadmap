@@ -1,6 +1,8 @@
 version - 1.1
 
 	+ Max VLANs: highest vlan number possible can be set (e.g. 1024)
+	
+	+ Fix installation script with next step
 
 	+ Per-admin changelog mailing
 
@@ -14,6 +16,8 @@ version - 1.1
 		https://sourceforge.net/p/phpipam/feature-requests/204/
 	
 	+ Change install script, add more options (eg drop database, set user permissions, ...)
+	
+	+ Fix request+ip not working
 
 
 version - 1.2

@@ -5,12 +5,17 @@
 ini_set('session.gc_maxlifetime', '86400');
 ini_set('session.save_path', '/tmp/php_sessions/');
 */
-
-session_start();
-ob_start();
+/* some sanitizations */
+ini_set("session.use_only_cookies", "1");
+ini_set("session.use_trans_sid", "0");
 
 /* site config */
 require('config.php');
+
+/* start session */
+session_name($phpsessname);
+session_start();
+ob_start();
 
 /* site functions */
 require('functions/functions.php');
@@ -29,7 +34,9 @@ else {
 }
 
 /* escape GET vars to prevent SQL injection */
-$_GET = filter_user_input ($_GET, true, true);
+$_GET 		= filter_user_input ($_GET, true, true);
+$_REQUEST 	= filter_user_input ($_REQUEST, true, true);
+
 
 /* verify login and permissions */
 if($_GET['page']!="login" && $_GET['page']!="request_ip"  && $_GET['page']!="upgrade" && $_GET['page']!="install") { isUserAuthenticatedNoAjax(); }
@@ -88,8 +95,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 	<!-- js -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/jclock.jquery.js"></script>
-	<script type="text/javascript" src="js/md5.js"></script>
-	<?php if($_GET['page']=="login" || $_GET['page'=="logout"]|| $_GET['page']=="request_ip") { ?>
+	<?php if($_GET['page']=="login" || $_GET['page']=="request_ip") { ?>
 	<script type="text/javascript" src="js/login.js"></script>
 	<?php } ?>
 <!-- 	<script type="text/javascript" src="js/magic-1.0.min.js"></script> -->
@@ -128,31 +134,33 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <!-- loader -->
 <div class="loading"><?php print _('Loading');?>...<br><i class="fa fa-spinner fa-spin"></i></div>
 
-
-<!-- helpers -->
-<!--
-<div class="visible-xs">XS</div>
-<div class="visible-sm">SM</div>
-<div class="visible-md">MD</div>
-<div class="visible-lg">LG</div>
--->
-
 <!-- header -->
 <div class="row" id="header">
 
+	<?php 
+	# print login, request_ip, upgrade and install
+	if($_GET['page']=="login" || $_GET['page']=="request_ip" || $_GET['page']=="upgrade" || $_GET['page']=="install")  { ?>
+	<div class="col-xs-12">
+		<div class="hero-unit" style="padding:20px;margin-bottom:10px;">
+			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
+		</div>
+	</div>	
+	<?php
+	}
+	# print normal page
+	else { ?>
 	<!-- usermenu -->
 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pull-right" id="user_menu">
-		<?php if($_GET['page']!="login" && $_GET['page']!="logout" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") include('site/userMenu.php');?>
+		<?php include('site/userMenu.php'); ?>
 	</div>
-  
- 
 	<!-- title -->
 	<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
 		<div class="hero-pusher hidden-xs hidden-sm"></div>
 		<div class="hero-unit">
-			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
+			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; ?></a>
 		</div>
-	</div>
+	</div>	
+	<?php } ?>
 	
 </div>  
 
@@ -161,7 +169,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 <div class="content">
 <div id="sections_overlay">
 	<?php $user = getActiveUserDetails(); ?>
-    <?php if($_GET['page']!="login" && $_GET['page']!="logout" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
+    <?php if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
 </div>
 </div>
 
@@ -178,7 +186,7 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 			print "</div>";
 		}
 		/* password reset required */
-		elseif($user['passChange']=="Yes" && $_GET['page']!="logout") {
+		elseif($user['passChange']=="Yes") {
 			print "<div id='dashboard' class='container'>";
 			include_once("site/tools/changePassRequired.php");
 			print "</div>";					
@@ -195,8 +203,8 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 			include_once("site/install/index.php");
 			print "</div>";			
 		}
-		/* login, logout, ipRequest */
-		elseif($_GET['page'] == "login" || $_GET['page'] == "logout" || $_GET['page'] == "request_ip") {
+		/* login, ipRequest */
+		elseif($_GET['page'] == "login" || $_GET['page'] == "request_ip") {
 			print "<div id='dashboard'>";
 			include_once("site/login/index.php");
 			print "</div>";			

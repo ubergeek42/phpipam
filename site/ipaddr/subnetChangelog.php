@@ -8,20 +8,20 @@
 isUserAuthenticated ();
 
 # get clog entries
-$clogs = getChangelogEntries("subnet", $_REQUEST['subnetId']);
+$clogs = getChangelogEntries("subnet", $_GET['subnetId']);
 
 # changelog for allslaves
-$clogsSlaves = getSubnetSlaveChangelogEntries($_REQUEST['subnetId']);
+$clogsSlaves = getSubnetSlaveChangelogEntries($_GET['subnetId']);
 
 # changelog for each IP address, also in slave subnets
-$clogsIP = getSubnetIPChangelogEntries($_REQUEST['subnetId']);
+$clogsIP = getSubnetIPChangelogEntries($_GET['subnetId']);
 
 # get subnet
-$subnetDetails = getSubnetDetailsById ($_REQUEST['subnetId']);
+$subnetDetails = getSubnetDetailsById ($_GET['subnetId']);
 
 
 # permissions
-$permission = checkSubnetPermission ($_REQUEST['subnetId']);
+$permission = checkSubnetPermission ($_GET['subnetId']);
 if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not have permission to access this network')."!</div>"); }
 
 # header

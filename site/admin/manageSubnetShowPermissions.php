@@ -16,6 +16,10 @@ if (!checkAdmin()) die('');
 /* escape vars to prevent SQL injection */
 $_POST = filter_user_input ($_POST, true, true);
 
+/* must be numeric */
+if(!is_numeric($_POST['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+
+
 /* verify post */
 CheckReferrer();
 
