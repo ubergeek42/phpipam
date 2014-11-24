@@ -9,14 +9,6 @@ $('body').tooltip({ selector: '[rel=tooltip]' });
  * Print sorted IP addresses
  ***********************************************************************/
  
- /* filter input */
-$_GET = filter_user_input($_GET, true, true, false);
-/* must be numeric */
-if(!is_numeric($_GET['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
-if(!is_numeric($_GET['section']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
- 
-/* get posted subnet, die if it is not provided! */
-if($_GET['subnetId']) { $subnetId = $_GET['subnetId']; }
 
 /* direct call */
 if(!isset($_POST['direction'])) {
@@ -45,6 +37,14 @@ else {
 	*/
 	$SubnetParsed = parseIpAddress ( transform2long($SubnetDetails['subnet']), $SubnetDetails['mask']);
 }
+
+/* filter input */
+$_REQUEST = filter_user_input($_REQUEST, true, true, false);
+/* must be numeric */
+if(!is_numeric($_REQUEST['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+ 
+/* get posted subnet, die if it is not provided! */
+if($_REQUEST['subnetId']) { $subnetId = $_REQUEST['subnetId']; }
 
 /* verify that user is authenticated! */
 isUserAuthenticated ();
@@ -131,20 +131,20 @@ $repeats   = ceil($sizeIP / $pageLimit); 		// times to repeat body
 
 # set page number from post
 $maxPages = round($sizeIP/$pageLimit,0);																								// set max number of pages
-if(@$_GET['sPage']>$repeats || !isset($_GET['sPage']))	{ $_GET['sPage'] = 1; }												// reset to 1 if number too big
-elseif(!is_numeric($_GET['sPage']))							{ $_GET['sPage'] = str_replace("page", "", $_GET['sPage']); }	// remove p from page
+if(@$_REQUEST['sPage']>$repeats || !isset($_REQUEST['sPage']))	{ $_REQUEST['sPage'] = 1; }												// reset to 1 if number too big
+elseif(!is_numeric($_REQUEST['sPage']))							{ $_REQUEST['sPage'] = str_replace("page", "", $_REQUEST['sPage']); }	// remove p from page
 
 ?>
 <br>
 
 <h4><?php print $title; ?>
-<?php if($sizeIP  > $pageLimit) { print " (<span class='stran'>"._('Page')." $_GET[sPage]/$repeats</span>)"; }  ?>
+<?php if($sizeIP  > $pageLimit) { print " (<span class='stran'>"._('Page')." $_REQUEST[sPage]/$repeats</span>)"; }  ?>
 </h4>
 
 <?php 
 # pagination
 if($sizeIP  > $pageLimit) {
-	print_pagination ($_GET['sPage'], $repeats);
+	print_pagination ($_REQUEST['sPage'], $repeats);
 }
 ?>
 
@@ -199,8 +199,10 @@ $statuses = explode(";", $settings['pingStatus']);
 
 # if no IP is configured only display free subnet!
 if (sizeof($ipaddresses) == 0) {
-    $unused = FindUnusedIpAddresses ( Transform2decimal($SubnetParsed['network']), Transform2decimal($SubnetParsed['broadcast']), $type, 1, "networkempty", $SubnetDetails['mask'] );
-    print '<tr class="th"><td colspan="'. $colspan['empty'] .'" class="unused">'. $unused['ip'] . ' (' . reformatNumber ($unused['hosts']) .')</td></tr>'. "\n";
+	if($settings['hideFreeRange']!=1) {
+    	$unused = FindUnusedIpAddresses ( Transform2decimal($SubnetParsed['network']), Transform2decimal($SubnetParsed['broadcast']), $type, 1, "networkempty", $SubnetDetails['mask'] );
+		print '<tr class="th"><td colspan="'. $colspan['empty'] .'" class="unused">'. $unused['ip'] . ' (' . reformatNumber ($unused['hosts']) .')</td></tr>'. "\n";
+    }
 }
 # print IP address
 else {
@@ -215,7 +217,7 @@ else {
 	
 	foreach($ipaddressesChunk as $ipaddresses2) {
 	
-		if($c == $_GET['sPage']) 	{ $show = true;  $display = "display:block;";}
+		if($c == $_REQUEST['sPage']) 	{ $show = true;  $display = "display:block;";}
 		else 							{ $show = false; $display = "display:none";  }
 
 		foreach($ipaddresses2 as $ipaddress2)  
@@ -238,11 +240,13 @@ else {
 		       	}
 		       	
 		       	/* if there is some result for unused print it - if sort == ip_addr */
-			    if ( $unused && ($sort['field'] == 'ip_addr') && $sort['direction'] == "asc" ) { 
-	        		print "<tr class='th'>";
-	        		print "	<td></td>";
-	        		print "	<td colspan='$colspan[unused]' class='unused'>$unused[ip] ($unused[hosts])</td>";
-	        		print "</tr>"; 
+		       	if($settings['hideFreeRange']!=1) {
+				    if ( $unused && ($sort['field'] == 'ip_addr') && $sort['direction'] == "asc" ) { 
+		        		print "<tr class='th'>";
+		        		print "	<td></td>";
+		        		print "	<td colspan='$colspan[unused]' class='unused'>$unused[ip] ($unused[hosts])</td>";
+		        		print "</tr>"; 
+		        	}	
 	        	}
 	
 	
@@ -298,7 +302,7 @@ else {
 					    $hTooltip = "";
 				    }   
 				    			    
-				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'],"ipdetails",$ipaddress[$n]['id'])."'>".Transform2long( $ipaddress[$n]['ip_addr']);
+				    print "	<td class='ipaddress'><span class='status status-$hStatus' $hTooltip></span><a href='".create_link("subnets",$_REQUEST['section'],$_REQUEST['subnetId'],"ipdetails",$ipaddress[$n]['id'])."'>".Transform2long( $ipaddress[$n]['ip_addr']);
 				    if(in_array('state', $setFields)) 				{ print reformatIPState($ipaddress[$n]['state']); }	
 				    print "</td>";
 		
@@ -415,10 +419,12 @@ else {
 				****************************************************/
 				if ( $n == $m ) 
 				{   
-	            	$unused = FindUnusedIpAddresses ( $ipaddresses[$n]['ip_addr'], Transform2decimal($SubnetParsed['broadcast']), $type, 1, "broadcast", $SubnetDetails['mask'] );
-	            	if ( $unused  ) {
-	            	    print '<tr class="th"><td></td><td colspan="'. $colspan['unused'] .'" class="unused">'. $unused['ip'] . ' (' . $unused['hosts'] .')</td><td colspan=2></td></tr>'. "\n";
-	            	}    
+					if($settings['hideFreeRange']!=1) {
+		            	$unused = FindUnusedIpAddresses ( $ipaddresses[$n]['ip_addr'], Transform2decimal($SubnetParsed['broadcast']), $type, 1, "broadcast", $SubnetDetails['mask'] );
+		            	if ( $unused  ) {
+		            	    print '<tr class="th"><td></td><td colspan="'. $colspan['unused'] .'" class="unused">'. $unused['ip'] . ' (' . $unused['hosts'] .')</td><td colspan=2></td></tr>'. "\n";
+		            	}    
+	            	}
 	            }	
             }   
             
@@ -437,7 +443,7 @@ else {
 <?php 
 # pagination
 if($sizeIP  > $pageLimit) {
-	print_pagination ($_GET['sPage'], $repeats);
+	print_pagination ($_REQUEST['sPage'], $repeats);
 }
 ?>
 

@@ -1207,3 +1207,29 @@ msgstr ""
 
 msgid "Please note that mod_rewrite is required with appropriate settings if pretified links are selected."
 msgstr ""
+
+
+### 1.07.002 ##
+
+#: site/admin/settings.php
+msgid "Hide free range"
+msgstr ""
+
+msgid "Do not display free range in IP address and subnets list"
+msgstr ""
+
+msgid "Highest VLAN number"
+msgstr ""
+
+msgid "Set highest VLAN number (default 4096)"
+msgstr ""
+
+#: site/admin/manageVLANresult.php
+msgid "Highest possible VLAN number is "
+msgstr ""
+
+msgid "VLAN number cannot be negative"
+msgstr ""
+
+msgid "Not number"
+msgstr ""

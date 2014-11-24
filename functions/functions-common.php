@@ -76,7 +76,7 @@ function validate_get ($get)
 {
 	# l1 check
 	if(isset($get['page']))	{
-		$valid = array("administration","dashboard","install","ipaddr","login","tools","upgrade","error","subnets","folder","vlan","vrf","request_ip");
+		$valid = array("administration","dashboard","install","ipaddr","login","tools","upgrade","error","subnets","folder","vlan","vrf","request_ip","widgets");
 		if(!in_array($get['page'], $valid)) {
 			header("Location:".create_link("error","406"));
 		}

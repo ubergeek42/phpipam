@@ -1,6 +1,4 @@
 version - 1.1
-
-	+ Max VLANs: highest vlan number possible can be set (e.g. 1024)
 	
 	+ Fix installation script with next step
 
@@ -12,12 +10,9 @@ version - 1.1
 		
 	+ delete confirmation
 	
-	+ Option in administration to not display free range
-		https://sourceforge.net/p/phpipam/feature-requests/204/
-	
 	+ Change install script, add more options (eg drop database, set user permissions, ...)
 	
-	+ Fix request+ip not working
+	+ select which custom field to show in tables !
 
 
 version - 1.2

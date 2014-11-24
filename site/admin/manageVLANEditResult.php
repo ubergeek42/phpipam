@@ -29,6 +29,13 @@ if($vlan['action'] == "add") {
 }
 }
 
+/* if number too high */
+if($vlan['number']>$settings['vlanMax'])	{ die('<div class="alert alert-danger">'._('Highest possible VLAN number is ').$settings['vlanMax'].'!</div>'); }
+if($vlan['action']=="add") {
+	if($vlan['number']<0)					{ die('<div class="alert alert-danger">'._('VLAN number cannot be negative').'!</div>'); }
+	elseif(!is_numeric($vlan['number']))	{ die('<div class="alert alert-danger">'._('Not number').'!</div>'); }
+}
+
 //custom
 $myFields = getCustomFields('vlans');
 if(sizeof($myFields) > 0) {

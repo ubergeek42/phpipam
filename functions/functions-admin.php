@@ -1798,6 +1798,7 @@ function updateSettings($settings)
     $query   .= '`printLimit` 	      = "'. $settings['printLimit'] .'", ' . "\n"; 
     $query   .= '`visualLimit` 	      = "'. $settings['visualLimit'] .'", ' . "\n"; 
     $query   .= '`vlanDuplicate` 	  = "'. isCheckbox($settings['vlanDuplicate']) .'", ' . "\n"; 
+    $query   .= '`vlanMax` 	      	  = "'. $settings['vlanMax'] .'", ' . "\n"; 
     $query   .= '`api` 	  			  = "'. isCheckbox($settings['api']) .'", ' . "\n"; 
     $query   .= '`enableChangelog` 	  = "'. isCheckbox($settings['enableChangelog']) .'", ' . "\n"; 
     $query   .= '`subnetOrdering` 	  = "'. $settings['subnetOrdering'] .'", ' . "\n"; 
@@ -1805,6 +1806,7 @@ function updateSettings($settings)
     $query   .= '`scanPingPath` 	  = "'. $settings['scanPingPath'] .'", ' . "\n"; 
     $query   .= '`scanMaxThreads` 	  = "'. $settings['scanMaxThreads'] .'", ' . "\n"; 
     $query   .= '`prettyLinks` 	  	  = "'. $settings['prettyLinks'] .'", ' . "\n"; 
+    $query   .= '`hideFreeRange` 	  = "'. isCheckbox($settings['hideFreeRange']) .'", ' . "\n"; 
     $query   .= '`defaultLang` 	  	  = "'. $settings['defaultLang'] .'" ' . "\n"; 
 	$query   .= 'where id = 1;' . "\n"; 
 
@@ -2381,7 +2383,7 @@ function verifyDatabase()
 	$fields['logs']			  = array("severity", "date", "username", "ipaddr", "command", "details");
 	$fields['requests']		  = array("subnetId", "ip_addr", "description", "dns_name", "owner", "requester", "comment", "processed", "accepted", "adminComment");
 	$fields['sections']		  = array("name", "description", "permissions", "strictMode", "subnetOrdering", "order", "showVLAN", "showVRF", "masterSection");
-	$fields['settings']		  = array("siteTitle", "siteAdminName", "siteAdminMail", "siteDomain", "siteURL", "domainAuth", "enableIPrequests", "enableVRF", "enableDNSresolving", "version", "dbverified", "donate", "IPfilter", "printLimit", "visualLimit", "vlanDuplicate", "subnetOrdering", "pingStatus", "defaultLang", "api", "editDate", "vcheckDate", "dhcpCompress", "enableChangelog", "scanPingPath", "scanMaxThreads");
+	$fields['settings']		  = array("siteTitle", "siteAdminName", "siteAdminMail", "siteDomain", "siteURL", "domainAuth", "enableIPrequests", "enableVRF", "enableDNSresolving", "version", "dbverified", "donate", "IPfilter", "printLimit", "visualLimit", "vlanDuplicate", "vlanMax", "subnetOrdering", "pingStatus", "defaultLang", "api", "editDate", "vcheckDate", "dhcpCompress", "enableChangelog", "scanPingPath", "scanMaxThreads", "prettyLinks", "hideFreeRange", "hiddenCustomFields");
 	$fields['settingsDomain'] = array("account_suffix", "base_dn", "domain_controllers", "use_ssl", "use_tls", "ad_port", "adminUsername", "adminPassword");
 	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "isFolder");
 	$fields['devices'] 	  	  = array("hostname", "ip_addr", "type", "vendor", "model", "version", "description", "sections");

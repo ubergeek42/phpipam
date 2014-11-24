@@ -16,8 +16,12 @@ $_POST['action'] = filter_user_input ($_POST['action'], false, true, true);
 $_POST = filter_user_input ($_POST, true, true);
 
 /* must be numeric */
-if(!is_numeric($_POST['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
-if(!is_numeric($_POST['sectionId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if($_POST['action']=="add") {
+	if(!is_numeric($_POST['sectionId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+} else {
+	if(!is_numeric($_POST['subnetId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+	if(!is_numeric($_POST['sectionId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }	
+}
 
 
 
@@ -103,32 +107,29 @@ else if (($_POST['action'] == "add") && ($_POST['masterSubnetId'] == 0)) {
 else if ($_POST['action'] == "add") {
     /* first verify user input */
     $errors   	= verifyCidr ($_POST['subnet']);
+    
+    /* disable checks for folders and if strict check enabled */
+    if($section['strictMode'] == 1 && !$parentIsFolder ) {
 
-    /* verify that nested subnet is inside root subnet */
-    if ($section['strictMode'] == 1 && !$parentIsFolder) {
+	    /* verify that nested subnet is inside root subnet */
         if (!$overlap = verifySubnetNesting($_POST['masterSubnetId'], $_POST['subnet'])) {
             $errors[] = _('Nested subnet not in root subnet!');
         }
-    }
-    /* verify that no overlapping occurs if we are adding nested subnet */
-    if ($section['strictMode'] == 1 && !$parentIsFolder) {
-        if ($overlap = verifyNestedSubnetOverlapping($_POST['sectionId'], $_POST['subnet'], $_POST['vrfId'], $_POST['masterSubnetId'])) {
-            $errors[] = $overlap;
-        }
-    } else {
-        if ($overlap = verifySubnetOverlapping($_POST['sectionId'], $_POST['subnet'], $_POST['vrfId'], $_POST['masterSubnetId'])) {
-            $errors[] = $overlap;
-        }
+    
+	    /* nested? */
+	    if($_POST['masterSubnetId']!= 0) {
+	        if ($overlap = verifyNestedSubnetOverlapping($_POST['sectionId'], $_POST['subnet'], $_POST['vrfId'], $_POST['masterSubnetId'])) {
+	            $errors[] = $overlap;
+	        }		    
+	    }
+	    /* not nested */
+	    else {
+	        if ($overlap = verifySubnetOverlapping($_POST['sectionId'], $_POST['subnet'], $_POST['vrfId'], $_POST['masterSubnetId'])) {
+	            $errors[] = $overlap;
+	        }		    
+	    }
     }
     
-  
-   
-    /* verify that no overlapping occurs if we are adding nested subnet */
-    if($section['strictMode'] == 1 && !$parentIsFolder) {
-   		if ( $overlap = verifyNestedSubnetOverlapping ($_POST['sectionId'], $_POST['subnet'], $_POST['vrfId'], $_POST['masterSubnetId']) ) {
-    		$errors[] = $overlap;
-    	}
-    }
 } 
 /**
  * Check if slave is under master

@@ -1,4 +1,4 @@
-== 1.06.006
+== 1.07.002
 
 	Enhancements:
 	----------------------------
@@ -9,6 +9,8 @@
 	+ Now using only 1 network connection towards MySQL server;
 	+ Updated pagination;
 	+ mod_rewrite no longer required, selectable URL structure under settings;
+	+ Added option not to display free ranges;
+	+ Added option to set maximum VLAN number;
 
 	Security Fixes:
 	----------------------------

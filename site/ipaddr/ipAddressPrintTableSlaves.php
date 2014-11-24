@@ -49,6 +49,7 @@ $m = 0;
 foreach ($slaves as $slave) {
 
 	# if first check for free space
+	if($settings['hideFreeRange']!=1) {
 	if($m == 0) {
 		# if master start != first slave start print free space
 		if($master['subnet'] != $slave['subnet']) {
@@ -60,8 +61,7 @@ foreach ($slaves as $slave) {
 			print "	<td class='small description'><a href='#' data-sectionId='$section[id]' data-masterSubnetId='$subnetId' class='btn btn-sm btn-default createfromfree' data-cidr='".getFirstPossibleSubnet(transform2long($master['subnet']) , $diff, false)."'><i class='fa fa-plus'></i></a> "._('Free space')."</td>";
 			print "	<td colspan='5'>". transform2long($master['subnet']) ." - ". transform2long(gmp_strval(gmp_add($master['subnet'], gmp_sub($diff,1)))) ." ( ".$diff." )</td>";
 			print "</tr>";
-		}
-	}
+	}	}	}
 
 	
 	# reformat empty VLAN
@@ -123,6 +123,7 @@ foreach ($slaves as $slave) {
 	
 	
 	# check if some free space between this and next subnet
+	if($settings['hideFreeRange']!=1) {
 	if(isset($slaves[$m+1])) {
 		# get IP type
 		if ( IdentifyAddress( $master['subnet'] ) == "IPv4") 	{ $type = 0; }
@@ -145,8 +146,7 @@ foreach ($slaves as $slave) {
 			print "	<td class='small description'><a href='#' data-sectionId='$section[id]' data-masterSubnetId='$subnetId' class='btn btn-sm btn-default createfromfree' data-cidr='".getFirstPossibleSubnet(transform2long(gmp_strval(gmp_add($slave['maxip'], $slave['subnet']))) , $diff, false)."'><i class='fa fa-plus'></i></a> "._('Free space')."</td>";
 			print "	<td colspan='5'>". transform2long(gmp_strval(gmp_add($slave['maxip'], $slave['subnet']))) ." - ". transform2long(gmp_strval(gmp_add(gmp_add($slave['maxip'], $slave['subnet']), gmp_sub($diff,1)))) ." ( ".$diff." )</td>";
 			print "</tr>";			
-		}		
-	}
+		}	}	}
 	
 	# next - for free space check
 	$m++;	
@@ -172,13 +172,14 @@ foreach ($slaves as $slave) {
 		$diff   = gmp_strval(gmp_sub($max_m, $max_s));
 	
 		# if slave stop < master stop print free space
+		if($settings['hideFreeRange']!=1) {
 		if($max_m > $max_s) {			
 			print "<tr class='success'>";
 			print "	<td></td>";
 			print "	<td class='small description'><a href='#' data-sectionId='$section[id]' data-masterSubnetId='$subnetId' class='btn btn-sm btn-default createfromfree' data-cidr='".getFirstPossibleSubnet(transform2long(gmp_strval(gmp_sub($max_m, $diff))) , $diff, false)."'><i class='fa fa-plus'></i></a> "._('Free space')."</td>";
 			print "	<td colspan='5'>". transform2long(gmp_strval(gmp_sub($max_m, $diff))) ." - ". transform2long(gmp_strval(gmp_sub($max_m, 1))) ." ( $diff )</td>";
 			print "</tr>";
-		}	
+		}	}
 	}
 
 }

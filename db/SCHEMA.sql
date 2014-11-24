@@ -160,6 +160,7 @@ CREATE TABLE `settings` (
   `IPfilter` varchar(128) DEFAULT NULL,
   `printLimit` int(4) unsigned DEFAULT '25',
   `vlanDuplicate` int(1) DEFAULT '0',
+  `vlanMax` INT(8)  NULL  DEFAULT '4096',
   `subnetOrdering` varchar(16) DEFAULT 'subnet,asc',
   `visualLimit` int(2) NOT NULL DEFAULT '0',
   `pingStatus` VARCHAR(12)  NOT NULL  DEFAULT '1800;3600',
@@ -172,6 +173,8 @@ CREATE TABLE `settings` (
   `scanPingPath` VARCHAR(64)  NULL  DEFAULT '/bin/ping',
   `scanMaxThreads` INT(4)  NULL  DEFAULT '128',
   `prettyLinks` SET("Yes","No")  NOT NULL  DEFAULT 'No',
+  `hideFreeRange` tinyint(1) DEFAULT '0',
+  `hiddenCustomFields` VARCHAR(1024)  NULL  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -556,4 +559,4 @@ CREATE TABLE `loginAttempts` (
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.06';
+UPDATE `settings` set `version` = '1.07';

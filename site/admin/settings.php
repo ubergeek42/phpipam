@@ -200,6 +200,17 @@ $langs = getLanguages ();
 	</td>
 </tr>
 
+<!-- Max VLAN number -->
+<tr>
+	<td class="title"><?php print _('Highest VLAN number'); ?></td>
+	<td>
+		<input type="text" class="form-control input-sm" name="vlanMax" value="<?php print $settings['vlanMax']; ?>">
+	</td>
+	<td class="info2">
+		<?php print _('Set highest VLAN number (default 4096)'); ?>
+	</td>
+</tr>
+
 <!-- changelog -->
 <tr>
 	<td class="title"><?php print _('Changelog'); ?></td>
@@ -264,6 +275,17 @@ $langs = getLanguages ();
 	</td>
 	<td class="info2">
 		<?php print _('Compress DHCP ranges in IP table'); ?>
+	</td>
+</tr>
+
+<!-- Hide free range -->
+<tr>
+	<td class="title"><?php print _('Hide free range'); ?></td>
+	<td>
+		<input type="checkbox" value="1" name="hideFreeRange" <?php if($settings['hideFreeRange'] == 1) print 'checked'; ?>>
+	</td>
+	<td class="info2">
+		<?php print _('Do not display free range in IP address and subnets list'); ?>
 	</td>
 </tr>
 
