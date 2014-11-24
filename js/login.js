@@ -25,7 +25,10 @@ function hideSpinner() {
 
 /*	Login redirect function if success
 ****************************************/
-function loginRedirect() { window.location="/"; }
+function loginRedirect() { 
+	var base = $('.iebase').html();
+	window.location=base; 
+}
 
 /*	submit login 
 *********************/

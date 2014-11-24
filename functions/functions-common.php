@@ -52,12 +52,12 @@ function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null 
 	}
 	# normal
 	else {
-		if(!is_null($l5))		{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4&ipaddrid=$l5"; }
-		elseif(!is_null($l4))	{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4"; }
-		elseif(!is_null($l3))	{ $link = "?page=$l1&section=$l2&subnetId=$l3"; }
-		elseif(!is_null($l2))	{ $link = "?page=$l1&section=$l2"; }
-		elseif(!is_null($l1))	{ $link = "?page=$l1"; }
-		else					{ $link = ""; }
+		if(!is_null($l5))		{ $link = BASE."?page=$l1&section=$l2&subnetId=$l3&sPage=$l4&ipaddrid=$l5"; }
+		elseif(!is_null($l4))	{ $link = BASE."?page=$l1&section=$l2&subnetId=$l3&sPage=$l4"; }
+		elseif(!is_null($l3))	{ $link = BASE."?page=$l1&section=$l2&subnetId=$l3"; }
+		elseif(!is_null($l2))	{ $link = BASE."?page=$l1&section=$l2"; }
+		elseif(!is_null($l1))	{ $link = BASE."?page=$l1"; }
+		else					{ $link = BASE.""; }
 	}
 	
 	# result
