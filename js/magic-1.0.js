@@ -1771,6 +1771,28 @@ $('table.customIP button.down').click(function() {
     }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
     return false;
 });
+//filter
+$('.edit-custom-filter').click(function() {
+	showSpinner();
+	var table = $(this).attr('data-table');
+    $.post('site/admin/customFieldsFilter.php',  {table:table}, function(data) {
+        $('div.popup_w500').html(data);
+        showPopup('popup_w500');
+        hideSpinner();
+    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
+    return false;
+});
+$(document).on("click", "#editcustomFilterSubmit", function() {
+    showSpinner();
+    var field = $('form#editCustomFieldsFilter').serialize();
+    $.post('site/admin/customFieldsFilterResult.php', field, function(data) {
+        $('div.customEditFilterResult').html(data).slideDown('fast');
+        //reload after 2 seconds if succeeded!
+        if(data.search("alert-danger") == -1)   { setTimeout(function (){window.location.reload();}, 1500); }
+        else                             		{ hideSpinner(); }
+    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
+    return false;
+});
 
 
 

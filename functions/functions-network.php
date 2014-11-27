@@ -279,6 +279,34 @@ function getAllSubnetsInSectionVlan ($vlanId, $sectionId, $orderType = "subnet",
 
 
 /**
+ *	Get All subnets inside  vlan
+ */
+function getAllSubnetsInVlan ($vlanId)
+{
+    global $database;                                                                     
+
+    /* check for sorting in settings and override */
+    $settings = getAllSettings();
+
+	/* execute query */
+	$query = "select * from `subnets` where `vlanId` = '$vlanId' ORDER BY `sectionId` asc;";
+	
+    /* execute */
+    try { $subnets = $database->getArray( $query ); }
+    catch (Exception $e) { 
+        $error =  $e->getMessage(); 
+        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+        return false;
+    } 	
+    
+   	/* return false if none, else list */
+	if(sizeof($subnets) == 0) 	{ return false; }
+	else 						{ return $subnets; }
+}
+
+
+
+/**
  *	Check if subnet is in vlan
  */
 function isSubnetIdVlan ($subnetId, $vlanId)
@@ -1874,7 +1902,7 @@ function getAllVlans($tools = false)
 	}
 		
     /* check if it came from tools and use different query! */
-    if($tools) 	{ $query = 'SELECT vlans.number,vlans.name,vlans.description,subnets.subnet,subnets.mask,subnets.id AS subnetId,subnets.sectionId'.$myFieldsInsert['id'].' FROM vlans LEFT JOIN subnets ON subnets.vlanId = vlans.vlanId ORDER BY vlans.number ASC;'; }
+    if($tools) 	{ $query = 'SELECT vlans.vlanId,vlans.number,vlans.name,vlans.description,subnets.subnet,subnets.mask,subnets.id AS subnetId,subnets.sectionId'.$myFieldsInsert['id'].' FROM vlans LEFT JOIN subnets ON subnets.vlanId = vlans.vlanId ORDER BY vlans.number ASC;'; }
     else 		{ $query = 'select * from `vlans` order by `number` asc;'; }
 
     /* execute */

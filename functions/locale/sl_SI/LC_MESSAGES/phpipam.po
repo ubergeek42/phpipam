@@ -4,7 +4,7 @@
 # miha petkovsek <miha.petkovsek@gmail.com>, 2013.
 #
 
-# "Project-Id-Version: 1.04.001\n"
+# "Project-Id-Version: 1.07.001\n"
 # "Report-Msgid-Bugs-To: Miha Petkovsek <miha.petkovsek@gmail.com>\n"
 # "POT-Creation-Date: 2013-04-02 14:33+0200\n"
 # "PO-Revision-Date: 2013-06-28 14:33+0200\n"
@@ -4720,3 +4720,26 @@ msgstr "Uporabi lepšo strukturo URL zapisa"
 
 msgid "Please note that mod_rewrite is required with appropriate settings if pretified links are selected."
 msgstr "Za uporabo lepših URL zapisov je zahtevan mod_rewrite modul s pravilnimi nastavitvami."
+
+#: site/admin/settings.php
+msgid "Hide free range"
+msgstr "Skrij prikaz prostega razpona"
+
+msgid "Do not display free range in IP address and subnets list"
+msgstr "Skrij prikaz prostega razpona IP naslovov in omrežij"
+
+msgid "Highest VLAN number"
+msgstr "Najvišja VLAN številka"
+
+msgid "Set highest VLAN number (default 4096)"
+msgstr "Nastavitev najvišje VLAN številke (privzeto 4096)"
+
+#: site/admin/manageVLANresult.php
+msgid "Highest possible VLAN number is "
+msgstr "Najvišja možna številka VLAN je "
+
+msgid "VLAN number cannot be negative"
+msgstr "VLAN številkane more biti negativna"
+
+msgid "Not number"
+msgstr "Ni številka"

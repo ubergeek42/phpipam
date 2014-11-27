@@ -19,6 +19,11 @@ $_GET = filter_user_input($_GET, true, true, false);
 /* must be numeric */
 if(!is_numeric($_GET['section']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
 
+/* set hidden fields */
+$ffields = json_decode($settings['hiddenCustomFields'], true);		
+if(is_array($ffields['subnets']))	{ $ffields = $ffields['subnets']; }
+else								{ $ffields = array(); }
+
 # title
 print "<h4>"._('Available subnets')."</h4>";
 
@@ -69,7 +74,9 @@ if($permission != "0") {
 		print "	<th class='hidden-xs hidden-sm'>"._('Hosts check')."</th>";
 		if(sizeof($custom) > 0) {
 			foreach($custom as $field) {
-				print "	<th class='hidden-xs hidden-sm'>$field[name]</th>";
+				if(!in_array($field['name'], $ffields)) {
+					print "	<th class='hidden-xs hidden-sm'>$field[name]</th>";
+				}
 			}
 		}
 		print "	<th class='actions' style='width:140px;white-space:nowrap;'></th>";

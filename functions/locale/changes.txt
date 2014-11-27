@@ -1233,3 +1233,19 @@ msgstr ""
 
 msgid "Not number"
 msgstr ""
+
+
+### 1.07.004 ###
+
+#: site/admin.custimFilterFields.php
+msgid "Fields saved"
+msgstr ""
+
+msgid "Filter custom field display"
+msgstr ""
+
+msgid "Selected fields will not be visible in table view, only in detail view"
+msgstr ""
+
+msgid "Save filter"
+msgstr ""

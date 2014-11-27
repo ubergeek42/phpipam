@@ -69,6 +69,11 @@ if(sizeof($SubnetDetails) == 0) { die('<div class="alert alert-danger">'._('Subn
 $myFields = getCustomFields('ipaddresses');
 $myFieldsSize = sizeof($myFields);
 
+/* set hidden fields */
+$ffields = json_decode($settings['hiddenCustomFields'], true);		
+if(is_array($ffields['ipaddresses']))	{ $ffields = $ffields['ipaddresses']; }
+else									{ $ffields = array(); }
+
 /* set size of selected fields */
 $selFieldsSize = sizeof($setFields);
 if(in_array('state', $setFields)) 	{ $selFieldsSize--; }
@@ -178,7 +183,11 @@ if($sizeIP  > $pageLimit) {
 	
 	# custom fields
 	if(sizeof($myFields) > 0) {
-		foreach($myFields as $myField) 	{ print "<th class='hidden-xs hidden-sm hidden-md'><a href='' data-id='$myField[name]|$sort[directionNext]' class='sort' data-subnetId='$SubnetDetails[id]' rel='tooltip' data-container='body' title='"._('Sort by')." $myField[name]'	>$myField[name] ";  if($sort['field'] == $myField['name']) print $icon;  print "</a></th>"; }
+		foreach($myFields as $myField) 	{ 
+			if(!in_array($myField['name'], $ffields)) {
+				print "<th class='hidden-xs hidden-sm hidden-md'><a href='' data-id='$myField[name]|$sort[directionNext]' class='sort' data-subnetId='$SubnetDetails[id]' rel='tooltip' data-container='body' title='"._('Sort by')." $myField[name]'	>$myField[name] ";  if($sort['field'] == $myField['name']) print $icon;  print "</a></th>"; 
+			}
+		}
 	}
 	?>
 
@@ -348,23 +357,25 @@ else {
 					# print custom fields 
 					if(sizeof($myFields) > 0) {
 						foreach($myFields as $myField) 					{ 
-							print "<td class='customField hidden-xs hidden-sm hidden-md'>";
-						
-							//booleans
-							if($myField['type']=="tinyint(1)")	{
-								if($ipaddress[$n][$myField['name']] == "0")		{ print _("No"); }
-								elseif($ipaddress[$n][$myField['name']] == "1")	{ print _("Yes"); }
-							} 
-							//text
-							elseif($myField['type']=="text") {
-								if(strlen($ipaddress[$n][$myField['name']])>0)	{ print "<i class='fa fa-gray fa-comment' rel='tooltip' data-container='body' data-html='true' title='".str_replace("\n", "<br>", $ipaddress[$n][$myField['name']])."'>"; }
-								else											{ print ""; }
+							if(!in_array($myField['name'], $ffields)) 	{
+								print "<td class='customField hidden-xs hidden-sm hidden-md'>";
+							
+								//booleans
+								if($myField['type']=="tinyint(1)")	{
+									if($ipaddress[$n][$myField['name']] == "0")		{ print _("No"); }
+									elseif($ipaddress[$n][$myField['name']] == "1")	{ print _("Yes"); }
+								} 
+								//text
+								elseif($myField['type']=="text") {
+									if(strlen($ipaddress[$n][$myField['name']])>0)	{ print "<i class='fa fa-gray fa-comment' rel='tooltip' data-container='body' data-html='true' title='".str_replace("\n", "<br>", $ipaddress[$n][$myField['name']])."'>"; }
+									else											{ print ""; }
+								}
+								else {
+									print $ipaddress[$n][$myField['name']];
+									
+								}
+								print "</td>"; 
 							}
-							else {
-								print $ipaddress[$n][$myField['name']];
-								
-							}
-							print "</td>"; 
 						}
 					}				    
 			    }

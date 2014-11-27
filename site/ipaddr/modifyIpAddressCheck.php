@@ -26,25 +26,26 @@ if($subnetPerm < 2) 	{ die('<div class="alert alert-danger">'._('Cannot edit IP 
 if ( !empty($_POST['ip_addr']) ) 		{ $ip['ip_addr'] = $_POST['ip_addr']; }
 else 									{ $ip['ip_addr'] = "";}
 //description
-if ( !empty($_POST['description']) ) 	{}
+if ( !empty($_POST['description']) ) 	{ $ip['description'] = $_POST['description']; }
 else 								 	{ $ip['description'] = ""; }
 //hostname
-if ( !empty($_POST['dns_name']) ) 		{}
+if ( !empty($_POST['dns_name']) ) 		{ $ip['dns_name'] = $_POST['dns_name']; }
 else 									{ $ip['dns_name'] = ""; }
 //mac
-if ( !empty($_POST['mac']) ) 			{}
+if ( !empty($_POST['mac']) ) 			{ $ip['mac'] = $_POST['mac']; }
 else 									{ $ip['mac'] = ""; }
 //owner
-if ( !empty($_POST['owner']) ) 			{}
+if ( !empty($_POST['owner']) ) 			{ $ip['owner'] = $_POST['owner']; }
 else 									{ $ip['owner'] = ""; }
 //switch
 $ip['switch'] = @$_POST['switch'];
 //port
-if ( !empty($_POST['port']) ) 			{}
+if ( !empty($_POST['port']) ) 			{ $ip['port'] = $_POST['port']; }
 else 									{ $ip['port'] = ""; }
 //note
-if ( !empty($_POST['note']) ) 			{}
+if ( !empty($_POST['note']) ) 			{ $ip['note'] = $_POST['note'];}
 else 									{ $ip['note'] = ""; }
+
 
 //custom
 $myFields = getCustomFields('ipaddresses');
@@ -113,7 +114,6 @@ if(isset($_POST['nostrict'])) {
 	else							{ $nostrict = false; }
 }
 else 								{ $nostrict = false; }
-
 
 /* check if range is being added? */
 if (strlen(strstr($ip['ip_addr'],"-")) > 0) {

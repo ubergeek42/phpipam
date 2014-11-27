@@ -1,4 +1,4 @@
-== 1.07.003
+== 1.07.005
 
 	Enhancements:
 	----------------------------
@@ -11,6 +11,7 @@
 	+ mod_rewrite no longer required, selectable URL structure under settings;
 	+ Added option not to display free ranges;
 	+ Added option to set maximum VLAN number;
+	+ Selectable custom fields to be visible/hidden in tables view and updated device/VLAN view;
 
 	Security Fixes:
 	----------------------------

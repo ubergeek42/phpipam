@@ -966,6 +966,15 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
 		}
 		}
 		
+		/* get custom fields */
+		$custom = getCustomFields('subnets');
+
+		global $settings;
+		/* set hidden fields */
+		$ffields = json_decode($settings['hiddenCustomFields'], true);		
+		if(is_array($ffields['subnets']))	{ $ffields = $ffields['subnets']; }
+		else								{ $ffields = array(); }
+		
 		# loop will be false if the root has no children (i.e., an empty menu!)
 		$loop = !empty( $children[$rootId] );
 		
@@ -1066,6 +1075,15 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
 				}
 				$html[] = "	<td class='hidden-xs hidden-sm hidden-md'>$requests</td>";
 				$html[] = "	<td class='hidden-xs hidden-sm hidden-md'>$pCheck</td>";
+				# custom
+				if(sizeof($custom)>0) {
+					foreach($custom as $field) {
+						if(!in_array($field['name'], $ffields)) {
+				    		$html[] =  "	<td class='hidden-xs hidden-sm'>".$option['value'][$field['name']]."</td>"; 
+						}
+			    	}
+				}
+				# actions
 				if($actions) {
 				$html[] = "	<td class='actions' style='padding:0px;'>";
 				$html[] = "	<div class='btn-group btn-group-xs'>";
@@ -2257,6 +2275,51 @@ function reorderCustomField($table, $next, $current)
 
 	updateLogTable ('Custom Field reordering success ('. $next .' put before '. $current .')', $log, 0);
     return true;  
+}
+
+
+/**
+ *	update filter for custom fields
+ */
+function save_filtered_custom_fields($table, $filtered)
+{	
+	# prepare
+	if(is_null($filtered))	{ $out = null; }
+	else					{ $out = $filtered; }
+	
+	# write
+	return write_custom_filter($table,$out);
+}
+
+
+/**
+ *	save filtered fields
+ */
+function write_custom_filter($table, $out)
+{
+	$settings = getAllSettings();
+	
+	if(strlen($settings['hiddenCustomFields'])>0)	{ $filterField = json_decode($settings['hiddenCustomFields'], true); }
+	else											{ $filterField = array(); }
+	
+	# set
+	if(is_null($out))	{ unset($filterField[$table]); }
+	else				{ $filterField[$table]=$out; }
+	
+	# encode
+	$filterField = json_encode($filterField);
+	
+	# write
+	global $database;
+	$query = "update `settings` set `hiddenCustomFields`='$filterField';";
+
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) { 
+        $error =  $e->getMessage(); 
+        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+        return false;
+    } 
+	return true;	
 }
 
 

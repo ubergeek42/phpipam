@@ -48,13 +48,11 @@ $customVLANFields = getCustomFields('vlans');
 	/* print custom subnet fields if any */
 	if(sizeof($customVLANFields) > 0) {
 		foreach($customVLANFields as $key=>$field) {
-			if(strlen($vlan[$key])>0) {
 			$vlan[$key] = str_replace("\n", "<br>",$vlan[$key]);
 			print "<tr>";
 			print "	<th>$key</th>";
 			print "	<td style='vertical-align:top;align:left;'>$vlan[$key]</td>";
 			print "</tr>";
-			}
 		}
 	}
 	

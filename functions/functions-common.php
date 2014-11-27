@@ -1466,6 +1466,12 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 		}
 		}
 		
+		global $settings;
+		/* set hidden fields */
+		$ffields = json_decode($settings['hiddenCustomFields'], true);		
+		if(is_array($ffields['subnets']))	{ $ffields = $ffields['subnets']; }
+		else								{ $ffields = array(); }
+		
 		# must be numeric
 		if(isset($_GET['subnetId']))	{ if(!is_numeric($_GET['subnetId']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); } }
 		
@@ -1591,7 +1597,9 @@ function printSubnets( $subnets, $actions = true, $vrf = "0", $custom = array() 
 					# custom
 					if(sizeof($custom)>0) {
 						foreach($custom as $field) {
-				    		$html[] =  "	<td class='hidden-xs hidden-sm'>".$option['value'][$field['name']]."</td>"; 
+							if(!in_array($field['name'], $ffields)) {
+					    		$html[] =  "	<td class='hidden-xs hidden-sm'>".$option['value'][$field['name']]."</td>"; 
+							}
 				    	}
 					}
 					if($actions) {
