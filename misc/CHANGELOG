@@ -12,7 +12,7 @@
 	+ Added option not to display free ranges;
 	+ Added option to set maximum VLAN number;
 	+ Selectable custom fields to be visible/hidden in tables view and updated device/VLAN view;
-	+ Added additional confirmation before section, subnet and IP address deletion;
+	+ Added additional confirmation before section, subnet, folder and IP address deletion;
 
 	Security Fixes:
 	----------------------------

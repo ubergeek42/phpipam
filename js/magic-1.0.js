@@ -1521,7 +1521,7 @@ $(document).on("click", ".editFolderSubmit", function() {
 	showSpinner();
 	var postData = $('form#editFolderDetails').serialize();
 	$.post('site/admin/manageFolderEditSubmit.php', postData, function(data) {
-		$('.manageFolderEditResult').html(data);
+		$('.manageFolderEditResult').html("").html(data);
         //reload after 2 seconds if succeeded!
         if(data.search("alert-danger") == -1)   { setTimeout(function (){window.location.reload();}, 1500); }
         else                             { hideSpinner(); hideSpinner(); }
@@ -1535,6 +1535,8 @@ $(document).on("click", ".editFolderSubmitDelete", function() {
     var description  = $('form#editFolderDetails #field-description').val();
     //format posted values
     var postData     = "subnetId="+subnetId+"&description="+description+"&action=delete";
+	//append deleteconfirm
+	if($(this).attr('id') == "editFolderSubmitDelete") { postData += "&deleteconfirm=yes"; };
 	$.post('site/admin/manageFolderEditSubmit.php', postData, function(data) {
 		$('.manageFolderEditResult').html(data);
         //reload after 2 seconds if succeeded!
