@@ -4695,3 +4695,13 @@ msgstr ""
 
 msgid "Not number"
 msgstr ""
+
+#: site/admin/manageSubnetEditResult.php
+msgid "I will delete"
+msgstr ""
+
+msgid "Are you sure you want to delete above items?"
+msgstr ""
+
+msgid "Are you sure you want to delete IP address"
+msgstr ""

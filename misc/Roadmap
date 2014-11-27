@@ -1,18 +1,12 @@
 version - 1.1
-	
-	+ Fix installation script with next step
 
 	+ Per-admin changelog mailing
 
 	+ Run Discovery from Cron
 	
 	+ API !
-		
-	+ delete confirmation
 	
 	+ Change install script, add more options (eg drop database, set user permissions, ...
-	
-	+ Usage check
 
 
 version - 1.2

@@ -1249,3 +1249,16 @@ msgstr ""
 
 msgid "Save filter"
 msgstr ""
+
+
+### 1.07.010 ###
+
+#: site/admin/manageSubnetEditResult.php
+msgid "I will delete"
+msgstr ""
+
+msgid "Are you sure you want to delete above items?"
+msgstr ""
+
+msgid "Are you sure you want to delete IP address"
+msgstr ""

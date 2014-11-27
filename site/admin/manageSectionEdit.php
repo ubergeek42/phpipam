@@ -220,7 +220,7 @@ $section = getSectionDetailsById ($_POST['sectionId']);
 	<!-- delete warning -->
 	<?php
 	if ($_POST['action'] == "delete") {
-		print '<div class="alert alert-warning"><b>'._('Warning').'!</b><br>'._('Deleting Section will delete all belonging subnets and IP addresses').'!</div>' . "\n";
+		//print '<div class="alert alert-warning"><b>'._('Warning').'!</b><br>'._('Deleting Section will delete all belonging subnets and IP addresses').'!</div>' . "\n";
 	}
 	?>
 </div>

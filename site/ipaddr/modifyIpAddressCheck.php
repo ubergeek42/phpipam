@@ -149,39 +149,56 @@ if (strlen(strstr($ip['ip_addr'],"-")) > 0) {
 	/* set limits */
 	$m = gmp_strval($start);
 	$n = gmp_strval(gmp_add($stop,1));
-	
-	/* for each IP */
-	while (gmp_cmp($m, $n) != 0) {	
-	
-		//reset IP address field
-		$ip['ip_addr'] = transform2long($m);
-	
-		//modify action - if delete ok, dynamically reset add / edit -> if IP already exists set edit
-		if($ip['action'] != "delete") {
-		   	if (checkDuplicate ($ip['ip_addr'], $ip['subnetId'])) 	{ $ip['action'] = "edit"; }
-		    else 													{ $ip['action'] = "add"; }
-		}
-	
-		//if it fails set error log
-		if (!modifyIpAddress($ip)) {
-	        $errors[] = _('Cannot').' '. $ip['action']. ' '._('IP address').' '. transform2long($m);
-	    }				
-		/* next IP */
-		$m = gmp_strval(gmp_add($m,1));
-	}
-	
-	/* print errors if they exist */
-	if(isset($errors)) {
-		print '<div class="alert alert-danger">';
-		$log = prepareLogFromArray ($errors);
-		print $log;
-		print '</div>';
-		updateLogTable ('Error '. $ip['action'] .' range '. $ip['start'] .' - '. $ip['stop'], $log, 2);
+
+    /* execute insert / update / delete query */  
+    if ( $ip['action']=="delete" && !isset($_POST['deleteconfirm'])) {
+	    $range = str_replace("-", " - ", $ip['ip_addr']);
+		# for ajax to prevent reload
+		print "<div style='display:none'>alert alert-danger</div>";
+		# result
+		print "<div class='alert alert-warning'>";
+		print "<strong>"._("Warning")."</strong>: "._("Are you sure you want to delete IP address range")."?";
+		print "<hr>$range<div style='text-align:right'>";
+		print "<div class='btn-group'>";
+		print "	<a class='btn btn-sm btn-danger editIPSubmitDelete' id='editIPSubmitDelete'>"._("Confirm")."</a>";
+		print "</div>";
+		print "</div>";
+		print "</div>";
 	}
 	else {
-		print '<div class="alert alert-success">'._('Range').' '. $ip['start'] .' - '. $ip['stop'] .' '._('updated successfully').'!</div>';
-		updateLogTable ('Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' successfull!', 'Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' '._('successfull').'!', 0);
-	}	
+		/* for each IP */
+		while (gmp_cmp($m, $n) != 0) {	
+		
+			//reset IP address field
+			$ip['ip_addr'] = transform2long($m);
+		
+			//modify action - if delete ok, dynamically reset add / edit -> if IP already exists set edit
+			if($ip['action'] != "delete") {
+			   	if (checkDuplicate ($ip['ip_addr'], $ip['subnetId'])) 	{ $ip['action'] = "edit"; }
+			    else 													{ $ip['action'] = "add"; }
+			}
+		
+			//if it fails set error log
+			if (!modifyIpAddress($ip)) {
+		        $errors[] = _('Cannot').' '. $ip['action']. ' '._('IP address').' '. transform2long($m);
+		    }				
+			/* next IP */
+			$m = gmp_strval(gmp_add($m,1));
+		}
+		
+		/* print errors if they exist */
+		if(isset($errors)) {
+			print '<div class="alert alert-danger">';
+			$log = prepareLogFromArray ($errors);
+			print $log;
+			print '</div>';
+			updateLogTable ('Error '. $ip['action'] .' range '. $ip['start'] .' - '. $ip['stop'], $log, 2);
+		}
+		else {
+			print '<div class="alert alert-success">'._('Range').' '. $ip['start'] .' - '. $ip['stop'] .' '._('updated successfully').'!</div>';
+			updateLogTable ('Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' successfull!', 'Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' '._('successfull').'!', 0);
+		}	
+	}
 }
 /* no range, single IP address */
 else {
@@ -238,24 +255,40 @@ else {
 	        }		   
 	    }
 
-	    /* execute insert / update / delete query */    
-	    if (!modifyIpAddress($ip)) {
-	        print '<div class="alert alert-danger">'._('Error inserting IP address').'!</div>';
-	        updateLogTable ('Error '. $ip['action'] .' IP address '. $ip['ip_addr'], 'Error '. $ip['action'] .' IP address '. $ip['ip_addr'] .'<br>SubnetId: '. $ip['subnetId'], 2);
-	    }
-	    else {
-			//set arrays
-			if($ip['action']=="add")		{ $old = array();	$new = $ip; }
-			elseif($ip['action']=="delete")	{ $old = $ipold;	$new = array(); }
-			else							{ $old = $ipold;	$new = $ip; }
-
-	    	/* @mail functions ------------------- */
-			// include_once('../../functions/functions-mail.php');
-			// sendObjectUpdateMails("ip", $ip['action'], $old, $new);
-
-	        print '<div class="alert alert-success">'._("IP $ip[action] successful").'!</div>';
-	        updateLogTable ($ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!', $ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!<br>SubnetId: '. $ip['subnetId'], 0);
-	    }
+	    /* execute insert / update / delete query */  
+	    if ($ip['action']=="delete" && !isset($_POST['deleteconfirm'])) {
+			# for ajax to prevent reload
+			print "<div style='display:none'>alert alert-danger</div>";
+			# result
+			print "<div class='alert alert-warning'>";
+			print "<strong>"._("Warning")."</strong>: "._("Are you sure you want to delete IP address")."?";
+			print "<hr><div style='text-align:right'>";
+			print "<div class='btn-group'>";
+			print "	<a class='btn btn-sm btn-danger editIPSubmitDelete' id='editIPSubmitDelete'>"._("Confirm")."</a>";
+			print "</div>";
+			print "</div>";
+			print "</div>";
+		}
+		else {
+			# modify
+		    if (!modifyIpAddress($ip)) {
+		        print '<div class="alert alert-danger">'._('Error inserting IP address').'!</div>';
+		        updateLogTable ('Error '. $ip['action'] .' IP address '. $ip['ip_addr'], 'Error '. $ip['action'] .' IP address '. $ip['ip_addr'] .'<br>SubnetId: '. $ip['subnetId'], 2);
+		    }
+		    else {
+				//set arrays
+				if($ip['action']=="add")		{ $old = array();	$new = $ip; }
+				elseif($ip['action']=="delete")	{ $old = $ipold;	$new = array(); }
+				else							{ $old = $ipold;	$new = $ip; }
+	
+		    	/* @mail functions ------------------- */
+				// include_once('../../functions/functions-mail.php');
+				// sendObjectUpdateMails("ip", $ip['action'], $old, $new);
+	
+		        print '<div class="alert alert-success">'._("IP $ip[action] successful").'!</div>';
+		        updateLogTable ($ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!', $ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!<br>SubnetId: '. $ip['subnetId'], 0);
+		    }
+		}
 	}
 }
 ?>

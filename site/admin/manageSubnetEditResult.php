@@ -209,6 +209,30 @@ if (sizeof($errors) != 0)
     print '</div>';
     die();
 }
+elseif ($_POST['action']=="delete" && !isset($_POST['deleteconfirm'])) {
+	# for ajax to prevent reload
+	print "<div style='display:none'>alert alert-danger</div>";
+	# result
+	print "<div class='alert alert-warning'>";
+	# print what will be deleted
+	getAllSlaves($_POST['subnetId'], false);
+	$subcnt = sizeof(array_unique($removeSlaves));
+	$ipcnt  = countAllSlaveIPAddresses($_POST['subnetId']);
+	print "<strong>"._("Warning")."</strong>: "._("I will delete").":<ul>";
+	print "	<li>$subcnt "._("subnets")."</li>";
+	if($ipcnt>0) {
+	print "	<li>$ipcnt "._("IP addresses")."</li>";
+	}
+	print "</ul>";
+	
+	print "<hr><div style='text-align:right'>";
+	print _("Are you sure you want to delete above items?")." ";
+	print "<div class='btn-group'>";
+	print "	<a class='btn btn-sm btn-danger editSubnetSubmitDelete' id='editSubnetSubmitDelete'>"._("Confirm")."</a>";
+	print "</div>";
+	print "</div>";
+	print "</div>";
+}
 else
 {
 	# failed

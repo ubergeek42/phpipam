@@ -62,7 +62,7 @@ function hidePopup2() {
     $('.popup_w700').css("z-index", "100");        //set popup back
     hideSpinner();
 }
-$(document).on("click", "#popupOverlay, button.hidePopups", function() { hidePopups(); });
+$(document).on("click", "#popupOverlay, .hidePopups", function() { hidePopups(); });
 $(document).on("click", "button.hidePopup2", function() { hidePopup2(); });
 
 //prevent loading for disabled buttons
@@ -313,20 +313,22 @@ $(document).on("click", "#refreshHostname", function() {
     }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
 });
 //submit ip address change
-$(document).on("click", "button#editIPAddressSubmit", function() {
+$(document).on("click", "button#editIPAddressSubmit, .editIPSubmitDelete", function() {
     //show spinner
     showSpinner();
     var postdata = $('form.editipaddress').serialize();
     
+    //append deleteconfirm
+	if($(this).attr('id') == "editIPSubmitDelete") { postdata += "&deleteconfirm=yes&action=delete"; }
     //replace delete if from visual
-    if($(this).attr('data-action') == "all-delete" ) { postdata = postdata + '&action-visual=delete';}
+    if($(this).attr('data-action') == "all-delete" ) { postdata += '&action-visual=delete';}
 
     $.post('site/ipaddr/modifyIpAddressCheck.php', postdata, function(data) {
         $('div.addnew_check').html(data);
         $('div.addnew_check').slideDown('fast');
         //reload after 2 seconds if succeeded!
         if(data.search("alert-danger") == -1)   { setTimeout(function (){window.location.reload();}, 1500); }
-        else                             { hideSpinner(); }
+        else                             		{ hideSpinner(); }
     }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
     return false;
 });
@@ -1124,9 +1126,12 @@ $('button.editSection').click(function() {
     }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
 });
 //edit section result
-$(document).on("click", "#editSectionSubmit", function() {
+$(document).on("click", "#editSectionSubmit, .editSectionSubmitDelete", function() {
     showSpinner();
     var sectionData = $('form#sectionEdit').serialize();
+
+	//append deleteconfirm
+	if($(this).attr('id') == "editSectionSubmitDelete") { sectionData += "&deleteconfirm=yes"; };
     
     $.post('site/admin/manageSectionEditResult.php', sectionData, function(data) {
         $('div.sectionEditResult').html(data).slideDown('fast');
@@ -1275,7 +1280,8 @@ $(document).on("submit", "#editSubnetDetails", function() {
 	return false;
 });
 //save edit subnet changes
-$(document).on("click", ".editSubnetSubmit", function() {
+$(document).on("click", ".editSubnetSubmit, .editSubnetSubmitDelete", function() {
+	
     showSpinner();
     var subnetData = $('form#editSubnetDetails').serialize();
         
@@ -1283,6 +1289,8 @@ $(document).on("click", ".editSubnetSubmit", function() {
     if($(this).hasClass("editSubnetSubmitDelete")) {
         subnetData = subnetData.replace("action=edit", "action=delete");
     }
+	//append deleteconfirm
+	if($(this).attr('id') == "editSubnetSubmitDelete") { subnetData += "&deleteconfirm=yes"; };
     
     //load results
     $.post("site/admin/manageSubnetEditResult.php", subnetData, function(data) {

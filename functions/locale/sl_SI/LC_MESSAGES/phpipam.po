@@ -4743,3 +4743,13 @@ msgstr "VLAN številkane more biti negativna"
 
 msgid "Not number"
 msgstr "Ni številka"
+
+#: site/admin/manageSubnetEditResult.php
+msgid "I will delete"
+msgstr "Izbrisal bom"
+
+msgid "Are you sure you want to delete above items?"
+msgstr "Ste prepričani, da želite izbrisati zgornje elemente?"
+
+msgid "Are you sure you want to delete IP address"
+msgstr "Ste prepričani, da želite izbrisati IP naslov"

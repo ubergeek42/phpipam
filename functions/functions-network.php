@@ -723,6 +723,34 @@ function getAllSubSections($sectionId)
 }
 
 
+/**
+ *	Count number of IP addresses in section
+ *	
+ *		we privede array of all subnet Id's
+ */
+function countAllIPinSection ($subnets)
+{
+	global $database;
+	# create query
+	$query = "select count(*) as `cnt` from `ipaddresses` where ";
+	foreach($subnets as $k=>$s) {
+		if($k==(sizeof($subnets)-1)) 	{ $query .= "`subnetId`=$s[id] "; }
+		else							{ $query .= "`subnetId`=$s[id] or "; }
+	}
+	$query .= ";";
+	
+    /* execute */
+    try { $sections = $database->getArray( $query ); }
+    catch (Exception $e) { 
+        $error =  $e->getMessage(); 
+        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+        return false;
+    } 
+    
+    return $sections[0]['cnt'];	
+}
+
+
 
 
 
