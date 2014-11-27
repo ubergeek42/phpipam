@@ -1013,35 +1013,34 @@ function printAdminSubnets( $subnets, $actions = true, $vrf = "0" )
 			# count levels
 			$count = count( $parent_stack ) + 1;
 			
-			# get subnet details
-				# get VLAN
-				$vlan = subnetGetVLANdetailsById($option['value']['vlanId']);
-				$vlan = $vlan['number'];
-				if(empty($vlan) || $vlan == "0") 	{ $vlan = ""; }			# no VLAN
+			# get VLAN
+			$vlan = subnetGetVLANdetailsById($option['value']['vlanId']);
+			$vlan = $vlan['number'];
+			if(empty($vlan) || $vlan == "0") 	{ $vlan = ""; }			# no VLAN
 
-				# description
-				if(strlen($option['value']['description']) == 0) 	{ $description = "/"; }													# no description
-				else 												{ $description = $option['value']['description']; }						# description		
-				
-				# requests
-				if($option['value']['allowRequests'] == 1) 			{ $requests = "<i class='fa fa-gray fa-check'></i>"; }												# requests enabled
-				else 												{ $requests = ""; }														# request disabled				
+			# description
+			if(strlen($option['value']['description']) == 0) 	{ $description = "/"; }													# no description
+			else 												{ $description = $option['value']['description']; }						# description		
+			
+			# requests
+			if($option['value']['allowRequests'] == 1) 			{ $requests = "<i class='fa fa-gray fa-check'></i>"; }												# requests enabled
+			else 												{ $requests = ""; }														# request disabled				
 
-				# hosts check
-				if($option['value']['pingSubnet'] == 1) 			{ $pCheck = "<i class='fa fa-gray fa-check'></i>"; }												# ping check enabled
-				else 												{ $pCheck = ""; }														# ping check disabled
+			# hosts check
+			if($option['value']['pingSubnet'] == 1) 			{ $pCheck = "<i class='fa fa-gray fa-check'></i>"; }												# ping check enabled
+			else 												{ $pCheck = ""; }														# ping check disabled
 
-				#vrf
-				if($vrf == "1") {
-					# get VRF details
-					if(($option['value']['vrfId'] != "0") && ($option['value']['vrfId'] != "NULL") ) {
-						$vrfTmp = getVRFDetailsById ($option['value']['vrfId']);
-						$vrfText = $vrfTmp['name'];
-					}
-					else {
-						$vrfText = "";
-					}
-				}				
+			#vrf
+			if($vrf == "1") {
+				# get VRF details
+				if(($option['value']['vrfId'] != "0") && ($option['value']['vrfId'] != "NULL") ) {
+					$vrfTmp = getVRFDetailsById ($option['value']['vrfId']);
+					$vrfText = $vrfTmp['name'];
+				}
+				else {
+					$vrfText = "";
+				}
+			}				
 			
 			# print table line
 			if(strlen($option['value']['subnet']) > 0) { 

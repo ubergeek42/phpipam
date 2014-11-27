@@ -949,7 +949,8 @@ function getAllSettings()
 	global $settings;
 	# check if it already exists
 	if(isset($settings)) {
-		return $settings;
+		if(isset($settings[0]))	{ return $settings[0]; }
+		else					{ return $settings[0]; }
 	} 
 	else {
 

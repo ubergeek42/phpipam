@@ -166,7 +166,7 @@ else															{ $readonly = false; }
 	if(empty($subnetDataOld['allowRequests'])) 	{ $subnetDataOld['allowRequests'] = "0"; }
 
 	/* if vlan support is enabled print available vlans */	
-	if($settings['enableVRF'] == 1) {
+	if($settings['enableVRF'] == "1") {
 	
 		print '<tr>' . "\n";
         print '	<td class="middle">'._('VRF').'</td>' . "\n";
