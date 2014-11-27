@@ -954,7 +954,6 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 		return $vtmp;
 	}
 	else {
-
 	    global $database;                                                                     
 	    /* get ALL slave subnets, then remove all subnets and IP addresses */
 	    global $removeSlaves;
@@ -989,6 +988,59 @@ function getIpAddressesBySubnetIdslavesSort ($subnetId, $fieldName = "subnetId",
 	    return($ipaddresses);  
     }     
 }
+
+
+/**
+ * Count all ip addresses in requested subnet by provided Id
+ *
+ *	if $per_state return count by status!
+ */
+function countAllSlaveIPAddresses ($subnetId, $perState = false) 
+{
+	# check cache
+	if($vtmp = checkCache("ip_count_all_slave_ips_r", $subnetId."$perstate")) {
+		return $vtmp;
+	}
+	else {
+	    global $database;                                                                     
+	    /* get ALL slave subnet Ids, then exclude duplicates */
+	    
+	    $allSlaveSubnets = getAllSlavesReturn ($subnetId);
+	    $allSlaveSubnets = array_unique($allSlaveSubnets);
+	    
+	    /* set query, open db connection and fetch results */
+	    $query       = 'select count(*) as `cnt`,`state` from `ipaddresses` where subnetId = "" ';
+	    foreach($allSlaveSubnets as $subnetId2) {
+	    	if($subnetId2 != $subnetId) {					# ignore orphaned
+		    $query  .= " or `subnetId` = '$subnetId2' ";
+		    }
+	    }
+	    # per-state?
+	    if($perState)	{
+	    	$query      .= 'group by `state` asc;';
+	    } 
+	    else {
+	    	$query      .= ';';
+	    }
+	    
+	    /* execute */
+	    try { $ipaddresses = $database->getArray( $query ); }
+	    catch (Exception $e) { 
+	        $error =  $e->getMessage(); 
+	        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+	        return false;
+	    }
+
+		# save cache
+		if(sizeof($ipaddresses)>0) {
+			writeCache("ip_count_all_slave_ips_r", $subnetId, $ipaddresses[0]['cnt']);
+		}
+	    /* return ip address array */
+	    if($perState)	{ return($ipaddresses[0]);  }
+	    else 			{ return($ipaddresses[0]['cnt']);  } 
+    }     
+}
+
 
 
 /**

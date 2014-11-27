@@ -950,7 +950,7 @@ function getAllSettings()
 	# check if it already exists
 	if(isset($settings)) {
 		if(isset($settings[0]))	{ return $settings[0]; }
-		else					{ return $settings[0]; }
+		else					{ return $settings; }
 	} 
 	else {
 
@@ -974,7 +974,7 @@ function getAllSettings()
 			/* select database */
 			$database->selectDatabase($db['name']);
 		
-		    /* first update request */
+		    /* get settings */
 		    $query    = 'select * from settings where id = 1';
 		    $settings = $database->getArray($query); 
 	  
@@ -1716,6 +1716,64 @@ function getAllSlaves ($subnetId, $multi = false)
 		}
 	}
 }
+
+
+/**
+ *	get whole tree path for subnetId - from parent all slaves
+ *
+ * 	if multi than create multidimensional array
+ */
+function getAllSlavesReturn ($subnetId) 
+{
+	# check cache
+	if($vtmp = checkCache("allslavesReturn", $subnetId)) {
+		return $vtmp;
+	}
+	else {
+		$end = false;					# breaks while
+		
+		$allSlaves[] = $subnetId;		# first
+	
+		# db
+		global $database; 
+		
+		while($end == false) {
+			
+			/* get all immediate slaves */
+			$query = "select `id` from `subnets` where `masterSubnetId` = '$subnetId' order by `id` asc; ";    
+			/* execute query */
+			try { $slaves2 = $database->getArray( $query ); }
+			catch (Exception $e) { 
+	        	$error =  $e->getMessage(); 
+	        	print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+	        	return false;
+	        }
+			
+			# we have more slaves
+			if(sizeof($slaves2) != 0) {
+				# recursive
+				foreach($slaves2 as $slave) {
+					$allSlaves[] = $slave['id'];
+					getAllSlavesReturn ($slave['id']);
+					$end = true;
+				}
+			}
+			# no more slaves
+			else {
+				$end = true;
+			}
+		}
+		
+		# save cache
+		if(sizeof($allSlaves)>0) {
+			writeCache("allslaves", $subnetId, $allSlaves);
+		}
+		
+		# return
+		return $allSlaves;
+	}
+}
+
 
 
 /**

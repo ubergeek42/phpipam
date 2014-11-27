@@ -80,10 +80,9 @@ foreach ($slaves as $slave) {
 	$hasSlaves = getAllSlaveSubnetsBySubnetId ($slave['id']); 
 
 	# slaves details are provided with ipaddressprintslaves script
-	if(sizeof($hasSlaves)>0)	{ $ipCount = sizeof(getIpAddressesBySubnetIdSlavesSort ($slave['id'])); }	//ip count - slaves
-	else 						{ $ipCount = countIpAddressesBySubnetId ($slave['id']);	}					//ip count - direct subnet  
+	if(sizeof($hasSlaves)>0)	{ $ipCount = countAllSlaveIPAddresses ($slave['id']); }		//ip count - all slaves
+	else 						{ $ipCount = countIpAddressesBySubnetId ($slave['id']);	}	//ip count - direct subnet  
 
-    
 	$calculate = calculateSubnetDetails ( gmp_strval($ipCount), $slave['mask'], $slave['subnet'] );
     print ' <td class="small hidden-xs hidden-sm hidden-md">'. $calculate['used'] .'/'. $calculate['maxhosts'] .'</td>'. "\n";
     print '	<td class="small hidden-xs hidden-sm hidden-md">'. $calculate['freehosts_percent'] .'</td>';

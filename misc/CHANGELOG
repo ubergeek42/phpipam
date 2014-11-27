@@ -1,4 +1,4 @@
-== 1.07.005
+== 1.07.008
 
 	Enhancements:
 	----------------------------
@@ -40,6 +40,8 @@
 	+ Fixed device custom field not populated on adding device;
 	+ Fixed XLS export silently failed when description longer than 31 characters;
 	+ Fixed overlapping check not working;
+	+ Fixed subnet free space calcultation;
+	+ Fixed visual subnet display not showing on /31 and /32 networks;
 
 == 1.0
 	

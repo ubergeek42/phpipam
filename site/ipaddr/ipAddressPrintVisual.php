@@ -4,10 +4,10 @@
 $ipVisual = getIpAddressesForVisual($subnetId);
 
 # if empty
-if(sizeof($ipVisual) == '0')	{ $ipVisual = array("a"); }
+if(sizeof($ipVisual) == '0')	{ $ipVisual = array(); }
 
 # show squares to display free/used subnet
-if(sizeof($slaves) == 0 && $type == 0 && $SubnetDetails['mask']!="31" && $SubnetDetails['mask']!='32') {
+if(sizeof($slaves) == 0 && $type == 0) {
 
 	print "<br><h4>"._('Visual subnet display')." <i class='icon-gray icon-info-sign' rel='tooltip' data-html='true' title='"._('Click on IP address box<br>to manage IP address')."!'></i></h4><hr>";
 	print "<div class='ip_vis'>";
@@ -17,8 +17,15 @@ if(sizeof($slaves) == 0 && $type == 0 && $SubnetDetails['mask']!="31" && $Subnet
 
 	# set start and stop values
 	$section = getSectionDetailsById($_GET['section']);
+	
+	# /31 and /32
+	if($SubnetDetails['mask']=="31"||$SubnetDetails['mask']=="32") {
+		$start = $SubnetDetails['subnet'];
+		$stop  = gmp_strval(gmp_add($max,1));
+		$stop  = gmp_strval(gmp_sub($max,1));
+	}
 	# strict mode?
-	if($section['strictMode']==1) {
+	elseif($section['strictMode']==1) {
 		$start = gmp_strval(gmp_add($SubnetDetails['subnet'],1));	
 		$stop  = $max;	
 	} else {
