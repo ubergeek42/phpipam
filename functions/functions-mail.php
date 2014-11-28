@@ -162,7 +162,11 @@ function sendIPnotifEmail($to, $subject, $content)
 	# set mail parameters
 	try {
 		$pmail->SetFrom($mailsettings['mAdminMail'], $mailsettings['mAdminName']);
-		$pmail->AddAddress($to);
+		# check for multiple recepients
+		$recipients = explode(",", $to);
+		foreach($recipients as $r) {
+		$pmail->AddAddress(trim($r));			
+		}
 		$pmail->ClearReplyTos();
 		$pmail->AddReplyTo($sender['email'], $sender['real_name']);
 		// CC ender
@@ -177,9 +181,11 @@ function sendIPnotifEmail($to, $subject, $content)
 		$pmail->Send();
 	} catch (phpmailerException $e) {
 	  	updateLogTable ("Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	print "<div class='alert alert-danger'>".$e."</div>";
 	  	return false;
 	} catch (Exception $e) {
 	  	updateLogTable ("Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	print "<div class='alert alert-danger'>".$e."</div>";
 		return false;
 	}
 	

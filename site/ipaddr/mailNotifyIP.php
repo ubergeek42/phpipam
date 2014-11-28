@@ -22,7 +22,7 @@ $userDetails = getActiveUserDetails();
 /* filter input */
 $_POST = filter_user_input($_POST, true, true, false);
 /* must be numeric */
-if(!is_numeric($_POST['ID']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if(!is_numeric($_POST['id']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
 
 /* get IP address id */
 $id = $_POST['id'];
@@ -53,9 +53,14 @@ $content .= '&bull; '._('Description').':' . "\t" . $ip['description'] . "\n";
 if(!empty($ip['dns_name'])) {
 $content .= '&bull; '._('Hostname').':' . "\t" 	 . $ip['dns_name'] . "\n";
 }
+# subnet
+$content .= '&bull; '._('Subnet').': ' . "\t" . transform2long($subnet['subnet'])."/".$subnet['mask'];
 # subnet desc
 if(!empty($subnet['description'])) {
-$content .= '&bull; '._('Subnet desc').': ' . "\t" . $subnet['description']. "\n";
+$content .= " (" . $subnet['description']. ")\n";
+}
+else {
+$content .= "\n";
 }
 # VLAN
 if(!empty($subnet['vlan'])) {
@@ -70,6 +75,14 @@ if(!empty($ip['switch'])) {
 # port
 if(!empty($ip['port'])) {
 $content .= "&bull; "._('Port').":\t"			 . $ip['port'] . "\n";
+}
+# port
+if(!empty($ip['mac'])) {
+$content .= "&bull; "._('Mac address').":\t"			 . $ip['mac'] . "\n";
+}
+# owner
+if(!empty($ip['owner'])) {
+$content .= '&bull; '._('Owner').':' . "\t" 	 . $ip['owner'] . "\n";
 }
 # custom
 $myFields = getCustomFields('ipaddresses');
