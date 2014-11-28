@@ -738,6 +738,9 @@ ul#subnets li.leaf.active i {
 	padding-left: 0px;
 	border: none;
 }
+ul#subnets li i[class*="fa-folder"] {
+	min-width: 14px;
+}
 
 
 .alert hr {

@@ -1,8 +1,9 @@
 <?php
 /* set cookie parameters for max lifetime */
 /*
-ini_set('session.gc_maxlifetime', '86400');
-ini_set('session.save_path', '/tmp/php_sessions/');
+ini_set('session.gc_maxlifetime', '3600');
+ini_set('session.save_path', '/tmp/');
+ini_set("session.cookie_lifetime","3600");
 */
 /* some sanitizations */
 ini_set("session.use_only_cookies", "1");

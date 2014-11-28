@@ -1181,8 +1181,6 @@ function countIpAddressesBySubnetId ($subnetId)
 
 /**
  * Get details for requested subnet by Id
- *
- * *** OLD ***  - not used anymore!!!
  */
 function getSubnetDetails ($subnetId)
 {
@@ -1247,6 +1245,87 @@ function getSubnetDetailsById ($id)
     	
 	}
 }
+
+
+/**
+ * Get all subnets to be discovered
+ */
+function getSubnetsToDiscover ()
+{	
+    global $database;  
+    /* set query */
+    $query         = 'select * from `subnets` where `pingSubnet` = "1";';
+	
+    /* execute */
+    try { $subnets = $database->getArray( $query ); }
+    catch (Exception $e) { 
+        $error =  $e->getMessage(); 
+        print ("<div class='alert alert-danger'>"._('Error').": $error</div>");
+        return false;
+    } 
+    
+    # set vars
+    $ip = array();		//we store IPs to scan to this array
+    
+    # ok, we have subnets. Now we create array of all possible IPs for each subnet,
+    # and remove all existing
+    foreach($subnets as $s) {
+	   	// get all existing IP addresses
+	   	$addresses = getIpAddressesBySubnetId ($s['id']);
+		
+	   	// set start and end IP address
+	   	$calc = calculateSubnetDetailsNew ( $s['subnet'], $s['mask'], 0, 0, 0, 0 );
+	   	// loop and get all IP addresses for ping
+		for($m=1; $m<=$calc['maxhosts']; $m++) {
+			// save to array for return
+			$ip[$m]['ip_addr']  = $s['subnet']+$m;
+			$ip[$m]['subnetId'] = $s['id'];
+			// save to array for existing check
+			$ipCheck[$m] = $s['subnet']+$m;
+		}
+
+		// remove already existing
+		foreach($addresses as $a) {
+			$key = array_search($a['ip_addr'], $ipCheck);
+			if($key!==false) {
+				unset($ip[$key]);	
+			}
+		}
+    }
+    
+    # return result
+    return $ip;
+}
+
+
+/**
+ *	Insert newly discovered IP address form cron script
+ */
+function insert_discovered_ip ($ip) 
+{
+    if(!is_object($database)) {
+		global $db;
+		$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	    
+    } else {
+	    global $database;                                                                      	    
+    }
+                                                                          
+    /* set query */
+    $query         = "insert into `ipaddresses` (`ip_addr`,`dns_name`,`subnetId`,`description`,`state`,`note`,`lastSeen`) values ('$ip[ip_addr]','$ip[dns_name]','$ip[subnetId]','-- autodiscovered --','1','This host was autodiscovered on ".date("Y-m-d H:i:s")."', NOW());";
+	
+    /* execute */
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) { 
+        $error =  $e->getMessage(); 
+        print $error."\n";
+        return false;
+    } 
+    
+    return true;
+	
+}
+
 
 
 /**

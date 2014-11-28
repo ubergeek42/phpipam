@@ -1,4 +1,4 @@
-== 1.07.010
+== 1.07.012
 
 	Enhancements:
 	----------------------------
@@ -13,6 +13,7 @@
 	+ Added option to set maximum VLAN number;
 	+ Selectable custom fields to be visible/hidden in tables view and updated device/VLAN view;
 	+ Added additional confirmation before section, subnet, folder and IP address deletion;
+	+ New script added for cron checks that discovers new hosts for selected networks;
 
 	Security Fixes:
 	----------------------------

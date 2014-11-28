@@ -1206,9 +1206,9 @@ function get_menu_html( $subnets, $rootId = 0 )
 			# for active class
 			if($_GET['page']=="subnets" && ($option['value']['id'] == $_GET['subnetId']))			{ $active = "active";	$leafClass=""; }
 			else 																					{ $active = ""; 		$leafClass="icon-gray" ;}
-			
+
 			# override folder
-			if($option['value']['isFolder'] == 1 && ($option['value']['id'] == $_GET['subnetId']))	{ $open = "open"; $openf = "-open"; }
+			if($option['value']['isFolder'] == 1 && ($option['value']['id'] == $_GET['subnetId']))	{ $open = "open"; $openf = "-open"; $active = "active"; }
 			
 			# check for permissions if id is provided
 			if($option['value']['id'] != "") {
@@ -1230,7 +1230,7 @@ function get_menu_html( $subnets, $rootId = 0 )
 				if($sp != 0) {	
 					# folder
 					if($option['value']['isFolder'] == 1) {
-						$html[] = '<li class="folderF folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-sfolder fa-folder'.$openf.'" rel="tooltip" data-placement="right" data-html="true" title="'._('Folder contains more subnets').'<br>'._('Click on folder to open/close').'"></i>';
+						$html[] = '<li class="folderF folder-'.$open.' '.$active.'"><i class="fa fa-gray fa-folder fa-folder'.$openf.'" rel="tooltip" data-placement="right" data-html="true" title="'._('Folder contains more subnets').'<br>'._('Click on folder to open/close').'"></i>';
 						$html[] = '<a href="'.create_link("folder",$option['value']['sectionId'],$option['value']['id']).'">'.$option['value']['description'].'</a>'; 				
 					}
 					# print name
@@ -1262,12 +1262,12 @@ function get_menu_html( $subnets, $rootId = 0 )
 					}
 					# print name
 					elseif($option['value']['showName'] == 1) {				
-						$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
+						$html[] = '<li class="leaf '.$active.'"><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
 						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'">'.$option['value']['description'].'</a></li>';
 					}
 					# print subnet
 					else {
-						$html[] = '<li class="leaf '.$active.'""><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
+						$html[] = '<li class="leaf '.$active.'"><i class="'.$leafClass.' fa fa-gray fa-angle-right"></i>';
 						$html[] = '<a href="'.create_link("subnets",$option['value']['sectionId'],$option['value']['id']).'" rel="tooltip" data-placement="right" title="'.$option['value']['description'].'">'.Transform2long($option['value']['subnet']).'/'.$option['value']['mask'].'</a></li>';					
 					}
 				}
