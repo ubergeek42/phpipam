@@ -11,8 +11,9 @@ if (isset($_SESSION['ipamusername'])) 	{
 	session_destroy();	
 	# update table
 	updateLogTable ('User has logged out', 0); 
-	# set logout flag
-	$logout = true;
+	# set logout flag or timeout flag
+	if(@$_GET['section']=="timeout")	{ $timeout = true; }
+	else								{ $logout = true; }
 }
 
 # set default language
@@ -35,4 +36,7 @@ else 										{ $_GET['subnetId'] = "404"; print "<div id='error'>"; include_on
 ?>
 
 <!-- login response -->
-<div id="loginCheck"><?php if ($logout) print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?></div>
+<div id="loginCheck">
+	<?php if ($logout)  print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?>
+	<?php if ($timeout) print '<div class="alert alert-success">'._('You session has timed out').'</div>'; ?>
+</div>

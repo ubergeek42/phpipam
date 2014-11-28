@@ -448,6 +448,7 @@ function checkLogin ($username, $md5password, $rawpassword)
 		session_start();
 		$_SESSION['ipamusername'] = $username;
 		$_SESSION['ipamlanguage'] = $lang['l_code'];
+		$_SESSION['lastactive']   = time();
 		session_write_close();
     			
     	# print success

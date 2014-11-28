@@ -132,13 +132,18 @@ if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not ha
 		}
 	
 		/* ping-check hosts inside subnet */
-		if ($SubnetDetails['pingSubnet'] == 1) {
-			print "<tr>";
-			print "	<th>"._('Hosts check')."</th>";
-			if($SubnetDetails['pingSubnet'] == 1) 		{ print "	<td>"._('enabled')."</td>"; }		# yes
-			else 										{ print "	<td>"._('disabled')."</td>";}		# no
-			print "</tr>";
-		}
+		print "<tr>";
+		print "	<th>"._('Hosts check')."</th>";
+		if($SubnetDetails['pingSubnet'] == 1) 		{ print "	<td>"._('enabled')."</td>"; }		# yes
+		else 										{ print "	<td>"._('disabled')."</td>";}		# no
+		print "</tr>";
+
+		/* scan subnet for new hosts */
+		print "<tr>";
+		print "	<th>"._('Discover new hosts')."</th>";
+		if($SubnetDetails['discoverSubnet'] == 1) 	{ print "	<td>"._('enabled')."</td>"; }		# yes
+		else 										{ print "	<td>"._('disabled')."</td>";}		# no
+		print "</tr>";
 		
 		/* print custom subnet fields if any */
 		if(sizeof($customSubnetFieldsSize) > 0) {

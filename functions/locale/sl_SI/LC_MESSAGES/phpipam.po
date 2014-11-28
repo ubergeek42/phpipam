@@ -4,7 +4,7 @@
 # miha petkovsek <miha.petkovsek@gmail.com>, 2013.
 #
 
-# "Project-Id-Version: 1.07.001\n"
+# "Project-Id-Version: 1.08.001\n"
 # "Report-Msgid-Bugs-To: Miha Petkovsek <miha.petkovsek@gmail.com>\n"
 # "POT-Creation-Date: 2013-04-02 14:33+0200\n"
 # "PO-Revision-Date: 2013-06-28 14:33+0200\n"
@@ -4753,3 +4753,21 @@ msgstr "Ste prepričani, da želite izbrisati zgornje elemente?"
 
 msgid "Are you sure you want to delete IP address"
 msgstr "Ste prepričani, da želite izbrisati IP naslov"
+
+#:site/settings/setitngs.php
+msgid "Inactivity timeout"
+msgstr "Odjava zaradi neaktivnosti"
+
+msgid "Select inactive timeout for user sessions. Please note that if default php session settings in php.ini are lower they will override this"
+msgstr "Izberite samodejno odjavo uporabnika zaradi nekativnosti. V kolikor so nastavitve v php.ini nižje od te vrednosti bodo prevlafale"
+
+#: site/login/index.php
+msgid "You session has timed out"
+msgstr "Vaša seja se je iztekla"
+
+#: site/admin/manageSubnetEdit.php
+msgid "Discover new hosts"
+msgstr "Odkrij nove naprave"
+
+msgid "Discover new hosts in this subnet"
+msgstr "Odkrij nove naprave v omrežju"

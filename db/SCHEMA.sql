@@ -175,6 +175,7 @@ CREATE TABLE `settings` (
   `prettyLinks` SET("Yes","No")  NOT NULL  DEFAULT 'No',
   `hideFreeRange` tinyint(1) DEFAULT '0',
   `hiddenCustomFields` VARCHAR(1024)  NULL  DEFAULT NULL,
+  `inactivityTimeout` INT(5)  NOT NULL  DEFAULT '3600',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -267,6 +268,7 @@ CREATE TABLE `subnets` (
   `showName` tinyint(1) DEFAULT '0',
   `permissions` varchar(1024) DEFAULT NULL,
   `pingSubnet` BOOL NULL  DEFAULT '0',
+  `discoverSubnet` BINARY(1)  NULL  DEFAULT '0',
   `isFolder` BOOL NULL  DEFAULT '0',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -559,4 +561,4 @@ CREATE TABLE `loginAttempts` (
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.07';
+UPDATE `settings` set `version` = '1.08';

@@ -114,7 +114,7 @@ $_GET = filter_user_input($_GET, true, true, false);
 <div class="panel panel-default adminMenu">
 
 	<div class="panel-heading">
-		<h3 class="panel-title"><?php print _('IP related management'); ?></h3>
+		<h3 class="panel-title"><?php print _('Tools'); ?></h3>
 	</div>
 
 	<ul class="list-group">

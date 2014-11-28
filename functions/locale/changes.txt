@@ -1262,3 +1262,24 @@ msgstr ""
 
 msgid "Are you sure you want to delete IP address"
 msgstr ""
+
+
+### 1.08.001 ###
+
+#:site/settings/setitngs.php
+msgid "Inactivity timeout"
+msgstr ""
+
+msgid "Select inactive timeout for user sessions. Please note that if default php session settings in php.ini are lower they will override this"
+msgstr ""
+
+#: site/login/index.php
+msgid "You session has timed out"
+msgstr ""
+
+#: site/admin/manageSubnetEdit.php
+msgid "Discover new hosts"
+msgstr ""
+
+msgid "Discover new hosts in this subnet"
+msgstr ""

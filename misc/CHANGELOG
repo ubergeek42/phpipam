@@ -1,4 +1,4 @@
-== 1.07.012
+== 1.08.001
 
 	Enhancements:
 	----------------------------
@@ -14,6 +14,7 @@
 	+ Selectable custom fields to be visible/hidden in tables view and updated device/VLAN view;
 	+ Added additional confirmation before section, subnet, folder and IP address deletion;
 	+ New script added for cron checks that discovers new hosts for selected networks;
+	+ Added inactivity timeout to settings;
 
 	Security Fixes:
 	----------------------------

@@ -27,7 +27,6 @@ function CheckReferrer()
 }
 
 
-
 /**
  * create links function
  *
@@ -206,6 +205,15 @@ function detect_crypt_type () {
 /* @user based functions ---------- */
 
 /**
+ * reset inactivity time
+ */
+function reset_inactivity_time()
+{
+	$_SESSION['lastactive'] = time();
+}
+ 
+
+/**
  * Functions to check if user is authenticated properly for ajax-loaded pages
  *
  */
@@ -225,6 +233,7 @@ function isUserAuthenticated($die = true)
     	if($die) { die('<div class="alert alert-danger"><a href="'.$url.create_link("login").'">'._('Please login first').'!</a></div>'); }
     	else	 { die("<div class='pHeader'>"._('Error')."</div><div class='pContent'><div class='alert alert-danger'>"._('Please login first')."!</div></div><div class='pFooter'><a class='btn btn-sm btn-default' href='".$url.create_link("login")."'>"._('Login')."</a>"); }
     }
+
     /* close session */
     session_write_close();
 }
@@ -248,8 +257,20 @@ function isUserAuthenticatedNoAjax ()
     	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
     	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
     	# redirect
-    	header("Location:".$url.create_link("login"));    
+    	header("Location:".$url.create_link("login","timeout"));    
     }
+    else {
+	    global $settings;
+    	/* check inactivity time */
+		if( (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
+    		# redirect
+			header("Location:".$url.create_link("login")); 			
+		}
+		else {
+			reset_inactivity_time();
+		}
+    }
+    
     /* close session */
     session_write_close();    
 }

@@ -790,6 +790,7 @@ function setModifySubnetDetailsQuery ($subnetDetails)
         $query .= ''. isCheckbox($subnetDetails['allowRequests']) .','."\n";
         $query .= ''. isCheckbox($subnetDetails['showName']) .','."\n";  
         $query .= ' "'. $subnetDetails['permissions'] .'", '."\n"; 
+        $query .= ''. isCheckbox($subnetDetails['discoverSubnet']) .','."\n";  
         $query .= ''. isCheckbox($subnetDetails['pingSubnet']) .''."\n";  
         $query .= $myFieldsInsert['values'];
         $query .= ' );';
@@ -837,6 +838,7 @@ function setModifySubnetDetailsQuery ($subnetDetails)
         $query .= '`masterSubnetId` = "'. $subnetDetails['masterSubnetId'] 	.'", '. "\n";
         $query .= '`allowRequests`  = "'. isCheckbox($subnetDetails['allowRequests']) 	.'", '. "\n";
         $query .= '`showName`   	= "'. isCheckbox($subnetDetails['showName']) 		.'", '. "\n";
+        $query .= '`discoverSubnet` = "'. isCheckbox($subnetDetails['discoverSubnet'])  .'", '. "\n";
         $query .= '`pingSubnet`   	= "'. isCheckbox($subnetDetails['pingSubnet']) 		.'" '. "\n";
         $query .= $myFieldsInsert['query'];
         $query .= 'where id      	= "'. $subnetDetails['subnetId'] .'"; '."\n";
@@ -1823,6 +1825,7 @@ function updateSettings($settings)
     $query   .= '`scanPingPath` 	  = "'. $settings['scanPingPath'] .'", ' . "\n"; 
     $query   .= '`scanMaxThreads` 	  = "'. $settings['scanMaxThreads'] .'", ' . "\n"; 
     $query   .= '`prettyLinks` 	  	  = "'. $settings['prettyLinks'] .'", ' . "\n"; 
+    $query   .= '`inactivityTimeout`  = "'. $settings['inactivityTimeout'] .'", ' . "\n"; 
     $query   .= '`hideFreeRange` 	  = "'. isCheckbox($settings['hideFreeRange']) .'", ' . "\n"; 
     $query   .= '`defaultLang` 	  	  = "'. $settings['defaultLang'] .'" ' . "\n"; 
 	$query   .= 'where id = 1;' . "\n"; 
@@ -2171,7 +2174,7 @@ function getCustomFields($table)
 	elseif($table == "subnets") {
 		unset($res['id'], $res['subnet'], $res['mask'], $res['sectionId'], $res['description'], $res['masterSubnetId']);
 		unset($res['vrfId'], $res['allowRequests'], $res['adminLock'], $res['vlanId'], $res['showName'],$res['permissions'],$res['editDate']);
-		unset($res['pingSubnet'], $res['isFolder']);
+		unset($res['pingSubnet'], $res['isFolder'], $res['discoverSubnet']);
 	}
 	elseif($table == "ipaddresses") {
 		unset($res['id'], $res['subnetId'], $res['ip_addr'], $res['description'], $res['dns_name'], $res['switch']);
@@ -2445,9 +2448,9 @@ function verifyDatabase()
 	$fields['logs']			  = array("severity", "date", "username", "ipaddr", "command", "details");
 	$fields['requests']		  = array("subnetId", "ip_addr", "description", "dns_name", "owner", "requester", "comment", "processed", "accepted", "adminComment");
 	$fields['sections']		  = array("name", "description", "permissions", "strictMode", "subnetOrdering", "order", "showVLAN", "showVRF", "masterSection");
-	$fields['settings']		  = array("siteTitle", "siteAdminName", "siteAdminMail", "siteDomain", "siteURL", "domainAuth", "enableIPrequests", "enableVRF", "enableDNSresolving", "version", "dbverified", "donate", "IPfilter", "printLimit", "visualLimit", "vlanDuplicate", "vlanMax", "subnetOrdering", "pingStatus", "defaultLang", "api", "editDate", "vcheckDate", "dhcpCompress", "enableChangelog", "scanPingPath", "scanMaxThreads", "prettyLinks", "hideFreeRange", "hiddenCustomFields");
+	$fields['settings']		  = array("siteTitle", "siteAdminName", "siteAdminMail", "siteDomain", "siteURL", "domainAuth", "enableIPrequests", "enableVRF", "enableDNSresolving", "version", "dbverified", "donate", "IPfilter", "printLimit", "visualLimit", "vlanDuplicate", "vlanMax", "subnetOrdering", "pingStatus", "defaultLang", "api", "editDate", "vcheckDate", "dhcpCompress", "enableChangelog", "scanPingPath", "scanMaxThreads", "prettyLinks", "hideFreeRange", "hiddenCustomFields", "maxSessDur");
 	$fields['settingsDomain'] = array("account_suffix", "base_dn", "domain_controllers", "use_ssl", "use_tls", "ad_port", "adminUsername", "adminPassword");
-	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "isFolder");
+	$fields['subnets'] 		  = array("subnet", "mask", "sectionId", "description", "masterSubnetId", "vrfId", "allowRequests", "vlanId", "showName", "permissions", "pingSubnet", "discoverSubnet", "isFolder");
 	$fields['devices'] 	  	  = array("hostname", "ip_addr", "type", "vendor", "model", "version", "description", "sections");
 	$fields['deviceTypes'] 	  = array("tid", "tname", "tdescription");
 	$fields['users'] 	  	  = array("username", "password", "groups", "role", "real_name", "email", "domainUser", "lang", "widgets", "favourite_subnets", "mailNotify", "mailChangelog", "passChange");

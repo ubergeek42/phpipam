@@ -1,24 +1,14 @@
 <?php
-/* set cookie parameters for max lifetime */
-/*
-ini_set('session.gc_maxlifetime', '3600');
-ini_set('session.save_path', '/tmp/');
-ini_set("session.cookie_lifetime","3600");
-*/
-/* some sanitizations */
-ini_set("session.use_only_cookies", "1");
-ini_set("session.use_trans_sid", "0");
-
 /* site config */
 require('config.php');
+
+/* site functions */
+require('functions/functions.php');
 
 /* start session */
 session_name($phpsessname);
 session_start();
 ob_start();
-
-/* site functions */
-require('functions/functions.php');
 
 # set default page
 if(!isset($_GET['page'])) { $_GET['page'] = "dashboard"; }

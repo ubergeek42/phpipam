@@ -1254,7 +1254,7 @@ function getSubnetsToDiscover ()
 {	
     global $database;  
     /* set query */
-    $query         = 'select * from `subnets` where `pingSubnet` = "1";';
+    $query         = 'select * from `subnets` where `discoverSubnet` = "1";';
 	
     /* execute */
     try { $subnets = $database->getArray( $query ); }

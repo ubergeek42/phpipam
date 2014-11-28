@@ -95,6 +95,26 @@ $langs = getLanguages ();
 	<td class="info2"><?php print _('Select default language'); ?></td>
 </tr>
 
+<!-- Mex session duration -->
+<tr>
+	<td class="title"><?php print _('Inactivity timeout'); ?></td>
+	<td>
+		<select name="inactivityTimeout" class="form-control input-sm input-w-auto">
+		<?php
+		$durations = array("900"=>"15 minutes","1800"=>"30 minutes", "3600"=>"1 hour", "7200"=>"2 hours", "21600"=>"6 hours", "43200"=>"12 hours", "86400"=>"24 hours");
+		//default
+		foreach($durations as $k=>$d) {
+			if($k==$settings['inactivityTimeout']) 	{ print "<option value='$k' selected='selected'>$d</option>"; }
+			else									{ print "<option value='$k' 				   >$d</option>"; }
+		}
+		?>
+		</select>
+	</td>
+	<td class="info2"><?php print _('Select inactive timeout for user sessions. Please note that if default php session settings in php.ini are lower they will override this'); ?></td>
+</tr>
+
+
+
 
 <!-- Admin settings -->
 <tr class="settings-title">
