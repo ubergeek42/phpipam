@@ -85,15 +85,12 @@ foreach ($vlans as $vlan) {
 		if ($vlan['subnetId'] != null) {
 			# subnet
 			print " <td><a href='".create_link("subnets",$section['id'],$vlan['subnetId'])."'>". transform2long($vlan['subnet']) ."/$vlan[mask]</a></td>";
-
 			# section
 			print " <td><a href='".create_link("subnets",$section['id'])."'>$section[name]</a></td>";
         }
         else {
         	print '<td>---</td>'. "\n";
         	print '<td>---</td>'. "\n";
-        	print '<td class="used hidden-xs hidden-sm">---</td>'. "\n";
-        	print '<td class="free hidden-xs hidden-sm">---</td>';
         }
     
         # custom

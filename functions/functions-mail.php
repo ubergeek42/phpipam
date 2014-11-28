@@ -62,6 +62,28 @@ $mail['footer2'] = "
 </body>
 </html>";
 
+# set html footer - tripple td
+$mail['footer4'] = "
+<tr>
+	<td style='padding:8px;margin:0px;padding-top:30px;' colspan='4'>
+		<table>
+		<tr>
+			<td><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>E-mail</font></td>
+			<td><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'><a href='mailto:$settings[siteAdminMail]' style='color:#08c;'>$settings[siteAdminName]</a></font></td>
+		</tr>
+		<tr>
+			<td><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>www</font></td>
+			<td><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'><a href='$settings[siteURL]' style='color:#08c;'>$settings[siteURL]</a></font></td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+
+</body>
+</html>";
+
+
 
 # alt header
 $mail['headerAlt'] = "";
@@ -474,7 +496,8 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		# subject
 		$subject = "New $type notification";
 		# unset unneeded variables
-		unset($objectNew['type'],$objectNew['id'], $objectNew['action']);
+		unset($objectOld);
+		unset($objectNew['lastSeen'],$objectNew['editDate'],$objectNew['isFolder']);
 		# set reference object
 		$objectSelected = $objectNew;	
 	}
@@ -482,7 +505,9 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		# subject
 		$subject = "$type modification notification";
 		# unset unneeded variables	
-		
+		unset($objectNew['lastSeen'],$objectNew['editDate'],$objectNew['isFolder']);
+		unset($objectOld['lastSeen'],$objectOld['editDate'],$objectOld['isFolder'],$objectOld['permissions']);
+
 		# set reference object
 		$objectSelected = $objectOld;	
 	}
@@ -490,28 +515,48 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		# subject
 		$subject = "$type delete notification";
 		# unset unneeded variables	
-		unset($objectOld['id'],$objectOld['action']);
+		unset($objectNew);
 		
 		# set reference object
 		$objectSelected = $objectOld;	
 	}
+	
+	# sec default tdstyle
+	$tdstyle = "padding:2px;padding-left:10px;margin:0px;border-top:1px solid #eeeeee;border-bottom:1px solid #eeeeee;padding-top:3px;padding-bottom:3px;";
+	$font    = "Helvetica, Verdana, Arial, sans-serif";
 
 	# content
-	$content  = "<tr><td style='padding:5px;margin:0px;color:#333;font-size:16px;text-shadow:1px 1px 1px white;border-bottom:1px solid #eeeeee;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:16px;'>$subject</font></td></tr>";
+	$content  = "<tr><td colspan='4' style='padding-top:30px;'></td></tr>\n";
+	$content .= "<tr><td style='$tdstyle'><strong>Field</strong></td><td style='$tdstyle'><strong>Old</strong></td><td style='$tdstyle'></td><td style='$tdstyle'><strong>New</strong></td></tr>\n";
+
+	$change = 0;
 	foreach($objectSelected as $k=>$l) {
-	$content .= "<tr>";
-	$content .= "<td style='padding:2px;padding-left:10px;margin:0px;line-height:18px;border-top:1px solid white;border-bottom:1px solid #eeeeee;padding-top:10px;padding-bottom:10px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>$k</font></td>";
-	$content .= "<td style='padding:2px;padding-left:10px;margin:0px;line-height:18px;border-top:1px solid white;border-bottom:1px solid #eeeeee;padding-top:10px;padding-bottom:10px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>$objectOld[$k]</font></td>";
-	$content .= "<td style='padding:2px;padding-left:10px;margin:0px;line-height:18px;border-top:1px solid white;border-bottom:1px solid #eeeeee;padding-top:10px;padding-bottom:10px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>></font></td>";
-	$content .= "<td style='padding:2px;padding-left:10px;margin:0px;line-height:18px;border-top:1px solid white;border-bottom:1px solid #eeeeee;padding-top:10px;padding-bottom:10px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>$objectNew[$k]</font></td>";
-	$content .= "</tr>";			
+
+		$objectNew[$k] = filter_user_input ($objectNew[$k], false, true, false);
+		$objectOld[$k] = filter_user_input ($objectOld[$k], false, true, false);
+	
+		// only mail if change
+		if($objectOld[$k] != $objectNew[$k]) {	
+			
+			if(strlen($objectNew[$k])==0) { $objectNew[$k] = " /"; }
+			if(strlen($objectOld[$k])==0) { $objectOld[$k] = " /"; }
+			
+			$content .= "<tr>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$k</font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$objectOld[$k]</font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'> => </font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$objectNew[$k]</font></td>";
+			$content .= "</tr>\n";	
+			
+			$change++;		
+		}
 	}
 	
 	
 	# set html content
 	$mail['content']  = $mail['header'];
 	$mail['content'] .= $content;
-	$mail['content'] .= $mail['footer'];
+	$mail['content'] .= $mail['footer4'];
 	
 	# Alt content - no html
 	$mail['contentAltt']  = str_replace("<br>", "\r\n", $content);
@@ -523,30 +568,33 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 	$mail['contentAlt'] .= "$mail[contentAltt]";
 	$mail['contentAlt'] .= $mail['footerAlt'];	
 
-	# set mail parameters
-	try {
-		$pmail->SetFrom($mailsettings['mAdminMail'], $mailsettings['mAdminName']);
-		// add admins
-		$admins = getAllAdminUsers ();
-		foreach($admins as $admin) {
-			if($admin['mailChangelog']=="Yes") {
-			$pmail->AddAddress($admin['email']);
-		}	}
-		$pmail->ClearReplyTos();
-		// content
-		$pmail->Subject = $subject;
-		$pmail->AltBody = $mail['contentAlt'];
-
-		$pmail->MsgHTML($mail['content']);
-		
-		# pošlji
-		$pmail->Send();
-	} catch (phpmailerException $e) {
-	  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
-	  	return false;
-	} catch (Exception $e) {
-	  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
-		return false;
+	# send only if change
+	if($change>0) {
+		# set mail parameters
+		try {
+			$pmail->SetFrom($mailsettings['mAdminMail'], $mailsettings['mAdminName']);
+			// add admins
+			$admins = getAllAdminUsers ();
+			foreach($admins as $admin) {
+				if($admin['mailChangelog']=="Yes") {
+				$pmail->AddAddress($admin['email']);
+			}	}
+			$pmail->ClearReplyTos();
+			// content
+			$pmail->Subject = $subject;
+			$pmail->AltBody = $mail['contentAlt'];
+	
+			$pmail->MsgHTML($mail['content']);
+			
+			# pošlji
+			$pmail->Send();
+		} catch (phpmailerException $e) {
+		  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
+		  	return false;
+		} catch (Exception $e) {
+		  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
+			return false;
+		}
 	}
 	
 	return true;

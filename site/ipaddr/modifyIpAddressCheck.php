@@ -282,8 +282,8 @@ else {
 				else							{ $old = $ipold;	$new = $ip; }
 	
 		    	/* @mail functions ------------------- */
-				// include_once('../../functions/functions-mail.php');
-				// sendObjectUpdateMails("ip", $ip['action'], $old, $new);
+				include_once('../../functions/functions-mail.php');
+				sendObjectUpdateMails("ip", $ip['action'], $old, $new);
 	
 		        print '<div class="alert alert-success">'._("IP $ip[action] successful").'!</div>';
 		        updateLogTable ($ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!', $ip['action'] .' of IP address '. $ip['ip_addr'] .' succesfull!<br>SubnetId: '. $ip['subnetId'], 0);

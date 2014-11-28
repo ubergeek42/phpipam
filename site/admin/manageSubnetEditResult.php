@@ -41,6 +41,21 @@ else {
 }
 
 
+
+//we need old values for mailing
+if($_POST['action']=="edit" || $_POST['action']=="delete") {
+	$old = getSubnetDetailsById($_POST['subnetId']);
+	$old['subnet']=transform2long($old['subnet']);
+}
+
+$new = $_POST;
+$new['mask']=trim(strstr($new['subnet'], "/"),"/");
+$new['subnet']=strstr($new['subnet'], "/",true);
+$new['id']=$new['subnetId'];
+$new['allowRequests']=isCheckbox($new['allowRequests']);
+		
+
+
 /* verify post */
 CheckReferrer();
 
@@ -239,6 +254,11 @@ else
     if (!modifySubnetDetails ($_POST)) 		{ print '<div class="alert alert-danger">'._('Error adding new subnet').'!</div>'; }
     # all good
     else {
+	    
+    	/* @mail functions ------------------- */
+		include_once('../../functions/functions-mail.php');
+		sendObjectUpdateMails("subnet", $_POST['action'], $old, $new);
+
     	if($_POST['action'] == "delete") 	{ print '<div class="alert alert-success">'._('Subnet, IP addresses and all belonging subnets deleted successfully').'!</div>'; } 
     	else 								{ print '<div class="alert alert-success">'._("Subnet $_POST[action] successfull").'!</div>';  }
     }
