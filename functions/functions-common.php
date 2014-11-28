@@ -260,15 +260,15 @@ function isUserAuthenticatedNoAjax ()
     	header("Location:".$url.create_link("login","timeout"));    
     }
     else {
-	    global $settings;
-    	/* check inactivity time */
-		if( (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
-    		# redirect
-			header("Location:".$url.create_link("login")); 			
+	    if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") {
+		    global $settings;
+	    	/* check inactivity time */
+			if( (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
+	    		# redirect
+				header("Location:".$url.create_link("login","timeout")); 			
+			}
 		}
-		else {
-			reset_inactivity_time();
-		}
+		reset_inactivity_time();
     }
     
     /* close session */
