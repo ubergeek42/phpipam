@@ -136,26 +136,27 @@ function sendIPnotifEmail($to, $subject, $content)
 	global $pmail;
 	
 	# reformat \n to breaks
-	$content = str_replace("\n", "<br>", $content);
+	$contentarray = explode('\r\n', $content);
 	
 	# get active user name */
 	$sender = getActiveUserDetails();
 	
 	# set html content
 	$mail['content']  = $mail['header'];
-	$mail['content'] .= "<tr><td style='padding:5px;margin:0px;color:#333;font-size:16px;text-shadow:1px 1px 1px white;border-bottom:1px solid #eeeeee;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:16px;'>$subject</font></td></tr>";
-	$mail['content'] .= "<tr><td style='padding:5px;padding-left:15px;margin:0px;padding-top:5px;line-height:18px;border-top:1px solid white;border-bottom:1px solid #eeeeee;padding-top:10px;padding-bottom:10px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>$content</font></td></tr>";
-	$mail['content'] .= "<tr><td style='padding:5px;padding-left:15px;margin:0px;font-style:italic;padding-bottom:3px;text-align:right;color:#ccc;text-shadow:1px 1px 1px white;border-top:1px solid white;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:11px;'>Sent by user ".$mail['sender']['real_name']." at ".date('Y/m/d H:i')."</font></td></tr>";
+	$mail['content'] .= "<tr><td style='padding:5px;margin:0px;color:#333;font-size:16px;text-shadow:1px 1px 1px white;border-bottom:1px solid #eeeeee;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:16px;'>$subject</font></td></tr>\n";
+	foreach($contentarray as $c) {
+	$mail['content'] .= "<tr><td style='padding:3px;padding-left:15px;margin:0px;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:13px;'>$c</font></td></tr>\n";
+	}
+	$mail['content'] .= "<tr><td style='padding:5px;padding-left:15px;margin:0px;font-style:italic;padding-bottom:3px;text-align:right;color:#ccc;text-shadow:1px 1px 1px white;border-top:1px solid white;'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:11px;'>Sent by user ".$mail['sender']['real_name']." at ".date('Y/m/d H:i')."</font></td></tr>\n";
 	$mail['content'] .= $mail['footer'];
 	
 	# Alt content - no html
-	$mail['contentAltt']  = str_replace("<br>", "\r\n", $content);
 	$mail['contentAltt']  = str_replace("\t", " ", $mail['contentAltt']);
 	$mail['contentAltt']  = strip_tags($mail['contentAltt']);
 		
 	$mail['contentAlt']  = $mail['headerAlt'];
 	$mail['contentAlt'] .= "$subject"."\r\n------------------------------\r\n\r\n";
-	$mail['contentAlt'] .= "$mail[contentAltt]";
+	$mail['contentAlt'] .= $mail['contentAltt'];
 	$mail['contentAlt'] .= "\r\n\r\n"._("Sent by user")." ".$mail['sender']['real_name']." at ".date('Y/m/d H:i');
 	$mail['contentAlt'] .= $mail['footerAlt'];	
 
@@ -180,17 +181,17 @@ function sendIPnotifEmail($to, $subject, $content)
 		# pošlji
 		$pmail->Send();
 	} catch (phpmailerException $e) {
-	  	updateLogTable ("Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail failed!", $e->errorMessage(), 2);
 	  	print "<div class='alert alert-danger'>".$e."</div>";
 	  	return false;
 	} catch (Exception $e) {
-	  	updateLogTable ("Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail failed!", $e->errorMessage(), 2);
 	  	print "<div class='alert alert-danger'>".$e."</div>";
 		return false;
 	}
 	
 	# write log for ok
-	updateLogTable ("Sending notification mail to $mail[recipients] succeeded!", $severity = 0);
+	updateLogTable ("Sending notification mail to succeeded!", $to, 0);
 	return true;
 }
 
@@ -274,15 +275,15 @@ function sendUserAccDetailsEmail($userDetails, $subject)
 		# pošlji
 		$pmail->Send();
 	} catch (phpmailerException $e) {
-	  	updateLogTable ("Sending notification mail for new account to $userDetails[email] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail for new account failed!", $e->errorMessage(), 2);
 	  	return false;
 	} catch (Exception $e) {
-	  	updateLogTable ("Sending notification mail for new account to $userDetails[email] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail for new account failed!", $e->errorMessage(), 2);
 		return false;
 	}
 	
 	# write log for ok
-	updateLogTable ("Sending notification mail for new account to $userDetails[email] succeeded!", $severity = 0);
+	updateLogTable ("Sending notification mail for new account succeeded!", $userDetails['email'], 0);
 	return true;
 }
 
@@ -366,10 +367,10 @@ function sendIPReqEmail($request)
 		# pošlji
 		$pmail->Send();
 	} catch (phpmailerException $e) {
-	  	updateLogTable ("New IP request mail sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("New IP request mail sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), 2);
 	  	return false;
 	} catch (Exception $e) {
-	  	updateLogTable ("New IP request mail sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("New IP request mail sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), 2);
 		return false;
 	}
 	
@@ -468,15 +469,15 @@ function sendIPResultEmail($request)
 		# pošlji
 		$pmail->Send();
 	} catch (phpmailerException $e) {
-	  	updateLogTable ("IP request response mail (confirm,reject) sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("IP request response mail (confirm,reject) sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), 2);
 	  	return false;
 	} catch (Exception $e) {
-	  	updateLogTable ("IP request response mail (confirm,reject) sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("IP request response mail (confirm,reject) sending failed", "Sending notification mail to $mail[recipients] failed!\n".$e->errorMessage(), 2);
 		return false;
 	}
 	
 	# write log for ok
-	updateLogTable ("IP request response mail (confirm,reject) sent ok", "Sending notification mail to $mail[recipients] succeeded!", $severity = 0);
+	updateLogTable ("IP request response mail (confirm,reject) sent ok", "Sending notification mail to $mail[recipients] succeeded!", 0);
 	return true;
 }
 
@@ -595,10 +596,10 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 			# pošlji
 			$pmail->Send();
 		} catch (phpmailerException $e) {
-		  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
+		  	updateLogTable ("Sending change notification mail failed!", $e->errorMessage(), 2);
 		  	return false;
 		} catch (Exception $e) {
-		  	updateLogTable ("Sending change notification mail failed!\n".$e->errorMessage(), $severity = 2);
+		  	updateLogTable ("Sending change notification mail failed!", $e->errorMessage(), 2);
 			return false;
 		}
 	}
@@ -645,15 +646,15 @@ function sendStatusUpdateMail($content, $subject)
 		# pošlji
 		$pmail->Send();
 	} catch (phpmailerException $e) {
-	  	updateLogTable ("Sending notification mail for IP address state change failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail for IP address state change failed!", $e->errorMessage(), 2);
 	  	return false;
 	} catch (Exception $e) {
-	  	updateLogTable ("Sending notification mail for IP address state change failed!\n".$e->errorMessage(), $severity = 2);
+	  	updateLogTable ("Sending notification mail for IP address state change failed!", $e->errorMessage(), 2);
 		return false;
 	}
 	
 	# write log for ok
-	updateLogTable ("Sending notification mail for IP address state change succeeded!", $severity = 0);
+	updateLogTable ("Sending notification mail for IP address state change succeeded!", null, 0);
 	return true;
 }
  
