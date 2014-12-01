@@ -56,9 +56,14 @@ pre {
 	font-size: 11px;
 	line-height: normal;
 	color: gray;
+	background: #f9f9f9;
+	border-radius: 0px;
+	border: 1px solid #ddd;
+	color: #686868;
+	font-weight: normal;
 }
 blockquote {
-border-left-width: 2px !important;
+	border-left-width: 2px !important;
 }
 blockquote p {
 	font-size: 15px;
@@ -225,7 +230,7 @@ td#actions .btn-group .btn {
 	padding: 10px;
 }
 .alert-danger {
-	background: #f9e8e8;
+	background: #fff5f5;
 }
 .alert-info {
 	background: #F1FAFE;
@@ -243,6 +248,13 @@ td#actions .btn-group .btn {
 #header {
 	background: #282b2e;
 	margin: 0px;
+}
+.header-install {
+	border-bottom: 1px solid #aaa;
+	
+	box-shadow: 0px 12px 0px #40454a;
+	
+	margin-bottom: 40px !important;
 }
 .hero-unit {
 	text-align: center;
@@ -520,6 +532,15 @@ table#subnetsMenu td#subnetsContent {
 	background: white;
 	
 	min-height: 260px;
+}
+.inner.install h4 {
+	background: #F1FAFE !important;
+	border-bottom: 1px solid #DAE3EA;
+	text-align: center;
+	padding: 20px !important;
+}
+.inner.install input {
+	margin: 5px auto;
 }
 #dashboard .welcome {
 	margin-left: 1%; 
@@ -1393,7 +1414,7 @@ div#login {
 	margin-top: 30px;
 
 	background: white;
-	width: 400px;
+	width: 500px;
 	padding: 10px 0px;
 
 /*
@@ -1412,10 +1433,13 @@ div#login input[type=text],
 div#login input[type=password],
 div#login select,
 div#login textarea {
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 div#login .login {
 	width: 100%;
+}
+#login.request {
+	width: 650px;
 }
 #login .loginForm,
 #login .requestIP1 {
@@ -1439,7 +1463,7 @@ div#login .login td {
 div#loginCheck .alert {
 	margin: auto;
 	margin-top: 10px;
-	width: 400px;
+	width: 500px;
 }
 .iprequest {
 	background: #F1FAFE;

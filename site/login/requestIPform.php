@@ -1,4 +1,4 @@
-<div id="login">
+<div id="login" class="request">
 <form name="requestIP" id="requestIP">
 
 <div class="requestIP">

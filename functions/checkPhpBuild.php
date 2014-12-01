@@ -9,6 +9,9 @@
  *      - mysqli
  *      - session
  *      - gmp
+ *		- SimpleXML
+ *		- json
+ *		- gettext
  *
  ************************************/
 
@@ -77,11 +80,13 @@ if (sizeof($missingExt) != 1) {
  * We must also check database connection to se if all is configured properly
  *
  */
-$mysqli = @new mysqli($db['host'], $db['user'], $db['pass'], $db['name']); 
-
-/* check connection */
-if ($mysqli->connect_errno) {
-	/* die with error */
-    die('<div class="alert alert-danger"><strong>'._('Database connection failed').'!</strong><br><hr>Error: '. mysqli_connect_error() .'</div>');
+if($_GET['page']!="install") {
+	$mysqli = @new mysqli($db['host'], $db['user'], $db['pass'], $db['name']); 
+	
+	// check connection 
+	if ($mysqli->connect_errno) {
+		// die with error
+	    die('<div class="alert alert-danger"><strong>'._('Database connection failed').'!</strong><br><hr>Error: '. mysqli_connect_error() .'</div>');
+	}
 }
 ?>

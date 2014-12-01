@@ -34,11 +34,11 @@ function CheckReferrer()
  *
  *	levels: page=$1&section=$2&subnetId=$3&sPage=$4&ipaddrid=$5
  */
-function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null )
+function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null, $install = false )
 {
 	# get settings
 	global $settings;
-	if(!isset($settings)) { $settings = getAllSettings(); }
+	if(!isset($settings) && !$install) { $settings = getAllSettings(); }
 	
 	# set rewrite
 	if($settings['prettyLinks']=="Yes") {
@@ -88,6 +88,26 @@ function validate_get ($get)
 	    	if($get['section']!="search") {
 		    header("Location:".create_link("error","406"));
 	}	}	}	}
+}
+
+
+/**
+ *	create URL
+ */
+function createURL ()
+{
+	# reset url for base
+	if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BASE; }
+	// reverse proxy doing SSL offloading
+	elseif(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
+	elseif(isset($_SERVER['HTTP_X_SECURE_REQUEST'])  && $_SERVER['HTTP_X_SECURE_REQUEST'] == 'true') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
+	// custom port
+	elseif($_SERVER['SERVER_PORT']!="80")  		{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
+	// normal http
+	else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
+	
+	//result
+	return $url;
 }
 
 

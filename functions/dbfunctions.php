@@ -28,6 +28,7 @@ class database extends mysqli  {
 		try { parent::__construct($host, $username, $dbname, $port, $socket); }
 		catch (Exception $e) {
     		if($printError) { print "<div class='alert alert-danger'>error:".$e->getMessage()."</div>"; }
+			return false;
 		}	
 
 		if(!isset($e))
@@ -170,7 +171,18 @@ class database extends mysqli  {
 	function executeMultipleQuerries( $query, $lastId = false ) 
 	{	
         # execute querries 
-		$result = parent::multi_query($query);
+		//$result = parent::multi_query($query);
+		
+		if ($result = parent::multi_query($query)) {
+		    do {
+		        /* store first result set */
+		        if ($result = parent::store_result()) {
+		            $result->free();
+		        }
+		    } while (parent::next_result());
+		}
+		
+		# save lastid
 		$this->lastSqlId   = $this->insert_id;
 
 		# if it failes throw new exception
@@ -180,7 +192,7 @@ class database extends mysqli  {
         else {
        		if($lastId)	{ return $this->lastSqlId; }
         	else 		{ return true; }
-        }	
+        }
 	}
 
 

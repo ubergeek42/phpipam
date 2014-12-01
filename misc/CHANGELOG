@@ -1,4 +1,4 @@
-== 1.08.003
+== 1.08.010
 
 	Enhancements:
 	----------------------------
@@ -15,6 +15,7 @@
 	+ Added additional confirmation before section, subnet, folder and IP address deletion;
 	+ New script added for cron checks that discovers new hosts for selected networks;
 	+ Added inactivity timeout to settings;
+	+ Changed install procedure and updated install scripts;
 
 	Security Fixes:
 	----------------------------

@@ -1559,6 +1559,7 @@ function TransformDeviceType($type)
 /**
  * Get Domain settings for authentication
  */
+if(!function_exists(getADSettings)) {
 function getADSettings()
 {
     global $database;
@@ -1582,6 +1583,7 @@ function getADSettings()
   		  
 	/* return settings */
 	return($settings[0]);
+}
 }
 
 
@@ -1850,6 +1852,29 @@ function updateSettings($settings)
     	updateLogTable ('Settings updated', $log, 1);
         return true;
 	}
+}
+
+
+/**
+ *	post-install updates
+ */
+function postauth_update($adminpass, $siteTitle, $siteURL)
+{
+    global $database;
+    
+	$query  = "update `users` set `password`='$adminpass',`passChange`='No' where `username` = 'Admin';";		//to update admin pass
+	$query .= "update `settings` set `siteTitle`='$siteTitle',`siteURL`='$siteURL';";
+
+	/* execute */
+    try {
+    	$database->executeMultipleQuerries( $query );
+    }
+    catch (Exception $e) {
+    	$error =  $e->getMessage();
+    	updateLogTable ('Failed to update settings', $log, 2);
+    	return false;
+	}
+	return true;
 }
 
 

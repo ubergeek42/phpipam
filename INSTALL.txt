@@ -14,16 +14,12 @@ phpipam has the following requirements to run:
         + + ldap                : Adds LDAP support (Lightweight Directory Access Protocol)
         + + json				: Adds supports for JSON data-interexchange format
         + + SimpleXML			: Adds SimpleXML support for parsin XML files
+        + + Geetext				: Adds support for translation files
 	- PHP PEAR support (dev-php/pear)
     
 
 The above requirements should be met to continue with installation.
 Please also note that clients must have javascript enabled in browser for app to work, also browser with HTML5 support is *highly* recommended!
-
-!!!! important !!!!
-Since this is beta version security aspects were not taken into consideration, therefore DO NOT put this page to internet, it is suitable only for intranet.
-!!!! /important !!!!
- 
 
 #
 # Install procedure:
@@ -72,8 +68,6 @@ mysql -u root -p
 grant ALL on phpipam.* to ipv6@localhost identified by "ipv6admin";
 exit
 ------
-
-
 
 
 

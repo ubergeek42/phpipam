@@ -13,52 +13,40 @@ ob_start();
 # set default page
 if(!isset($_GET['page'])) { $_GET['page'] = "dashboard"; }
 
-/* check for new installation */
-if($_GET['page']!="install") { require('functions/dbInstallCheck.php'); }
-if($_GET['page'] == "install") { 
-	$settings['siteTitle'] = "phpIPAM"; 
+# reset url for base
+$url = createURL ();
+
+# if not install fetch settings etc
+if($_GET['page']!="install" ) {
+	# check if this is a new installation
+	require('functions/dbInstallCheck.php');
+	
+	# get all site settings
+	$settings 	= getAllSettings();
+
+	# escape GET vars to prevent SQL injection
+	$_GET 		= filter_user_input ($_GET, true, true);
+	$_REQUEST 	= filter_user_input ($_REQUEST, true, true);
 }
+
+/** include proper subpage **/
+if($_GET['page']=="install")		{ require("site/install/index.php"); }
+elseif($_GET['page']=="upgrade")	{ require("site/upgrade/index.php"); }
+elseif($_GET['page']=="login")		{ require("site/login/index.php"); }
+elseif($_GET['page']=="request_ip")	{ require("site/login/index.php"); }
 else {
-	/* get all site settings */
-	$settings = getAllSettings();
-}
+	# verify that user is logged in
+	isUserAuthenticatedNoAjax(); 
 
-/* escape GET vars to prevent SQL injection */
-$_GET 		= filter_user_input ($_GET, true, true);
-$_REQUEST 	= filter_user_input ($_REQUEST, true, true);
-
-
-/* verify login and permissions */
-if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") { isUserAuthenticatedNoAjax(); }
-
-
-if($_GET['page']!='upgrade' && $_GET['page']!="login" && $_GET['page']!="install") { 
+	# make upgrade and php build checks
 	include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
-}
-# verify requirements for installation
-elseif ($_GET['page'] == "install") {
-	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
-}
-
-/* recreate base */
-if($_SERVER['SERVER_PORT'] == "443") 		{ $url = "https://$_SERVER[HTTP_HOST]".BASE; }
-/* reverse proxy doing SSL offloading */
-elseif(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
-elseif(isset($_SERVER['HTTP_X_SECURE_REQUEST'])  && $_SERVER['HTTP_X_SECURE_REQUEST'] == 'true') 	{ $url = "https://$_SERVER[SERVER_NAME]".BASE; }
-/* custom port */
-elseif($_SERVER['SERVER_PORT']!="80")  		{ $url = "http://$_SERVER[HTTP_HOST]:$_SERVER[SERVER_PORT]".BASE; }
-/* normal http */
-else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
-
-
-/* site header */
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
 
 <head>
-	<base href="<?php print $url; ?>" />
+	<base href="<?php print $url; ?>">
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
@@ -126,13 +114,13 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 
 <!-- header -->
 <div class="row" id="header">
-
-	<?php 
-	# print login, request_ip, upgrade and install
-	if($_GET['page']=="login" || $_GET['page']=="request_ip" || $_GET['page']=="upgrade" || $_GET['page']=="install")  { ?>
+		
+	<?php
+	# print login, request_ip, upgrade
+	if($_GET['page']=="login" || $_GET['page']=="request_ip" || $_GET['page']=="upgrade")  { ?>
 	<div class="col-xs-12">
 		<div class="hero-unit" style="padding:20px;margin-bottom:10px;">
-			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } if($_GET['page'] == "install") { print " | "._('installation'); } ?></a>
+			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } ?></a>
 		</div>
 	</div>	
 	<?php
@@ -180,24 +168,6 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 			print "<div id='dashboard' class='container'>";
 			include_once("site/tools/changePassRequired.php");
 			print "</div>";					
-		}
-		/* upgrade */
-		elseif ($_GET['page'] == "upgrade") {
-			print "<div id='dashboard'>";
-			include_once("site/upgrade/index.php");
-			print "</div>";			
-		}
-		/* install */
-		elseif ($_GET['page'] == "install") {
-			print "<div id='dashboard'>";
-			include_once("site/install/index.php");
-			print "</div>";			
-		}
-		/* login, ipRequest */
-		elseif($_GET['page'] == "login" || $_GET['page'] == "request_ip") {
-			print "<div id='dashboard'>";
-			include_once("site/login/index.php");
-			print "</div>";			
 		}
 		/* dashboard */
 		elseif(!isset($_GET['page']) || $_GET['page'] == "dashboard") {
@@ -275,3 +245,4 @@ else								 		{ $url = "http://$_SERVER[HTTP_HOST]".BASE; }
 </body>
 </html>
 <?php ob_end_flush(); ?>
+<?php } ?>

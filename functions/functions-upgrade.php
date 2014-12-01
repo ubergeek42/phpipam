@@ -47,7 +47,7 @@ function getAllTables()
 /**
  * Check if specified table exists
  */
-function tableExists($table)
+function tableExists($table, $quit=false)
 {
     global $database;
     global $db;
@@ -138,7 +138,7 @@ function upgradeDatabase($version)
     
     /* return true if we came to here */
     sleep(1);
-    updateLogTable ('DB updated', 'DB updated from version '. $version .' to version '.VERSION, 1);
+    updateLogTable ('DB updated', 'DB updated from version '. $version .' to version '.VERSION.".".REVISION, 1);
     return true;
 }
 

@@ -5,6 +5,7 @@
 #
 require( dirname(__FILE__) . '/../config.php' );
 require( dirname(__FILE__) . '/../functions/dbfunctions.php' );
+require( dirname(__FILE__) . '/../functions/version.php' );
 
 
 /**
@@ -17,6 +18,46 @@ if ($debugging == false) {
 else{
     ini_set('display_errors', 1); 
     error_reporting(E_ALL ^ E_NOTICE);
+}
+
+
+
+/**
+ * create links function
+ *
+ *	if rewrite is enabled in settings use rewrite, otherwise ugly links
+ *
+ *	levels: page=$1&section=$2&subnetId=$3&sPage=$4&ipaddrid=$5
+ */
+if(!function_exists(create_link)) {
+function create_link($l1 = null, $l2 = null, $l3 = null, $l4 = null, $l5 = null, $install = false )
+{
+	# get settings
+	global $settings;
+	if(!isset($settings) && !$install) { $settings = getAllSettings(); }
+	
+	# set rewrite
+	if($settings['prettyLinks']=="Yes") {
+		if(!is_null($l5))		{ $link = "$l1/$l2/$l3/$l4/$l5/"; }
+		elseif(!is_null($l4))	{ $link = "$l1/$l2/$l3/$l4/"; }
+		elseif(!is_null($l3))	{ $link = "$l1/$l2/$l3/"; }
+		elseif(!is_null($l2))	{ $link = "$l1/$l2/"; }
+		elseif(!is_null($l1))	{ $link = "$l1/"; }
+		else					{ $link = ""; }
+	}
+	# normal
+	else {
+		if(!is_null($l5))		{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4&ipaddrid=$l5"; }
+		elseif(!is_null($l4))	{ $link = "?page=$l1&section=$l2&subnetId=$l3&sPage=$l4"; }
+		elseif(!is_null($l3))	{ $link = "?page=$l1&section=$l2&subnetId=$l3"; }
+		elseif(!is_null($l2))	{ $link = "?page=$l1&section=$l2"; }
+		elseif(!is_null($l1))	{ $link = "?page=$l1"; }
+		else					{ $link = ""; }
+	}
+	
+	# result
+	return $link;
+}
 }
 
 
@@ -55,7 +96,7 @@ function updateLogTable ($command, $details = NULL, $severity = 0)
 	    
 	    /* execute */
     	try {
-    		$database->executeMultipleQuerries($query);
+    		$database->executeQuery($query);
     	}
     	catch (Exception $e) {
     		$error =  $e->getMessage();
@@ -756,14 +797,15 @@ function getAllTables()
 /**
  * Check if specified table exists
  */
-function tableExists($table)
+function tableExists($table, $die = true)
 {
 	global $db;
-	$database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	$database = new database($db['host'], $db['user'], $db['pass'], $db['name'], null, false); 
 
     /* Check connection */
     if ($database->connect_error) {
-    	die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error);
+    	if($die) { die('Connect Error (' . $database->connect_errno . '): '. $database->connect_error); }
+    	else	 { return false; }
 	}
     
     /* first update request */
@@ -810,47 +852,67 @@ function fieldExists($table, $fieldName)
 /**
  * install databases
  */
-function installDatabase($root)
+function installDatabase($rootuser, $rootpass, $dropdb = false, $createdb = true, $creategrants = true)
 {    
 	global $db;
     error_reporting(E_ERROR); 
     
-    $databaseRoot    = new database($db['host'], $root['user'], $root['pass']); 
+    # open connection
+    $databaseRoot    = new database($db['host'], $rootuser, $rootpass, null, null, false); 
     
     /* Check connection */
     if ($databaseRoot->connect_error) {
     	die('<div class="alert alert-danger">Connect Error (' . $databaseRoot->connect_errno . '): '. $databaseRoot->connect_error). "</div>";
 	}
-    
- 	/* first create database */
-    $query = "create database ". $db['name'] .";";
 
-    /* execute */
-    try {
-    	$databaseRoot->executeQuery( $query );
-    }
-    catch (Exception $e) {
-    	$error =  $e->getMessage();
-    	die('<div class="alert alert-danger">'. $error .'</div>');
-	} 
+ 	/* first drop database if requested */
+ 	if($dropdb) {
+	    $query = "drop database ". $db['name'] .";";
+	
+	    /* execute */
+	    try {
+	    	$databaseRoot->executeQuery( $query );
+	    }
+	    catch (Exception $e) {
+	    	$error =  $e->getMessage();
+	    	die('<div class="alert alert-danger">'. $error .'</div>');
+		} 
+	}
+
+    
+ 	/* first create database if requested */
+ 	if($createdb) {
+	    $query = "create database ". $db['name'] .";";
+	
+	    /* execute */
+	    try {
+	    	$databaseRoot->executeQuery( $query );
+	    }
+	    catch (Exception $e) {
+	    	$error =  $e->getMessage();
+	    	die('<div class="alert alert-danger">'. $error .'</div>');
+		} 
+	}
     
     /* select database */
 	$databaseRoot->selectDatabase($db['name']);
 
 	/* set permissions! */
-	$query = 'grant ALL on '. $db['name'] .'.* to '. $db['user'] .'@localhost identified by "'. $db['pass'] .'";';
-
-    /* execute */
-    try {
-    	$databaseRoot->executeMultipleQuerries( $query );
-    }
-    catch (Exception $e) {
-    	$error =  $e->getMessage();
-    	die('<div class="alert alert-danger">Cannot set permissions for user '. $db['user'] .': '. $error. '</div>');
+	if($creategrants) {
+		$query = 'grant ALL on '. $db['name'] .'.* to '. $db['user'] .'@localhost identified by "'. $db['pass'] .'";';
+	
+	    /* execute */
+	    try {
+	    	$databaseRoot->executeQuery( $query );
+	    }
+	    catch (Exception $e) {
+	    	$error =  $e->getMessage();
+	    	die('<div class="alert alert-danger">Cannot set permissions for user '. $db['user'] .': '. $error. '</div>');
+		}
 	}
     
     /* try importing SCHEMA file */
-    $query       = file_get_contents("../../db/SCHEMA.sql");
+    $query  = file_get_contents("../../db/SCHEMA.sql");
     
     /* execute */
     try {
@@ -858,12 +920,22 @@ function installDatabase($root)
     }
     catch (Exception $e) {
     	$error =  $e->getMessage();
-    	die('<div class="alert alert-danger">Cannot install sql SCHEMA file: '. $error. '</div>');
+    	
+    	# drop database!
+ 	    $query = "UNLOCK TABLES; drop database ". $db['name'] .";";
+	    try { $databaseRoot->executeMultipleQuerries( $query ); }
+	    catch (Exception $e) {
+	    	$error =  $e->getMessage();
+	    	die('<div class="alert alert-danger">Cannot set permissions for user '. $db['user'] .': '. $error. '</div>');
+	    } 
+    	
+    	print ('<div class="alert alert-danger">Cannot install sql SCHEMA file: '. $error. '</div>');
+    	return false;
 	}
 	    
     /* return true, if some errors occured script already died! */
     sleep(1);
-   	updateLogTable ('Database installed successfully!', "version 1.0 installed", 1);
+   	updateLogTable ('Database installed successfully!', "version ".VERSION.".".REVISION." installed", 1);
    	return true;
 }
 
