@@ -1,4 +1,3 @@
-
 <div class="widget-dash col-xs-12 col-md-6 col-md-offset-3" style="margin-top:20px;" >
 <div class="inner" style="min-height:10px;">
 	<h4>Invalid installation type</h4>

@@ -1,4 +1,3 @@
-
 <div class="widget-dash col-xs-12 col-md-8 col-md-offset-2">
 <div class="inner install" style="min-height:auto;">
 	<h4>Installation with mysqlimport tool</h4>

@@ -33,10 +33,7 @@
             <td class="submit" colspan="2">
                 <input type="submit" value="<?php print _('Login'); ?>" class="btn btn-sm btn-default pull-right"></input>
             </td>
-        </tr>
-        
-        
-                   
+        </tr>           
 </table>
 </div>
 
@@ -55,5 +52,4 @@ if($settings['enableIPrequests'] == 1) {
 <?php
 }
 ?>
-
-</div>  
+</div>

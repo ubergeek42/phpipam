@@ -50,7 +50,9 @@ $subnets = searchSubnets ($searchTerm, $searchTermEdited);
 $vlans = searchVLANs ($searchTerm);
 
 # get all custom fields 
-$myFields = getCustomFields('ipaddresses');
+$myFields 	= getCustomFields('ipaddresses');
+$myFieldsS 	= getCustomFields('subnets');
+$myFieldsV 	= getCustomFields('vlans');
 
 
 /* set the query */
@@ -84,6 +86,15 @@ $setFields = explode(";", $setFieldsTemp);
 
 /* get all selected fields */
 $myFields = getCustomFields('ipaddresses');
+
+/* set hidden fields for ip address */
+$ffields = json_decode($settings['hiddenCustomFields'], true);		
+if(is_array($ffields['ipaddresses']))	{ $iffields = $ffields['ipaddresses']; }
+else									{ $iffields = array(); }
+if(is_array($ffields['subnets']))		{ $sffields = $ffields['subnets']; }
+else									{ $sffields = array(); }
+if(is_array($ffields['subnets']))		{ $vffields = $ffields['vlans']; }
+else									{ $vffields = array(); }
 
 # set col size
 $fieldSize 	= sizeof($setFields);
@@ -122,7 +133,9 @@ $colSpan 	= $fieldSize + $mySize + 4;
 	
 	# custom fields
 	if(sizeof($myFields) > 0) {
-		foreach($myFields as $myField) 										{ print '<th class="hidden-sm hidden-xs hidden-md">'. $myField['name'] .'</th>'. "\n"; }
+		if(!in_array($myField['name'], $iffields)) {
+			foreach($myFields as $myField) 										{ print '<th class="hidden-sm hidden-xs hidden-md">'. $myField['name'] .'</th>'. "\n"; }
+		}
 	}
 	
 	# actions
@@ -188,10 +201,13 @@ if(sizeof($result) > 0) {
 		
 			# switch
 			if(in_array('switch', $setFields)) 										{ 
-				if(strlen($line['switch'])>0 && $line['switch']!=0) {
+				if(strlen($line['switch'])>0 && $line['switch']!="0") {
 					# get switch
 					$switch = getDeviceDetailsById($line['switch']);
 					$line['switch'] = $switch['hostname'];
+				}
+				else {
+					$line['switch'] = "/";
 				}
 				
 				print ' <td class="hidden-sm hidden-xs">'. $line['switch']  .'</td>' . "\n"; 
@@ -221,7 +237,9 @@ if(sizeof($result) > 0) {
 			}
 			# custom
 			if(sizeof($myFields) > 0) {
-				foreach($myFields as $myField) 										{ print '<td class="customField hidden-sm hidden-xs hidden-md">'. $line[$myField['name']] .'</td>'. "\n"; }
+				if(!in_array($myField['name'], $iffields)) {
+					foreach($myFields as $myField) 										{ print '<td class="customField hidden-sm hidden-xs hidden-md">'. $line[$myField['name']] .'</td>'. "\n"; }
+				}
 			}
 		
 			# print action links if user can edit 	
@@ -266,6 +284,15 @@ if(sizeof($result) > 0) {
 	<th><?php print _('Master subnet');?></th>
 	<th><?php print _('VLAN');?></th>
 	<th><?php print _('Requests');?></th>
+	<?php
+	if(sizeof($myFieldsS) > 0) {
+		foreach($myFieldsS as $field) {
+			if(!in_array($field['name'], $sffields)) {
+				print "	<th class='hidden-xs hidden-sm'>$field[name]</th>";
+			}
+		}
+	}
+	?>
 	<th style="width:5px;"></th>
 </tr>
 
@@ -316,6 +343,15 @@ if(sizeof($subnets) > 0) {
 				print ' <td>'. $line['masterSubnetId'] .'</td>' . "\n";
 				print ' <td>'. $vlan['number'] .'</td>' . "\n";
 				print ' <td>'. _($line['allowRequests']) .'</td>' . "\n";
+				
+				# custom fields
+				if(sizeof($myFieldsS) > 0) {
+					foreach($myFieldsS as $field) {
+						if(!in_array($field['name'], $sffields)) {
+							print "	<td class='hidden-xs hidden-sm'>".$line[$field['name']]."</td>";
+						}
+					}
+				}			
 			
 				#locked for writing
 				if($permission > 1) {
@@ -348,8 +384,16 @@ if(sizeof($subnets) > 0) {
 	<th><?php print _('Name');?></th>
 	<th><?php print _('Number');?></th>
 	<th><?php print _('Description');?></th>
-	<th><?php print _('Belonging subnets');?></th>
-	<th><?php print _('Section');?></th>
+	<?php
+	if(sizeof($myFieldsV) > 0) {
+		foreach($myFieldsV as $field) {
+			if(!in_array($field['name'], $vffields)) {
+				print "	<th class='hidden-xs hidden-sm'>$field[name]</th>";
+			}
+		}
+	}
+	?>
+	<th></th>
 </tr>
 
 
@@ -357,66 +401,31 @@ if(sizeof($subnets) > 0) {
 if(sizeof($vlans) == 0) {
 }
 else {
-
-	foreach($vlans as $vlan) {
-
-		/* get all subnets in VLAN */
-		$subnets = getSubnetsByVLANid ($vlan['vlanId']);
-		
-		/* no belonging subnets! */
-		if(sizeof($subnets) == 0) {
-			print '<tr class="nolink">' . "\n";
-			print ' <td><dd>'. $vlan['name']      .'</dd></td>' . "\n";
-			print ' <td><dd>'. $vlan['number']        .'</dd></td>' . "\n";
-			print ' <td><dd>'. $vlan['description'] .'</dd></td>' . "\n";				
-			print ' <td>----</td>' . "\n";
-			print ' <td>----</td>' . "\n";
-			print '</tr>'. "\n";
+	# print vlans
+	foreach($vlans as $vlan) {;
+	
+		print '<tr class="nolink">' . "\n";
+		print ' <td><dd>'. $vlan['name']      .'</dd></td>' . "\n";
+		print ' <td><dd><a href="'.create_link("tools","vlan",$vlan['vlanId']).'">'. $vlan['number']     .'</a></dd></td>' . "\n";
+		print ' <td><dd>'. $vlan['description'] .'</dd></td>' . "\n";
+		# custom fields
+		if(sizeof($myFieldsV) > 0) {
+			foreach($myFieldsV as $field) {
+				if(!in_array($field['name'], $vffields)) {
+					print "	<td class='hidden-xs hidden-sm'>".$vlan[$field['name']]."</td>";
+				}
+			}
 		}
-		
-		/* for each subnet print tr */
-		foreach($subnets as $subnet)
-		{
-			# check permission
-			$permission = checkSubnetPermission ($subnet['id']);
-			if($permission != "0") {
-			
-				/* get section details */
-				$section = getSectionDetailsById ($subnet['sectionId']);	
-
-				# detect change
-				$vlanNew = $subnet['vlanId'];
-				if($vlanNew == $vlanOld) { $change = ''; }
-				else 					 { $change = 'style="border-top:1px dashed white"'; $vlanOld = $vlanNew; }
-
-				print '<tr class="link vlanSearch" '. $change .' sectionId="'. $section['id'] .'" subnetId="'. $subnet['id'] .'" link="'. $section['name'] .'|'. $subnet['id'] .'">' . "\n";
-
-				/* print first 3 only if change happened! */
-				if(strlen($change) > 0) {
-					print ' <td><dd>'. $vlan['name']         .'</dd></td>' . "\n";
-					print ' <td><dd>'. $vlan['number']           .'</dd></td>' . "\n";
-					print ' <td><dd>'. $vlan['description'] .'</dd></td>' . "\n";			
-				}
-				else {
-					print '<td></td>';
-					print '<td></td>';
-					print '<td></td>';	
-				} 
-
-				if ($subnet['id'] != null) {
-					# subnet
-					print ' <td>'. transform2long($subnet['subnet']) .'/'. $subnet['mask'] .'</td>' . "\n";
-					# section
-					print ' <td>'. $section['name'] .'</td>'. "\n";
-				}
-				else {
-    		    	print '<td>---</td>'. "\n";
-    		    	print '<td>---</td>'. "\n";
-    		    }
-    		    print '</tr>' . "\n";
-    		}
-    	}
-
+		# for admins print link
+		print " <td class='actions'>";
+		if(checkAdmin(false)) {
+		print '<div class="btn-group">';
+		print '	<button class="btn btn-xs btn-default editVLAN" data-action="edit"   data-vlanid="'.$vlan['vlanId'].'"><i class="fa fa-pencil"></i></button>';
+		print '	<button class="btn btn-xs btn-default editVLAN" data-action="delete" data-vlanid="'.$vlan['vlanId'].'"><i class="fa fa-times"></i></button>';
+		print '</div>';
+		} 
+		print "</td>";
+		print '</tr>'. "\n";
     }
 }
 ?>

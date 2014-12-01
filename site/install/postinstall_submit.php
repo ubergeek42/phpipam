@@ -30,5 +30,4 @@ else {
 	else											{ print "<div class='alert alert-success'>Settings updated, installation complete!<hr><a class='btn btn-sm btn-default' href='".create_link("login")."'>Proceed to login</a>"; }
 
 }
-
 ?>
