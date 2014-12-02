@@ -35,9 +35,6 @@ $settings = getAllSettings();
 // set ping statuses
 $statuses = explode(";", $settings['pingStatus']);
 
-//set execution start time
-$sTime = time();
-
 //verify that pign path is correct
 if(!file_exists($settings['scanPingPath'])) {
 	print "Invalid ping path! You can set parameters for scan under Administration > ping settings\n";
@@ -50,7 +47,7 @@ elseif(!$threads) {
 	//scan each
 	foreach($addresses as $ip) {
 		//calculate diff since last alive
-		$tDiff = $sTime - strtotime($ip['lastSeen']);
+		$tDiff = time() - strtotime($ip['lastSeen']);
 		//set Old status
 		if($tDiff < $statuses[1])	{ $addresses[$m]['oldStatus'] = 0; }	//old online
 		else						{ $addresses[$m]['oldStatus'] = 2; }	//old offline
@@ -94,7 +91,7 @@ else {
         	//only if index exists!
         	if(isset($addresses[$z])) {
         		//calculate diff since last alive
-				$tDiff = $sTime - strtotime($addresses[$z]['lastSeen']);
+				$tDiff = time() - strtotime($addresses[$z]['lastSeen']);
 				//set Old status
 				if($tDiff <= $statuses[1])	{ $addresses[$z]['oldStatus'] = 0; }	//old online
 				else						{ $addresses[$z]['oldStatus'] = 2; }	//old offline        	
@@ -210,7 +207,7 @@ if(sizeof($stateDiff)>0 && $email)
 			if(is_null($change['lastSeen']) || $change['lastSeen']=="0000-00-00 00:00:00") {
 				$ago	  = "never";
 			} else {
-				$timeDiff = $sTime - strtotime($change['lastSeen']);
+				$timeDiff = time() - strtotime($change['lastSeen']);
 				$ago 	  = $change['lastSeen']." (".sec2hms($timeDiff)." ago)";
 			}
 			

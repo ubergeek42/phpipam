@@ -55,6 +55,15 @@ if(sizeof($myFields) > 0) {
 }
 
 
+//we need old values for mailing
+if($_POST['action']=="edit" || $_POST['action']=="delete") {
+	$old = getSubnetDetailsById($_POST['subnetId']);
+}
+$new = $_POST;
+unset ($new['subnet'],$new['allowRequests'],$new['showName'],$new['pingSubnet'],$new['discoverSubnet']);
+unset ($old['subnet'],$old['allowRequests'],$old['showName'],$old['pingSubnet'],$old['discoverSubnet']);
+
+
 /* sanitize description */
 $_POST['description'] = htmlentities($_POST['description'], ENT_COMPAT | ENT_HTML401, "UTF-8");	//prevent XSS
 
@@ -121,6 +130,11 @@ else {
 		if (!modifySubnetDetails ($_POST)) 		{ print '<div class="alert alert alert-danger">'._('Error adding new folder').'!</div>'; }
 	# all good
 	else {
+
+    	/* @mail functions ------------------- */
+		include_once('../../functions/functions-mail.php');
+		sendObjectUpdateMails("folder", $_POST['action'], $old, $new);
+		
 		if($_POST['action'] == "delete") 	{ print '<div class="alert alert-success">'._('Folder, IP addresses and all belonging subnets deleted successfully').'!</div>'; } 
 		else 								{ print '<div class="alert alert-success">'._("Folder $_POST[action] successfull").'!</div>';  }
 	}

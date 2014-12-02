@@ -512,8 +512,8 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 		# subject
 		$subject = "$type modification notification";
 		# unset unneeded variables	
-		unset($objectNew['lastSeen'],$objectNew['editDate'],$objectNew['isFolder']);
-		unset($objectOld['lastSeen'],$objectOld['editDate'],$objectOld['isFolder'],$objectOld['permissions']);
+		unset($objectNew['lastSeen'],$objectNew['editDate'],$objectNew['isFolder'],$objectNew['id']);
+		unset($objectOld['lastSeen'],$objectOld['editDate'],$objectOld['isFolder'],$objectNew['id'],$objectOld['permissions']);
 
 		# set reference object
 		$objectSelected = $objectOld;	

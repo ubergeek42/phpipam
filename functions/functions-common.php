@@ -299,7 +299,7 @@ function isUserAuthenticatedNoAjax ()
 /**
  * Check if user is admin
  */
-function checkAdmin ($die = true, $startSession = true) 
+function checkAdmin ($die = true) 
 {    
     /* first get active username */
     if(!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
@@ -468,7 +468,7 @@ function getUserDetailsById ($id)
 /**
  * Get user details by name
  */
-function getUserDetailsByName ($username)
+function getUserDetailsByName ($username, $killsession = true)
 {
 	# check if already in cache
 	if($user = checkCache("user", $username)) {
@@ -485,7 +485,7 @@ function getUserDetailsByName ($username)
 			global $database;
 		} 
 	    /* set query, open db connection and fetch results */
-	    $query    = 'select * from users where `username` LIKE BINARY "'. $username .'";';
+	    $query    = 'select * from users where `username` = "'. $username .'";';
 
 	    /* execute */
 	    try { $details = $database->getArray( $query ); }
@@ -497,11 +497,13 @@ function getUserDetailsByName ($username)
 	    
 	    # result must be more than 1!
 	    if(!isset($details[0]))	{
-	    	global $phpsessname; 
-	    	session_name($phpsessname); 
-	    	session_start();
-	    	session_destroy();
-		  	return false;  
+	    	if($killsession) {
+		    	global $phpsessname; 
+		    	session_name($phpsessname); 
+		    	session_start();
+		    	session_destroy();
+			  	return false;
+		  	}
 	    }
 	    else {
 		    # save cache - id and name

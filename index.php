@@ -114,19 +114,6 @@ else {
 
 <!-- header -->
 <div class="row" id="header">
-		
-	<?php
-	# print login, request_ip, upgrade
-	if($_GET['page']=="login" || $_GET['page']=="request_ip" || $_GET['page']=="upgrade")  { ?>
-	<div class="col-xs-12">
-		<div class="hero-unit" style="padding:20px;margin-bottom:10px;">
-			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; if($_GET['page'] == "login") { print " | "._('login'); } ?></a>
-		</div>
-	</div>	
-	<?php
-	}
-	# print normal page
-	else { ?>
 	<!-- usermenu -->
 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pull-right" id="user_menu">
 		<?php include('site/userMenu.php'); ?>
@@ -137,9 +124,7 @@ else {
 		<div class="hero-unit">
 			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; ?></a>
 		</div>
-	</div>	
-	<?php } ?>
-	
+	</div>		
 </div>  
 
 

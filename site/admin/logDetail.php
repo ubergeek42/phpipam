@@ -38,7 +38,7 @@ else {
 /**
  * get user details
  */
-$user = getUserDetailsByName($log['username']);
+$user = getUserDetailsByName($log['username'], false);
 ?>
 
 

@@ -4,7 +4,9 @@ version - 1.1
 	
 	+ API !
 	
-	+ Fix offline/online in status checks
+	+ upgrade script
+	
+	+ User account login auth fix
 
 
 version - 1.2

@@ -1,4 +1,4 @@
-== 1.08.010
+== 1.08.012
 
 	Enhancements:
 	----------------------------
@@ -46,6 +46,7 @@
 	+ Fixed overlapping check not working;
 	+ Fixed subnet free space calcultation;
 	+ Fixed visual subnet display not showing on /31 and /32 networks;
+	+ Fixed custom fields display on folder edit;
 
 == 1.0
 	
