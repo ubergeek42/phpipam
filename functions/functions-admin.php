@@ -2237,8 +2237,11 @@ function updateCustomField($field)
     global $database;
 
     /* escape vars */
-    $field = filter_user_input ($field, true, true);
-        
+    # set override
+    if($field['fieldType']!="set") {
+    	$field = filter_user_input ($field, true, true);
+    }
+    
     /* set db type values */
     if($field['fieldType']=="bool" || $field['fieldType']=="text" || $field['fieldType']=="date" || $field['fieldType']=="datetime") 	
     																{ $field['ftype'] = "$field[fieldType]"; }

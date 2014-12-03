@@ -204,10 +204,28 @@ $(function () {
     		mouseActiveRadius: 3
     		}
     };
-    
+
+	<?php
+	if($m!=0) {
+	?>
     $.plot($("#<?php print $type; ?>top10Hosts"), [ data ], options);
+    <?php } else { ?>
+    $("#IPv6top10Hosts").hide();
+    <?php } ?>
 });
 </script>
+
+<?php
+if($m==0) {
+	print "<hr>";
+
+	print "<blockquote style='margin-top:20px;margin-left:20px;'>";
+	print "<p>"._("No $type hosts configured")."</p>";
+	print "<small>"._("Add some hosts to subnets to show graph of used hosts per subnet")."</small>";
+	print "</blockquote>";
+}
+?>
+
 
 <?php
 }
