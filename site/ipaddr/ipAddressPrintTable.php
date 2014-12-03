@@ -88,6 +88,12 @@ $colspan['empty']  = $selFieldsSize + $myFieldsSize +4;
 $colspan['unused'] = $selFieldsSize + $myFieldsSize +3;
 $colspan['dhcp']   = $selFieldsSize + $myFieldsSize;
 
+/* for ajax-loaded pages (ordering) we need to reset permissions! */
+if(!isset($permission)) {
+	# permissions
+	$permission = checkSubnetPermission ($subnetId);
+}
+
 /* 
 if result not empty use first IP address in subnet to identify type 
 else use subnet

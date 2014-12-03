@@ -1,4 +1,4 @@
-== 1.08.012
+== 1.08.016
 
 	Enhancements:
 	----------------------------
@@ -47,6 +47,8 @@
 	+ Fixed subnet free space calcultation;
 	+ Fixed visual subnet display not showing on /31 and /32 networks;
 	+ Fixed custom fields display on folder edit;
+	+ Fixed unable to edit IP addresses when fields are sorted;
+	+ Fixde ordering of custom fields defaults to varchar 256;
 
 == 1.0
 	

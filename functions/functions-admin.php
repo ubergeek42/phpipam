@@ -2292,8 +2292,8 @@ function reorderCustomField($table, $next, $current)
     $old = getFullFieldData($table, $current);
     
     /* update request */
-    if($old['Null']=="NO")	{ $query  = 'ALTER TABLE `'.$table.'` MODIFY COLUMN `'. $current .'` VARCHAR(256) NOT NULL COMMENT "'.$old['Comment'].'" AFTER `'. $next .'`;'; }
-    else					{ $query  = 'ALTER TABLE `'.$table.'` MODIFY COLUMN `'. $current .'` VARCHAR(256) DEFAULT NULL COMMENT "'.$old['Comment'].'" AFTER `'. $next .'`;'; }
+    if($old['Null']=="NO")	{ $query  = 'ALTER TABLE `'.$table.'` MODIFY COLUMN `'. $current .'` '.$old['Type'].' NOT NULL COMMENT "'.$old['Comment'].'" AFTER `'. $next .'`;'; }
+    else					{ $query  = 'ALTER TABLE `'.$table.'` MODIFY COLUMN `'. $current .'` '.$old['Type'].' DEFAULT NULL COMMENT "'.$old['Comment'].'" AFTER `'. $next .'`;'; }
 
     try { $database->executeQuery( $query ); }
     catch (Exception $e) { 

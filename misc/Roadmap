@@ -3,6 +3,8 @@ version - 1.1
 	+ Per-admin changelog mailing (section, permissions, vlan, folder)
 	
 	+ API !
+	
+	+ add check for pear module !
 
 
 version - 1.2
@@ -10,6 +12,8 @@ version - 1.2
 	+ support multiple authentication methods
 		
 	+ per-section DNS resolvers
+	
+	+ l2 vlan domains
 
 	+ assign a state to a subnet, ipaddr, vlan, user-editable
 
@@ -20,37 +24,23 @@ version - 1.2
 	+ Define Default Gateway for a Subnet
 				
 	+ Mark subnet as full
-	
-	+ Fix ordering of custom fields defaults to varchar 256;
-	
-	+ Fix IP ordering breaks editing;
-			
+				
 
 features for next releases:
 ---------------------------
 	
-	- Planned
+	+ Imports
+		+ Import from IPPlan
+		+ Import from 
 	
-		+ Imports
-			+ Import from IPPlan
-			+ Import from 
-		
-		+ Scan subnet for alive hosts and import
-			SNMP router table fetching
-			NMAP scan
-		
-		+ Subnets import with vlan information;
-		
-		+ VLAN header ordering;
-		
-		+ Permissions for custom fields;
-		
-		
-		Martin Komon:
-		
-		+ Subnet importing via cli with switches;
-		
+	+ Scan subnet for alive hosts and import
+		SNMP router table fetching
+		NMAP scan
 	
-	- Optional
-		- RDNS zone file export (in admin!);
-		- IPv6 migration guide document;
+	+ Subnets import with vlan information;
+	
+	+ Permissions for custom fields;	
+	
+	Martin Komon:
+	
+	+ Subnet importing via cli with switches;
