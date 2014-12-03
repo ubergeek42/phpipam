@@ -133,7 +133,8 @@ function upgradeDatabase($version)
     }
     catch (Exception $e) {
     	updateLogTable ('DB update failed', 'DB updated failed with error: '. $e->getMessage(), 2);
-    	die('<div class="alert alert-danger">Update error: '. $error .'</div>');
+    	print ('<div class="alert alert-danger">Update error: '. $e->getMessage() .'</div>');
+    	return false;
 	}
     
     /* return true if we came to here */

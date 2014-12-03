@@ -1,7 +1,6 @@
 <?php
 
 # make upgrade and php build checks
-include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 
 # verify that user is logged in
@@ -40,6 +39,7 @@ isUserAuthenticatedNoAjax();
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/jclock.jquery.js"></script>
 	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/install.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
@@ -77,77 +77,121 @@ isUserAuthenticatedNoAjax();
 <div class="row header-install" id="header">
 	<div class="col-xs-12">
 		<div class="hero-unit" style="padding:20px;margin-bottom:10px;">
-			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']." | "._('login');?></a>
+			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']." | "._('upgrade');?></a>
 		</div>
 	</div>		
 </div>  
 
 <!-- content -->
 <div class="content_overlay">
-<div class="container-fluid" id="mainContainer">
+<div class="container" id="dashboard">
 
 
-	<div class="content upgrade-db" style="width:600px;margin:auto;background:white;padding:10px;margin-top:40px;border-radius:6px;border:1px solid #eee;">
-	<?php
-	
-	/**
-	 * Check if database needs upgrade to newer version
-	 ****************************************************/
-	
-	
-	/**
-	 * checks
-	 *
-	 *	$settings['version'] = installed version (from database)
-	 *	VERSION 			 = file version
-	 *	LAST_POSSIBLE		 = last possible for upgrade
-	 */
-	
-	
-	// not logged in users
-	if (isUserAuthenticatedNoAjax()) {
-		header("Location: ".create_link("login"));	
+<?php
+
+/**
+ * Check if database needs upgrade to newer version
+ ****************************************************/
+
+
+/**
+ * checks
+ *
+ *	$settings['version'] = installed version (from database)
+ *	VERSION 			 = file version
+ *	LAST_POSSIBLE		 = last possible for upgrade
+ */
+
+
+# not authenticated
+if (isUserAuthenticatedNoAjax()) {
+	header("Location: ".create_link("login"));	
+}
+# authenticated, but not admins
+elseif (!checkAdmin(false)) {
+	# version is ok
+	if ($settings['version'] == VERSION) {
+		header("Location: ".create_link("login"));
+	} 
+	# upgrade needed
+	else {
+		$title 	  = 'phpipam upgrade required';
+		$content  = '<div class="alert alert-warning">Database needs upgrade. Please contact site administrator (<a href="mailto:'. $settings['siteAdminMail'] .'">'. $settings['siteAdminName'] .'</a>)!</div>';
 	}
-	// logged in, but not admins
-	elseif (!checkAdmin(false)) {
-		//version ok
-		if ($settings['version'] == VERSION) {
-			header("Location: ".create_link("login"));
-		} 
-		//upgrade needed
-		else {
-			print '<h4>phpipam upgrade required</h4><hr>';
-			print '<div class="alert alert-danger">Database needs upgrade. Please contact site administrator (<a href="mailto:'. $settings['siteAdminMail'] .'">'. $settings['siteAdminName'] .'</a>)!</div>';
-		}
+}
+# admins that are authenticated
+elseif(checkAdmin(false)) { 
+	# version ok
+	if ($settings['version'] == VERSION) {
+		$title 	  = "Database upgrade check";
+		$content  = "<div class='alert alert-success'>Database seems up to date and doesn't need to be upgraded!</div>";
+		$content .= '<a href="'.create_link(null).'"><button class="btn btn-sm btn-default">Go to dashboard</button></a>';		
 	}
-	// admins
-	elseif(checkAdmin(false)) {
-		//version ok
-		if ($settings['version'] == VERSION) {
-			print "<h4>Database upgrade check</h4><hr>";
-			print "<div class='alert alert-success'>Database seems up to date and doesn't need to be upgraded!</div>";
-			print '<a href="'.create_link(null).'"><button class="btn btn-sm btn-default">Go to dashboard</button></a>';		
-		}
-		//version too old
-		elseif ($settings['version'] < LAST_POSSIBLE) {
-			die("<div class='alert alert-danger'>Your phpIPAM version is too old to be upgraded, at least version ".LAST_POSSIBLE." is required for upgrade.</div>");
-		}
-		//upgrade needed
-		elseif ($settings['version'] < VERSION) {
-			//upgrade html + script
-			include('upgradePrint.php');
-		}
-		//upgrade not needed
-		else {
-			header("Location: ".create_link("login"));		
-		}
+	# version too old
+	elseif ($settings['version'] < LAST_POSSIBLE) {
+		$title 	  = "Database upgrade check";
+		$content  = "<div class='alert alert-danger'>Your phpIPAM version is too old to be upgraded, at least version ".LAST_POSSIBLE." is required for upgrade.</div>";
 	}
-	//default, smth is wrong
+	# upgrade needed
+	elseif ($settings['version'] < VERSION) {
+		$title	  = "phpipam database upgrade required";
+		$title	 .= "<hr><div class='text-muted' style='font-size:13px;padding-top:5px;'>Database needs to be upgraded to version <strong>v".VERSION."</strong>, it seems you are using phpipam version <strong>v$settings[version]</strong>!</div>";
+		
+		// automatic
+		$content  = "<h5 style='padding-top:10px;'>Automatic database upgrade</h5><hr>";
+		$content .= "<div style='padding:10px 0px;'>";
+		$content .= "<div class='alert alert-warning' style='margin-bottom:5px;'><strong>Warning!</strong> Backup database first before attempting to upgrade it! You have been warned.</div>";
+		$content .= "<span class='text-muted'>Clicking on upgrade button will automatically update database to newest version!</span>";
+		$content .= "<div class='text-right'><input type='button' class='upgrade btn btn-sm btn-default btn-success' style='margin-top:10px;' version='$settings[version]' value='Upgrade phpipam database'></div>";
+		$content .= "<div id='upgradeResult'></idv>";
+		$content .= "</div>";
+		
+		// manual
+		$content .= "<h5 style='padding-top:10px;'>Manual upgrade instructions</h5><hr>";
+		$content .= "<div style='padding:10px 15px;'>";
+		$content .= "<a class='btn btn-sm btn-default' href='#' id='manualUpgrade'>Show instructions</a>";
+		$content .= "<div style='display:none' id='manualShow'>";
+		$content .= "<span class='text-muted'>copy and paste below commands to mysql directly!</span>";
+		// get file
+		$dir = "db/";
+		$files = scandir($dir);
+		foreach($files as $f) {
+			//get only UPDATE- for specific version
+			if(substr($f, 0, 6) == "UPDATE") {
+				$ver = str_replace(".sql", "",substr($f, 8));
+				if($ver>$settings['version']) {
+					//printout
+					$tmp[] = file_get_contents("db/$f");
+				}
+			}
+		}
+		$tmp = implode("<br><br>", $tmp);
+		$content .= "<pre>".str_replace("\n","<br>",$tmp)."</pre>";
+		$content .= "</div>";
+		$content .= "</div>";
+	}
+	# upgrade not needed, redirect to login
 	else {
 		header("Location: ".create_link("login"));		
 	}
+}
+# default, smth is wrong
+else {
+	header("Location: ".create_link("login"));		
+}
+
+?>	
+
+	<div class="widget-dash col-xs-12 col-md-8 col-md-offset-2">
+	<div class="inner install" style="min-height:auto;">
+		<h4><?php print $title; ?></h4>
 	
-	?>
+		<div class="hContent">
+		<div style="padding:10px;">
+			<?php print $content; ?>			
+		</div>
+		</div>
+	</div>	
 	</div>
 
 </div>

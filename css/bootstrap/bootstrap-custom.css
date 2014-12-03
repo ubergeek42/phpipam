@@ -49,6 +49,12 @@ h4 {
 	font-weight: 300;
 	text-shadow: 1px 1px 0px white;
 }
+h5 {
+	font-weight: 300;
+	text-shadow: 1px 1px 0px white;
+	font-size: 16px;
+
+}
 .row {
 	margin: 0px;
 }
@@ -234,6 +240,9 @@ td#actions .btn-group .btn {
 }
 .alert-info {
 	background: #F1FAFE;
+}
+.alert-success {
+	background: #eef9ea;
 }
 
 
@@ -976,7 +985,7 @@ span.status-hidden {
 	background: white;
 }
 .status-success {
-	background: #A9C9A4;
+	background: #d9f3d5;
 }
 .status-error {
 	background: #F59C99;

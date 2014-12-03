@@ -45,6 +45,29 @@ $('#postinstall').submit(function() {
 	return false;
 });
 
+
+
+
+
+/* database upgrade */	
+$("#manualUpgrade").click(function() {
+	$('#manualShow').slideToggle("fast");
+	return false;
+});
+$(document).on("click", "input.upgrade", function() {	
+	$(this).removeClass("upgrade");		
+	$("div.loading").fadeIn("fast");		
+	var version = $(this).attr("version");		
+	$.post("site/admin/databaseUpgrade.php", {version:version}, function(data) {		
+		$("div#upgradeResult").html(data).slideDown("fast");		
+		$("div.loading").fadeOut("fast");		
+	});		
+});	
+$(document).on("click", "div.error", function() {	
+	$(this).stop(true,true).show();		
+});		
+
+
 });
 
 

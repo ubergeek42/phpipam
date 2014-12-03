@@ -3,10 +3,13 @@ version - 1.1
 	+ Per-admin changelog mailing (section, permissions, vlan, folder)
 	
 	+ API !
-	
-	+ upgrade script
+
 
 version - 1.2
+
+	+ support multiple authentication methods
+		
+	+ per-section DNS resolvers
 
 	+ assign a state to a subnet, ipaddr, vlan, user-editable
 
@@ -18,21 +21,15 @@ version - 1.2
 				
 	+ Mark subnet as full
 	
-	+ Option in administration to not display free range
-		https://sourceforge.net/p/phpipam/feature-requests/204/
-	
 	+ Fix ordering of custom fields defaults to varchar 256;
-	+ Fix IP ordering breaks editing;
 	
-	+ Change install script
+	+ Fix IP ordering breaks editing;
 			
 
 features for next releases:
 ---------------------------
 	
 	- Planned
-	
-		+ support multiple authentication methods
 	
 		+ Imports
 			+ Import from IPPlan
