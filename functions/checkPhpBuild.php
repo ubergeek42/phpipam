@@ -40,6 +40,11 @@ if (function_exists("apache_get_modules")) {
     }
 }
 
+/* check for PEAR functions */
+if ((@include_once 'PEAR.php') != true) {
+	$missingExt[] = "php PEAR support";
+}
+
 /* if any extension is missing print error and die! */
 if (sizeof($missingExt) != 1) {
 
@@ -54,11 +59,12 @@ if (sizeof($missingExt) != 1) {
 	$error  .= '<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-custom.css">';
 	$error  .= "</head>";
     $error  .= "<body style='margin:0px;'>";
-    $error  .= '<div id="header">';
-    $error  .= '<div class="hero-unit">';
-	$error  .= '<a href="'.create_link(null).'">phpIPAM error</a>';
+	$error  .= '<div class="row header-install" id="header"><div class="col-xs-12">';
+	$error  .= '<div class="hero-unit" style="padding:20px;margin-bottom:10px;">';
+	$error  .= '<a href="'.create_link(null,null,null,null,null,true).'">phpipam requirements error</a>';
 	$error  .= '</div>';
-	$error  .= '</div>';
+	$error  .= '</div></div>';
+
     /* error */
     $error  .= "<div class='alert alert-danger' style='margin:auto;margin-top:20px;width:500px;'><strong>"._('The following required PHP extensions are missing').":</strong><br><hr>";
     $error  .= '<ul>' . "\n";

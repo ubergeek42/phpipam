@@ -16,6 +16,7 @@
 	+ New script added for cron checks that discovers new hosts for selected networks;
 	+ Added inactivity timeout to settings;
 	+ Changed install procedure and updated install scripts;
+	+ Added PEAR check for installation;
 
 	Security Fixes:
 	----------------------------
