@@ -17,6 +17,7 @@
 	+ Added inactivity timeout to settings;
 	+ Changed install procedure and updated install scripts;
 	+ Added PEAR check for installation;
+	+ Added free range disaply for VLANs;
 
 	Security Fixes:
 	----------------------------

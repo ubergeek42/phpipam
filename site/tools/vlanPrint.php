@@ -9,10 +9,13 @@ $vlans = getAllVlans (true);
 /* get custom fields */
 $custom = getCustomFields('vlans');
 
-/*check customfields */
+/* check customfields */
 $ffields = json_decode($settings['hiddenCustomFields'], true);		
 if(is_array($ffields['vlans']))	{ $ffields = $ffields['vlans']; }
 else							{ $ffields = array(); }
+
+//size of custom fields
+$csize = sizeof($custom) - sizeof($ffields);
 
 # title
 print "<h4>"._('Available VLANs:')."</h4>";
@@ -23,7 +26,7 @@ if($admin) {
 }
 
 # table
-print "<table id='vlans' class='table table-striped table-condensed table-top'>";
+print "<table id='vlans' class='table slaves table-striped table-condensed table-top'>";
 
 /* headers */
 print '<tr">' . "\n";
@@ -43,7 +46,24 @@ print '</tr>' . "\n";
 
 $m = 0;
 foreach ($vlans as $vlan) {
-	
+
+	# show free vlans - start
+	if($m==0 && $vlan['number']!=1)	{
+		print "<tr class='success'>";
+		print "<td></td>";
+		print "<td colspan='".(5+$csize)."'>1 - ".($vlan['number']-1)." (".($vlan['number']-1).") "._('unused')." "._('VLANs')."</td>";
+		print "</tr>";
+	}
+	# show free vlans - before vlan
+	if($m>0)	{
+		if( ($vlans[$m]['number'])-($vlans[$m-1]['number']) >0 ) {
+		print "<tr class='success'>";
+		print "<td></td>";
+		print "<td colspan='".(5+$csize)."'>".($vlans[$m-1]['number']+1)." - ".($vlan['number']-1)." (".(($vlans[$m]['number'])-($vlans[$m-1]['number'])-1).") "._('unused')." "._('VLANs')."</td>";
+		print "</tr>";
+	}
+	}
+		
 	# new change detection
 	if($m>0) {
 		if($vlans[$m]['number']==$vlans[$m-1]['number'] &&  $vlans[$m]['name']==$vlans[$m-1]['name'] && $vlans[$m]['description']==$vlans[$m-1]['description'])	{ $change = 'nochange'; }
@@ -96,7 +116,6 @@ foreach ($vlans as $vlan) {
         # custom
         if(sizeof($custom) > 0) {
 	   		foreach($custom as $field) {
-		   		
 		   		# hidden
 		   		if(!in_array($field['name'], $ffields)) {
 
@@ -121,6 +140,15 @@ foreach ($vlans as $vlan) {
 	    	}
 	    }    
 	    print '</tr>' . "\n";
+	}
+
+	# show free vlans - last
+	if($m==(sizeof($vlans)-1))	{
+		if($settings['vlanMax']>$vlan['number'])
+		print "<tr class='success'>";
+		print "<td></td>";
+		print "<td colspan='".(5+$csize)."'>".($vlan['number']+1)." - ".$settings['vlanMax']." (".(($settings['vlanMax'])-($vlan['number'])).") "._('unused')." "._('VLANs')."</td>";
+		print "</tr>";
 	}
 
 	# next VLAN
