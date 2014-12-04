@@ -69,10 +69,15 @@ else {
 		}
 		# show free vlans - before vlan
 		if($m>0)	{
-			if( ($vlans[$m]['number'])-($vlans[$m-1]['number']) >0 ) {
+			if( (($vlans[$m]['number'])-($vlans[$m-1]['number'])-1) > 0 ) {
 			print "<tr class='success'>";
 			print "<td></td>";
-			print "<td colspan='".(3+$csize)."'>".($vlans[$m-1]['number']+1)." - ".($vlan['number']-1)." (".(($vlans[$m]['number'])-($vlans[$m-1]['number'])-1).")</td>";
+			# only 1?
+			if( (($vlans[$m]['number'])-($vlans[$m-1]['number'])-1) ==1 ) {
+			print "<td colspan='".(3+$csize)."'>".($vlan['number']-1)." (".(($vlans[$m]['number'])-($vlans[$m-1]['number'])-1).")</td>";
+			} else {
+			print "<td colspan='".(3+$csize)."'>".($vlans[$m-1]['number']+1)." - ".($vlan['number']-1)." (".(($vlans[$m]['number'])-($vlans[$m-1]['number'])-1).")</td>";				
+			}
 			print "</tr>";
 		}
 		}
