@@ -1,4 +1,4 @@
-== 1.08.016
+== 1.08.018
 
 	Enhancements:
 	----------------------------
@@ -27,7 +27,7 @@
 	+ Moved to crypt method for storing password in database with salting;
 	+ Added option to force user to change pass after first login;
 	+ Admin password must be changed after installation;
-	+ Added auth block for 5 minutes after 5x unsuccesfull login to prevent brute-force attacks
+	+ Added captcha code request after 5x unsuccesfull login to prevent brute-force attacks;
 
 	Translations:
 	----------------------------

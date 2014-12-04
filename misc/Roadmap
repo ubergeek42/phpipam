@@ -4,14 +4,14 @@ version - 1.1
 	
 	+ API !
 	
-	+ add check for pear module !
+	+ Free range display for vlans
 
 
 version - 1.2
 
 	+ support multiple authentication methods
 		
-	+ per-section DNS resolvers
+	+ per-section DNS resolvers (PEAR DNS2)
 	
 	+ l2 vlan domains
 

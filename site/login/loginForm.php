@@ -27,10 +27,35 @@
                 ?>
             </td>
         </tr>
+        
+        <?php
+        # do we need captcha?
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))	{ $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; }
+		else										{ $ip = $_SERVER['REMOTE_ADDR']; }
+		$cnt = check_blocked_ip ($ip);
+		if($cnt>4) {       
+        ?>
+		<!-- captcha -->
+		<tr>
+			<th><?php print _('Security code'); ?></th>
+			<td>
+			<div class="row" style="margin-left:0px;">
+			<div class="col-xs-6">
+				<input id="validate_captcha" type="text" name="captcha" class="login form-control input-sm col-xs-12">
+			</div>
+			<div class="col-xs-6">
+				<img src="site/login/captcha/captchashow.php" class="imgcaptcha" align="captcha">
+			</div>
+			</div>
+			</td>
+		</tr>
+		<?php } ?>
+
             
         <!-- submit -->
         <tr>
             <td class="submit" colspan="2">
+            	<hr>
                 <input type="submit" value="<?php print _('Login'); ?>" class="btn btn-sm btn-default pull-right"></input>
             </td>
         </tr>           

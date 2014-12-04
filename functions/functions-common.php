@@ -224,6 +224,58 @@ function detect_crypt_type () {
 
 /* @user based functions ---------- */
 
+
+
+if(!function_exists(check_blocked_ip)) {
+/**
+ *	check
+ */
+function check_blocked_ip ($ip) 
+{
+	# first purge
+	purge_blocked_entries();
+	
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	# set date
+	$now = date("Y-m-d H:i:s", time() - 5*60);
+    
+    # set check query and get result
+    $query = "select * from `loginAttempts` where `ip` = '$ip' and `datetime` > '$now';";
+    
+    # execute
+    try { $ips = $database->getArray( $query ); }
+    catch (Exception $e) { 
+        return false;
+    }
+    
+    # verify
+    if(sizeof($ips[0])>0)	{ return $ips[0]['count']; }
+    else					{ return false; }
+}
+ 
+/**
+ *	purge records
+ */
+function purge_blocked_entries()
+{
+    global $db;                                                                      
+    $database = new database($db['host'], $db['user'], $db['pass'], $db['name']);
+	# set date
+	$now = date("Y-m-d H:i:s", time() - 5*60);
+	# query
+	$query = "delete from `loginAttempts` where `datetime` < '$now'; ";
+
+    # execute
+    try { $database->executeQuery( $query ); }
+    catch (Exception $e) {}
+    # return
+    return true;
+}
+}
+
+
+
 /**
  * reset inactivity time
  */

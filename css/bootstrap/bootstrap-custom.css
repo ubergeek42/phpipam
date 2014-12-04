@@ -1512,6 +1512,13 @@ table.requestIP th {
 table.changelog td {
 	vertical-align: top !important;
 }
+.loginForm .row div {
+	padding: 0px;
+}
+.loginForm img {
+	border-radius: 4px;
+	border: 1px solid #ccc;
+}
 
 
 
