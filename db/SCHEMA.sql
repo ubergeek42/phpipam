@@ -562,4 +562,4 @@ CREATE TABLE `loginAttempts` (
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.08';
+UPDATE `settings` set `version` = '1.09';
