@@ -123,12 +123,12 @@ function getFirstPossibleSubnet($subnet, $free, $print = true)
 	// calculate maximum possible IP mask
 	$mask = floor(log($free)/log(2));
 	$mask = $maxmask - $mask;
-	
+		
 	// we have now maximum mask. We need to verify if subnet is valid
 	// otherwise add 1 to $mask and go to $maxmask
 	for($m=$mask; $m<=$maxmask; $m++) {
 		//validate
-		$err = verifyCidr( $subnet."/".$m , 1 );
+		$err = verifyCidr( $subnet."/".$m , 1);
 		if(sizeof($err)==0) {
 			//ok, it is possible!
 			$result = $subnet."/".$m;
@@ -1355,7 +1355,8 @@ function calculateSubnetDetails ( $usedhosts, $bitmask, $subnet )
 	}
 
     // calculate use percentage
-    $SubnetCalculateDetails['freehosts_percent'] = round( ( ($SubnetCalculateDetails['freehosts'] * 100) / $SubnetCalculateDetails['maxhosts']), 2 );
+    if($type==0) { $SubnetCalculateDetails['freehosts_percent'] = round( ( ($SubnetCalculateDetails['freehosts'] * 100) / $SubnetCalculateDetails['maxhosts']), 2 ); }
+    else		 { $SubnetCalculateDetails['freehosts_percent'] = round( ( ($SubnetCalculateDetails['freehosts'] * 100) / $SubnetCalculateDetails['maxhosts']), 2 ); }
      
     return( $SubnetCalculateDetails );
 }
@@ -2117,13 +2118,7 @@ function MaxHosts( $mask, $type = 0 )
     }
      /* IPv6 address */
 	else {
-    	//31 and 31 networks
-    	if($mask==127 || $mask == 128) {
-	    	$max_hosts = gmp_strval(gmp_pow(2, 128 - $mask));
-    	}
-    	else {
-	    	$max_hosts = gmp_strval(gmp_sub(gmp_pow(2, 128 - $mask) ,2));
-    	}   
+	    $max_hosts = gmp_strval(gmp_pow(2, 128 - $mask)); 
     }
     
     return (string) $max_hosts;
@@ -2785,10 +2780,6 @@ function VerifyIpAddress( $ip , $subnet , $noStrict = false )
 		if (!$Net_IPv6->checkIPv6($ip)) 										{ $error = _("IP address not valid")."! ($ip)"; }
 		// it must be in provided subnet
 		elseif (!$Net_IPv6->isInNetmask($ip, $subnet)) 							{ $error = _("IP address not in selected subnet")."! ($ip)";}
-		//ignore  /127 and /128 subnet broadcast and subnet checks!
-		elseif ($mask[1] == "127" || $mask[1] == "128" || $noStrict == true) 	{ }
-		//it cannot be subnet
-		elseif ($ip == $subnet_short) 											{ $error = _("Cannot add subnet as IP address!");   }
 	}
 	
 	/* return results */
@@ -2802,7 +2793,7 @@ function VerifyIpAddress( $ip , $subnet , $noStrict = false )
  *
  * if subnet == 0 we dont check if IP is subnet -> needed for ipCalc
  */
-function verifyCidr( $cidr , $subnet = 1 ) 
+function verifyCidr( $cidr , $issubnet = 1 ) 
 {
     /* split it to network and subnet */
     $temp = explode("/", $cidr);
@@ -2828,7 +2819,7 @@ function verifyCidr( $cidr , $subnet = 1 )
             //validate IP
             if (!$Net_IPv4->validateIP ($net->ip)) 					{ $errors[] = _("Invalid IP address!"); }
             //network must be same as provided IP address
-            elseif (($net->network != $net->ip) && ($subnet == 1)) 	{ $errors[] = _("IP address cannot be subnet! (Consider using")." ". $net->network .")"; }
+            elseif (($net->network != $net->ip) && ($issubnet == 1)){ $errors[] = _("IP address cannot be subnet! (Consider using")." ". $net->network .")"; }
             //validate netmask
             elseif (!$Net_IPv4->validateNetmask ($net->netmask)) 	{ $errors[] = _('Invalid netmask').' ' . $net->netmask; }    
         }
@@ -2846,13 +2837,13 @@ function verifyCidr( $cidr , $subnet = 1 )
             
             //validate subnet
             $subnet = $Net_IPv6->getNetmask($cidr);
-            $subnet = $Net_IPv6->compress($subnet);
+            $subnet = $Net_IPv6->compress($subnet);			//get subnet part
 
             $subnetParse = explode("/", $cidr);
             $subnetMask  = $subnetParse[1];
             $subnetNet   = $subnetParse[0];
         
-            if ( ($subnetParse[0] != $subnet) && ($subnet == 1) ) 	{ $errors[] = _("IP address cannot be subnet! (Consider using")." ". $subnet ."/". $subnetMask .")"; }
+            if ( ($subnetNet != $subnet) && ($issubnet == 1) ) 	{ $errors[] = _("IP address cannot be subnet! (Consider using")." ". $subnet ."/". $subnetMask .")"; }
 	   }
     }
     
@@ -2927,13 +2918,7 @@ function FindUnusedIpAddresses ($ip1, $ip2, $type, $broadcast = 0, $checkType = 
     	}
     	if($diff == 1 && $checkType == "network" ) {
     	    $result['ip'] 	 = long2ip($ip1);
-    	    $result['hosts'] = "1";		    	
-    	}
-    	elseif($diff == 1 && $checkType == "" ) {
-/*
-	    	$result['ip'] 	 = long2ip($ip1);
-	    	$result['hosts'] = "";	
-*/    	
+    	    $result['hosts'] = "1";
     	}
     	elseif($diff == 1 && $checkType == "broadcast" ) {
 	    	$result['ip'] 	 = long2ip($ip2);
@@ -2970,6 +2955,11 @@ function FindUnusedIpAddresses ($ip1, $ip2, $type, $broadcast = 0, $checkType = 
     	    $result['hosts'] = "2";	
     	}
     } 
+    /* ipv6 first IP */
+    elseif($type=="IPv6" && $diff==1 && $checkType=="network") {
+    	$result['ip'] 	 = long2ip6($ip1);
+    	$result['hosts'] = "1";	
+    }
     /* if diff is less than 2 return false */
     elseif ( $diff < 2 ) {
         return false;
@@ -3002,17 +2992,8 @@ function FindUnusedIpAddresses ($ip1, $ip2, $type, $broadcast = 0, $checkType = 
         }
         else 
         {   //ipv6
-            $ip1_return = gmp_strval(gmp_add($ip1,1));
-            
-            //No broadcast in IPv6
-            if ($broadcast == 0) 
-            { 
-                $ip2_return = gmp_strval(gmp_sub($ip2,1));
-            }
-            else
-            {
-                $ip2_return = gmp_strval($ip2);           
-            }
+            $ip1_return = gmp_strval($ip1);
+            $ip2_return = gmp_strval($ip2);           
             
             $free = long2ip6( $ip1_return ) . ' - ' . long2ip6( $ip2_return );
             
@@ -3060,76 +3041,107 @@ function getFirstAvailableIPAddress ($subnetId)
     $curr = 0;
     //get type
     $type = IdentifyAddress($subnet);
-  
-    //if subnet is /32
-    if($mask == "32" && $type == "IPv4") {
-    	if($size == 1)  { $firstAvailable = $ipaddressArray[0]; }
-    	else 			{ $firstAvailable = false; }
-    }
-    //if subnet /31
-    elseif($mask == "31" && $type == "IPv4") {
-    	if($size == 1)  	 { $firstAvailable = $ipaddressArray[0]; }
-    	elseif($size == 2)  { 
-    		$delta = $ipaddressArray[1] - $ipaddressArray[0];
-    		if($delta == 1)  { $firstAvailable = $ipaddressArray[0]; }
-    		else			 { $firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1)); }
-    	}
-    	else 				 { $firstAvailable = false; }
-    }
-    //if subnet is /128
-    elseif($mask == "128" && $type == "IPv6") {
-    	if($size == 1)  { $firstAvailable = $ipaddressArray[0]; }
-    	else 			{ $firstAvailable = false; }
-    }
-    //if subnet /127
-    elseif($mask == "127" && $type == "IPv6") {
-    	if($size == 1)  	 { $firstAvailable = $ipaddressArray[0]; }
-    	elseif($size == 2)  { 
-    		$delta = $ipaddressArray[1] - $ipaddressArray[0];
-    		if($delta == 1)  { $firstAvailable = $ipaddressArray[0]; }
-    		else			 { $firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1)); }
-    	}
-    	else 				 { $firstAvailable = false; }
-    }
-    //if size = 0 return subnet +1
-    elseif($size == 1) {
-    	$firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1));
-    }
-    else {
-    	//get first change -> delta > 1
-    	for($m=1; $m <= $size -1; $m++) {
-    		$delta = gmp_strval(gmp_sub($ipaddressArray[$m],$ipaddressArray[$m-1]));
     
-    		//compare with previous
-    		if ($delta != 1 ) {
-    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m-1],1));
-    			$m = $size;
-    		}
-    		else {
-    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m],1));	    		
-    		}
-    	}
-    	
-    	//if bcast ignore!
-        if($type == "IPv4") {
-        	require_once 'PEAR/Net/IPv4.php';
-            $Net_IPv4 = new Net_IPv4();
-            	
-            $net = $Net_IPv4->parseAddress(transform2long($subnet)."/".$mask);
-	        if ($net->broadcast == transform2long($firstAvailable)) { $firstAvailable = false; }
-        }
-        elseif ($type == "IPv6") {
-            require_once 'PEAR/Net/IPv6.php';
-            $Net_IPv6 = new Net_IPv6();
-        
-            $net = $Net_IPv6->parseAddress(transform2long($subnet)."/".$mask);
-	        if ($net->broadcast == transform2long($firstAvailable)) { $firstAvailable = false; }	            
-        }
-        //else return last
-        else {
-	    	$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$size-1],1));
-    	}
-    }   
+    // IPv4
+    if($type=="IPv4") {
+	    //if subnet is /32
+	    if($mask == "32") {
+	    	if($size == 1)  	{ $firstAvailable = $ipaddressArray[0]; }
+	    	else 				{ $firstAvailable = false; }
+	    }
+	    //if subnet /31
+	    elseif($mask == "31") {
+	    	if($size == 1)  	 { $firstAvailable = $ipaddressArray[0]; }
+	    	elseif($size == 2)  { 
+	    		$delta = $ipaddressArray[1] - $ipaddressArray[0];
+	    		if($delta == 1)  { $firstAvailable = $ipaddressArray[0]; }
+	    		else			 { $firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1)); }
+	    	}
+	    	else 				 { $firstAvailable = false; }
+	    }
+	    //size 0 = subnet +1
+	    elseif($size == 1) {
+		    $firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1));
+	    }	
+	    //between IPs
+	    else {
+	    	//get first change -> delta > 1
+	    	for($m=1; $m <= $size -1; $m++) {
+	    		$delta = gmp_strval(gmp_sub($ipaddressArray[$m],$ipaddressArray[$m-1]));
+	    
+	    		//compare with previous
+	    		if ($delta != 1 ) {
+	    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m-1],1));
+	    			$m = $size;
+	    		}
+	    		else {
+	    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m],1));	    		
+	    		}
+	    	}
+	    	
+	    	//if bcast ignore!
+	        require_once 'PEAR/Net/IPv4.php';
+	        $Net_IPv4 = new Net_IPv4();
+	        $net = $Net_IPv4->parseAddress(transform2long($subnet)."/".$mask);
+	        
+		    if ($net->broadcast == transform2long($firstAvailable)) { 
+		    	$firstAvailable = false; 
+		    }
+	        //else return last
+	        else {
+		    	$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$size-1],1));
+	    	}
+	    }   
+    }
+    //IPv6
+    else {
+	    //if subnet is /128
+	    if($mask == "128" && $type == "IPv6") {
+	    	if($size == 1)  { $firstAvailable = $ipaddressArray[0]; }
+	    	else 			{ $firstAvailable = false; }
+	    }
+	    //if subnet /127
+	    elseif($mask == "127" && $type == "IPv6") {
+	    	if($size == 1)  	 { $firstAvailable = $ipaddressArray[0]; }
+	    	elseif($size == 2)  { 
+	    		$delta = $ipaddressArray[1] - $ipaddressArray[0];
+	    		if($delta == 1)  { $firstAvailable = $ipaddressArray[0]; }
+	    		else			 { $firstAvailable = gmp_strval(gmp_add($ipaddressArray[0], 1)); }
+	    	}
+	    	else 				 { $firstAvailable = false; }
+	    }
+	    //size 1 = subnet
+	    elseif($size == 1) {
+    		$firstAvailable = gmp_strval($ipaddressArray[0]);
+	    }
+	    //subnet
+	    elseif($subnet == $ipaddressArray[0]) {
+		    $firstAvailable = gmp_strval($subnet);
+	    }
+	    //between IPs
+	    else {
+	    	//get first change -> delta > 1
+	    	for($m=1; $m <= $size -1; $m++) {
+	    		$delta = gmp_strval(gmp_sub($ipaddressArray[$m],$ipaddressArray[$m-1]));
+	    
+	    		//compare with previous
+	    		if ($delta != 1 ) {
+	    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m-1],1));
+	    			$m = $size;
+	    		}
+	    		else {
+	    			$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$m],1));	    		
+	    		}
+	    	}
+	    	
+	    	//if bcast ignore!
+		    $firstAvailable = gmp_strval(gmp_add($ipaddressArray[$size-1],1));
+		    
+		    $subnet;
+	    }   
+
+    }
+  
     /* return first available IP address */
     return $firstAvailable;
 }

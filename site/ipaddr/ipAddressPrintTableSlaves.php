@@ -131,8 +131,9 @@ foreach ($slaves as $slave) {
 		# set $diffAdd based on mask!
 		if($slaves[$m]['mask'] == "32")		{ $diffAdd = 0; }
 		elseif($slaves[$m]['mask'] == "31")	{ $diffAdd = 0; }
+		elseif($type==1)					{ $diffAdd = 0; }
 		else								{ $diffAdd = 2; }
-		
+
 		# get max host for current
 		$slave['maxip'] = gmp_strval(gmp_add(MaxHosts($slave['mask'],$type),$diffAdd));
 		# calculate diff
@@ -159,6 +160,7 @@ foreach ($slaves as $slave) {
 		# set $diffAdd based on mask!
 		if($slaves[$m-1]['mask'] == "32")		{ $diffAdd = 0; }
 		elseif($slaves[$m-1]['mask'] == "31")	{ $diffAdd = 0; }
+		elseif($type==1)						{ $diffAdd = 0; }
 		else									{ $diffAdd = 2; }
 		
 		# calculate end of master and last slave

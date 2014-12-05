@@ -1,4 +1,4 @@
-== 1.09.001
+== 1.1
 
 	Enhancements:
 	----------------------------
@@ -57,6 +57,7 @@
 	+ Fixed custom fields display on folder edit;
 	+ Fixed unable to edit IP addresses when fields are sorted;
 	+ Fixde ordering of custom fields defaults to varchar 256;
+	+ Fixed IPv6 subnet / broadcast calculation bug and next subnet suggestion;
 
 == 1.0
 	
