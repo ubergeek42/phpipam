@@ -10,7 +10,7 @@
 include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 
 # if already installed than redirect !
-if(tableExists("widgets")) {
+if(tableExists("vrf")) {
 
 	# we permit if admin pass is default!
 	$admin = getUserDetailsByName ("Admin");

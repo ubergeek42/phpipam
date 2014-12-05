@@ -1,7 +1,6 @@
 <?php
 
 # make upgrade and php build checks
-include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
 include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
 
 ?>
