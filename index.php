@@ -76,8 +76,8 @@ else {
 	<?php if($_GET['page']=="login" || $_GET['page']=="request_ip") { ?>
 	<script type="text/javascript" src="js/login.js"></script>
 	<?php } ?>
-<!-- 	<script type="text/javascript" src="js/magic-1.0.min.js"></script> -->
-	<script type="text/javascript" src="js/magic-1.0.js"></script>
+	<script type="text/javascript" src="js/magic-1.1.min.js"></script>
+<!-- 	<script type="text/javascript" src="js/magic-1.1.js"></script> -->
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
 	<script type="text/javascript">

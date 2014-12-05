@@ -490,7 +490,7 @@ function sendIPResultEmail($request)
  *		action
  *		objectOld, objectNew > object details array
  */ 
-function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
+function sendObjectUpdateMails($type, $action, $objectOld, $objectNew, $iprange = false)
 {
 	# get settings
 	global $settings;
@@ -498,8 +498,15 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 	global $mail;
 	global $pmail;
 	
+	# ip range?
+	if($iprange) {
+		# subject
+		$subject = "New IP range $action notification";
+		# set reference object
+		$objectSelected = $objectNew;		
+	}
 	# set content based on action
-	if($action == "add") {
+	elseif($action == "add") {
 		# subject
 		$subject = "New $type notification";
 		# unset unneeded variables
@@ -549,10 +556,10 @@ function sendObjectUpdateMails($type, $action, $objectOld, $objectNew)
 			if(strlen($objectOld[$k])==0) { $objectOld[$k] = " /"; }
 			
 			$content .= "<tr>";
-			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$k</font></td>";
-			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$objectOld[$k]</font></td>";
-			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'> => </font></td>";
-			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:13px;'>$objectNew[$k]</font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:12px;'>$k</font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:12px;'>$objectOld[$k]</font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:12px;'> => </font></td>";
+			$content .= "<td style='$tdstyle'><font face='$font' style='font-size:12px;'>$objectNew[$k]</font></td>";
 			$content .= "</tr>\n";	
 			
 			$change++;		

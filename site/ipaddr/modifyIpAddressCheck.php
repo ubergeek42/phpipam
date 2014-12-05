@@ -181,7 +181,7 @@ if (strlen(strstr($ip['ip_addr'],"-")) > 0) {
 			//if it fails set error log
 			if (!modifyIpAddress($ip)) {
 		        $errors[] = _('Cannot').' '. $ip['action']. ' '._('IP address').' '. transform2long($m);
-		    }				
+		    }			
 			/* next IP */
 			$m = gmp_strval(gmp_add($m,1));
 		}
@@ -195,6 +195,13 @@ if (strlen(strstr($ip['ip_addr'],"-")) > 0) {
 			updateLogTable ('Error '. $ip['action'] .' range '. $ip['start'] .' - '. $ip['stop'], $log, 2);
 		}
 		else {
+			# set IP
+			$ip['ip_addr'] = $ip['start'] .' - '. $ip['stop'];
+			
+	    	/* @mail functions ------------------- */
+			include_once('../../functions/functions-mail.php');
+			sendObjectUpdateMails("ip", $ip['action'], array(), $ip, true);
+
 			print '<div class="alert alert-success">'._('Range').' '. $ip['start'] .' - '. $ip['stop'] .' '._('updated successfully').'!</div>';
 			updateLogTable ('Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' successfull!', 'Range '. $ip['start'] .' - '. $ip['stop'] .' '. $ip['action'] .' '._('successfull').'!', 0);
 		}	
