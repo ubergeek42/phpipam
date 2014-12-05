@@ -462,6 +462,7 @@ CREATE TABLE `api` (
   `app_id` varchar(32) NOT NULL DEFAULT '',
   `app_code` varchar(32) NOT NULL DEFAULT '',
   `app_permissions` int(1) DEFAULT '1',
+  `app_comment` TEXT  NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_id` (`app_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

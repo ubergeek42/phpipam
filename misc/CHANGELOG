@@ -1,4 +1,4 @@
-== 1.08.020
+== 1.09.001
 
 	Enhancements:
 	----------------------------
@@ -20,9 +20,8 @@
 	+ Added free range disaply for VLANs;
 	+ API:
 		+ Bugfixes;
+		+ Added API admin permissions;
 		+ read/delete actions for IP addresses;
-		+ read/delete actions for Subnets;
-		+ read/delete actions for Sections;
 		+ read/delete actions for Vlans;
 		+ read/delete actions for VRFs;
 

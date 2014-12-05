@@ -2460,8 +2460,8 @@ function modifyAPI($api)
     global $database;
         
     # set query based on action
-    if($api['action']=="add")			{ $query = "insert into `api` (`app_id`,`app_code`,`app_permissions`) values ('$api[app_id]','$api[app_code]','$api[app_permissions]');"; }
-    elseif($api['action']=="edit")		{ $query = "update `api` set `app_id`='$api[app_id]',`app_code`='$api[app_code]',`app_permissions`='$api[app_permissions]' where `id`=$api[id] ; "; }
+    if($api['action']=="add")			{ $query = "insert into `api` (`app_id`,`app_code`,`app_permissions`, `app_comment`) values ('$api[app_id]','$api[app_code]','$api[app_permissions]', '$api[app_comment]');"; }
+    elseif($api['action']=="edit")		{ $query = "update `api` set `app_id`='$api[app_id]',`app_code`='$api[app_code]',`app_permissions`='$api[app_permissions]', `app_comment`='$api[app_comment]' where `id`=$api[id] ; "; }
     elseif($api['action']=="delete")	{ $query = "delete from `api` where `id` = $api[id];"; }
     else 								{ return false; }
         
@@ -2506,7 +2506,7 @@ function verifyDatabase()
 	$fields['vlans']   	  	  = array("vlanId", "name", "number", "description");
 	$fields['userGroups']     = array("g_id", "g_name", "g_desc");
 	$fields['lang']     	  = array("l_id", "l_code", "l_name");
-	$fields['api']			  = array("app_id", "app_code", "app_permissions");
+	$fields['api']			  = array("app_id", "app_code", "app_permissions", "app_comment");
 	$fields['changelog']	  = array("cid", "ctype", "coid", "cuser", "caction", "cresult", "cdate", "cdiff");
 	$fields['widgets']		  = array("wid", "wtitle", "wdescription", "wfile", "wparams", "whref", "wsize", "wadminonly", "wactive");
 	$fields['settingsMail']	  = array("id", "mtype", "mauth", "mserver", "mport", "muser", "mpass", "mAdminName", "mAdminMail");

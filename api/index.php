@@ -74,7 +74,11 @@ try {
 	/* Initialize controllers ---------- */
 
 	//verify permissions	
-	
+	if(strtolower($params['action'])=="admin") {
+		if($appFull['app_permissions']!=3) {
+			throw new Exception('Invalid permissions');
+		}
+	}
 	if(strtolower($params['action'])=="delete" || strtolower($params['action'])=="create" || strtolower($params['action'])=="update") {
 		if($appFull['app_permissions']!=2) {
 			throw new Exception('Invalid permissions');
