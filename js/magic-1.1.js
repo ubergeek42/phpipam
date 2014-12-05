@@ -643,7 +643,12 @@ $('form#ipCalc input.reset').click(function () {
 $('.searchSubmit').click(function () {
     showSpinner();
     var ip = $('.searchInput').val();
-
+    if($('#searchSelect input[name=addresses]').is(":checked"))	{ var addresses = "on"; }
+    else														{ var addresses = "off"; }
+    if($('#searchSelect input[name=subnets]').is(":checked"))	{ var subnets = "on"; }
+    else														{ var subnets = "off"; }
+    if($('#searchSelect input[name=vlans]').is(":checked"))		{ var vlans = "on"; }
+    else														{ var vlans = "off"; }
     //lets try to detect IEto set location
     var ua = window.navigator.userAgent;
     var msie = ua.indexOf("MSIE ");
@@ -653,15 +658,21 @@ $('.searchSubmit').click(function () {
     else 																{ var base = ""; } 
     //go to search page
     var prettyLinks = $('#prettyLinks').html();
-	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/" + ip; }
-	else					{ window.location = base + "?page=tools&section=search&ip=" + ip; }
+	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/"+addresses+"/"+subnets+"/"+vlans+"/"+ip; }
+	else					{ window.location = base + "?page=tools&section=search?addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
     return false;
 });
 //submit form - topmenu
 $('form#userMenuSearch').submit(function () {
     showSpinner();
     var ip = $('.searchInput').val();
-
+    if($('#searchSelect input[name=addresses]').is(":checked"))	{ var addresses = "on"; }
+    else														{ var addresses = "off"; }
+    if($('#searchSelect input[name=addresses]').is(":checked"))	{ var subnets = "on"; }
+    else														{ var subnets = "off"; }
+    if($('#searchSelect input[name=addresses]').is(":checked"))	{ var vlans = "on"; }
+    else														{ var vlans = "off"; }
+    
     //lets try to detect IEto set location
     var ua = window.navigator.userAgent;
     var msie = ua.indexOf("MSIE ");
@@ -671,19 +682,33 @@ $('form#userMenuSearch').submit(function () {
     else 																{ var base = ""; } 
     //go to search page
     var prettyLinks = $('#prettyLinks').html();
-	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/" + ip; }
-	else					{ window.location = base + "?page=tools&section=search&ip=" + ip; }
+	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/"+addresses+"/"+subnets+"/"+vlans+"/"+ip; }
+	else					{ window.location = base + "?page=tools&section=search?addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
     return false;
 
+});
+//show/hide search select fields
+$(document).on("mouseenter", "#userMenuSearch", function(event){
+    var object1 = $("#searchSelect");
+    object1.slideDown('fast');
+});
+$(document).on("mouseleave", '#user_menu', function(event){
+	$(this).stop();
+    var object1 = $("#searchSelect");
+    object1.slideUp();
 });
 //submit form
 $('form#search').submit(function () {
     showSpinner();
-    var ip = $('form#search .search').val();
-    //update search page
-    var prettyLinks = $('#prettyLinks').html();
-	if(prettyLinks=="Yes")	{ window.location = "tools/search/" + ip; }
-	else					{ window.location = "?page=tools&section=search&ip=" + ip; }
+    var ip 		 = $('form#search .search').val();
+	var postData = $(this).serialize();
+	
+	//update search page
+	$.post('site/tools/searchResults.php', postData, function(data) {
+		$('div.searchResult').html(data).fadeIn('fast');
+		hideSpinner();
+	}).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
+
     return false;
 });
 //search export
@@ -1435,7 +1460,7 @@ $(document).on("click", ".createfromfree", function() {
 
 /*    Edit subnet from ip address list
 ************************************/
-$('.edit_subnet, button.edit_subnet, button#add_subnet').click(function () {
+$(document).on("click", '.edit_subnet, button.edit_subnet, button#add_subnet', function() {
     var subnetId  = $(this).attr('data-subnetId');
     var sectionId = $(this).attr('data-sectionId');
     var action    = $(this).attr('data-action');
@@ -1607,7 +1632,7 @@ $(document).on("click", "#editDevTypeSubmit", function() {
 /* VLAN
 ********************************/
 //load edit form
-$('.editVLAN').click(function() {
+$(document).on("click", ".editVLAN", function() {
     showSpinner();
     var vlanId   = $(this).attr('data-vlanid');
     var action   = $(this).attr('data-action');

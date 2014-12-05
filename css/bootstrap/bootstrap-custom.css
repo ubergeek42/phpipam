@@ -317,6 +317,14 @@ div#user_menu a {
 div#user_menu #searchForm {
 	margin-bottom: 5px;
 }
+#searchSelect {
+	display: none;
+
+	position: absolute;
+	background: white;
+	padding: 5px;
+	margin-top: -5px;
+}
 
 
 

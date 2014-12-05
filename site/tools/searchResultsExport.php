@@ -9,7 +9,7 @@ require_once('../../functions/functions.php');
 ini_set('display_errors', 0);
 
 /* get query */
-$searchTerm = $_POST['searchTerm'];
+$searchTerm = $_GET['searchTerm'];
 
 /* verify that user is admin */
 checkAdmin();
