@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: phpIPAM\n"
+"Project-Id-Version: 1.00.000\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michiel Visser <michiel@connectionservices.nl>\n"
@@ -16,7 +16,6 @@ msgstr ""
 # This file is distributed under the same license as the phpipam package.
 # miha petkovsek <miha.petkovsek@gmail.com>, 2013.
 #
-# "Project-Id-Version: 1.00.000\n"
 # "Report-Msgid-Bugs-To: Miha Petkovsek <miha.petkovsek@gmail.com>\n"
 # "POT-Creation-Date: 2013-04-02 14:33+0200\n"
 # "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

@@ -3,27 +3,28 @@
 /**
  * Sample API php client application
  *
- * In this example we will request all Sections
+ * In this example we will request subnet details by ID
  *
- *	http://phpipam/api/client/getAllSections.php
+ *	http://phpipam/api/client/getSubnetById.php?id=3
  */
 
 # config
-include_once('apiConfig.php');
+include_once('../apiConfig.php');
 
 # API caller class
-include_once('apiClient.php');
+include_once('../apiClient.php');
 
 # commands
-$req['controller'] 	= "sections";
+$req['controller'] 	= "subnets";
 $req['action']		= "read";
-$req['all']			= true;
-
+/* $req['format']		= "ip"; */
+/* $req['all']			= true; */
+$req['id']			= 1;
 
 # wrap in try to catch exceptions
 try {
 	# initialize API caller
-	$apicaller = new ApiCaller($app['id'], $app['enc'], $url);
+	$apicaller = new ApiCaller($app['id'], $app['enc'], $url, $format);
 	# send request
 	$response = $apicaller->sendRequest($req);
 

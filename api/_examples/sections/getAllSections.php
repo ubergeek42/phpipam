@@ -3,29 +3,26 @@
 /**
  * Sample API php client application
  *
- * In this example we will delete section
+ * In this example we will request all Sections
  *
- *	http://phpipam/api/client/deleteSection.php?id=3
+ *	http://phpipam/api/client/getAllSections.php
  */
 
 # config
-include_once('apiConfig.php');
+include_once('../apiConfig.php');
 
 # API caller class
-include_once('apiClient.php');
+include_once('../apiClient.php');
 
 # commands
 $req['controller'] 	= "sections";
-$req['action']		= "delete";
-
-# set parameters
-if(!isset($_REQUEST['id'])) { die('Section id missing'); }
-else						{ $req['id'] = $_REQUEST['id']; }
+$req['action']		= "read";
+$req['all']			= true;
 
 # wrap in try to catch exceptions
 try {
 	# initialize API caller
-	$apicaller = new ApiCaller($app['id'], $app['enc'], $url);
+	$apicaller = new ApiCaller($app['id'], $app['enc'], $url, $format);
 	# send request
 	$response = $apicaller->sendRequest($req);
 

@@ -99,7 +99,7 @@ $settings = getallSettings();
 	<hr>
 	
 	<h4><?php print _('API documentation'); ?></h4>
-	<pre><?php print file_get_contents(dirname(__FILE__) . '/../../api/README'); ?></pre>
+	<pre style="background:white;"><?php print file_get_contents(dirname(__FILE__) . '/../../api/README'); ?></pre>
 
 <?php } else { ?>
 <div class="alert alert-info"><?php print _('Please enable API module under server management'); ?></div>

@@ -297,10 +297,8 @@ function isUserAuthenticated($die = true)
     if (empty($_SESSION['ipamusername'])) {
     	# save requested page
     	$_SESSION['phpipamredirect'] = $_SERVER['HTTP_REFERER'];												//here we need referrer
-    	
-    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['HTTP_HOST'].BASE; }
-    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
-    	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
+    	    	
+    	$url = createURL ();
     	# die
     	if($die) { die('<div class="alert alert-danger"><a href="'.$url.create_link("login").'">'._('Please login first').'!</a></div>'); }
     	else	 { die("<div class='pHeader'>"._('Error')."</div><div class='pContent'><div class='alert alert-danger'>"._('Please login first')."!</div></div><div class='pFooter'><a class='btn btn-sm btn-default' href='".$url.create_link("login")."'>"._('Login')."</a>"); }
@@ -325,9 +323,7 @@ function isUserAuthenticatedNoAjax ()
     	# save requested page
     	$_SESSION['phpipamredirect'] = $_SERVER['SCRIPT_URI'];
     	
-    	if($_SERVER['SERVER_PORT'] == "443") 	{ $url = "https://".$_SERVER['HTTP_HOST'].BASE; }
-    	elseif($_SERVER['SERVER_PORT']!="80")	{ $url = "http://".$_SERVER['HTTP_HOST'].":".$_SERVER['SERVER_PORT'].BASE; }
-    	else								 	{ $url = "http://".$_SERVER['HTTP_HOST'].BASE; }
+    	$url = createURL ();
     	# redirect
     	header("Location:".$url.create_link("login","timeout"));    
     }
@@ -337,6 +333,7 @@ function isUserAuthenticatedNoAjax ()
 	    	/* check inactivity time */
 			if( (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
 	    		# redirect
+	    		$url = createURL ();
 				header("Location:".$url.create_link("login","timeout")); 			
 			}
 		}

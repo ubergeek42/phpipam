@@ -1611,7 +1611,9 @@ $('.editVLAN').click(function() {
     showSpinner();
     var vlanId   = $(this).attr('data-vlanid');
     var action   = $(this).attr('data-action');
-    $.post('site/admin/manageVLANEdit.php', {vlanId:vlanId, action:action}, function(data) {
+    if($(this).attr("data-number")) { var vlanNum = $(this).attr('data-number'); }
+    else							{ var vlanNum = ""; }
+    $.post('site/admin/manageVLANEdit.php', {vlanId:vlanId, action:action, vlanNum:vlanNum}, function(data) {
         $('div.popup_w400').html(data);
         showPopup('popup_w400');
         hideSpinner();
@@ -1626,7 +1628,7 @@ $(document).on("click", "#editVLANsubmit", function() {
         $('div.vlanManagementEditResult').html(data).slideDown('fast');
         //reload after 2 seconds if succeeded!
         if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                               { hideSpinner(); }
+        else                               		  { hideSpinner(); }
     }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
     return false;
 });

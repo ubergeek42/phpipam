@@ -3,30 +3,27 @@
 /**
  * Sample API php client application
  *
- * In this example we will request subnet details by ID
+ * In this example we will fetch ip by its id
  *
  *	http://phpipam/api/client/getSubnetById.php?id=3
  */
 
 # config
-include_once('apiConfig.php');
+include_once('../apiConfig.php');
 
 # API caller class
-include_once('apiClient.php');
+include_once('../apiClient.php');
 
 # commands
-$req['controller'] 	= "subnets";
+$req['controller'] 	= "addresses";
 $req['action']		= "read";
-$req['format']		= "ip";
-
-# set id
-if(!isset($_REQUEST['sectionId'])) 	{ $req['sectionId'] = 1; }
-else 								{ $req['sectionId'] = $_REQUEST['sectionId']; }
+$req['format']		= "decimal";
+$req['id']			= 1;
 
 # wrap in try to catch exceptions
 try {
 	# initialize API caller
-	$apicaller = new ApiCaller($app['id'], $app['enc'], $url);
+	$apicaller = new ApiCaller($app['id'], $app['enc'], $url, $format);
 	# send request
 	$response = $apicaller->sendRequest($req);
 

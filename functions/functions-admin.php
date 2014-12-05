@@ -684,7 +684,7 @@ function updateSectionGroups($sid, $groups)
 /**
  * Add new subnet
  */
-function modifySubnetDetails ($subnetDetails, $lastId = false) 
+function modifySubnetDetails ($subnetDetails, $lastId = false, $api = false) 
 {
     global $database;
     
@@ -695,7 +695,7 @@ function modifySubnetDetails ($subnetDetails, $lastId = false)
 	$subnetDetails = trim_user_input ($subnetDetails);
 
     # set modify subnet details query
-    $query = setModifySubnetDetailsQuery ($subnetDetails, $sectionChange);
+    $query = setModifySubnetDetailsQuery ($subnetDetails, $api);
         
 	$log = prepareLogFromArray ($subnetDetails);																				# prepare log 
 	
@@ -740,60 +740,80 @@ function modifySubnetDetails ($subnetDetails, $lastId = false)
 /**
  * Add new subnet - set query
  */
-function setModifySubnetDetailsQuery ($subnetDetails)
+function setModifySubnetDetailsQuery ($subnetDetails, $api)
 {
     # add new subnet
     if ($subnetDetails['action'] == "add")
     {
-        # remove netmask and calculate decimal values!
-        $subnetDetails['subnet_temp'] = explode("/", $subnetDetails['subnet']);
-        $subnetDetails['subnet']      = Transform2decimal ($subnetDetails['subnet_temp'][0]);
-        $subnetDetails['mask']        = $subnetDetails['subnet_temp'][1];
-        
-        # custom fields
-        $myFields = getCustomFields('subnets');
-        $myFieldsInsert['query']  = '';
-        $myFieldsInsert['values'] = '';
-	
-        if(sizeof($myFields) > 0) {
-			/* set inserts for custom */
-			foreach($myFields as $myField) {
-				# empty?
-				if(strlen($subnetDetails[$myField['name']])==0) {	
-					$myFieldsInsert['query']  .= ', `'. $myField['name'] .'`';
-					$myFieldsInsert['values'] .= ", NULL";					
-				} else {
-					$myFieldsInsert['query']  .= ', `'. $myField['name'] .'`';
-					$myFieldsInsert['values'] .= ", '". $subnetDetails[$myField['name']] . "'";
-				}	
+    	# api?
+    	if($api) {	        
+	        $query  = 'insert into subnets '. "\n";
+	        $query .= '(`subnet`, `mask`, `sectionId`, `description`, `vlanId`, `vrfId`, `masterSubnetId`, `allowRequests`, `showName`, `permissions`, `discoverSubnet`, `pingSubnet`) ' . "\n";
+	        $query .= 'values (' . "\n";
+	        $query .= ' "'. $subnetDetails['subnet'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['mask'] 			 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['sectionId'] 	 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['description']    .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['vlanId'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['vrfId'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['masterSubnetId'] .'", ' . "\n"; 
+	        $query .= ''. isCheckbox($subnetDetails['allowRequests']) .','."\n";
+	        $query .= ''. isCheckbox($subnetDetails['showName']) .','."\n";  
+	        $query .= ' "'. $subnetDetails['permissions'] .'", '."\n"; 
+	        $query .= ''. isCheckbox($subnetDetails['discoverSubnet']) .','."\n";  
+	        $query .= ''. isCheckbox($subnetDetails['pingSubnet']) .''."\n";  
+	        $query .= ' );';	
+    	} else {
+	        # remove netmask and calculate decimal values!
+	        $subnetDetails['subnet_temp'] = explode("/", $subnetDetails['subnet']);
+	        $subnetDetails['subnet']      = Transform2decimal ($subnetDetails['subnet_temp'][0]);
+	        $subnetDetails['mask']        = $subnetDetails['subnet_temp'][1];
+	        
+	        # custom fields
+	        $myFields = getCustomFields('subnets');
+	        $myFieldsInsert['query']  = '';
+	        $myFieldsInsert['values'] = '';
+		
+	        if(sizeof($myFields) > 0) {
+				/* set inserts for custom */
+				foreach($myFields as $myField) {
+					# empty?
+					if(strlen($subnetDetails[$myField['name']])==0) {	
+						$myFieldsInsert['query']  .= ', `'. $myField['name'] .'`';
+						$myFieldsInsert['values'] .= ", NULL";					
+					} else {
+						$myFieldsInsert['query']  .= ', `'. $myField['name'] .'`';
+						$myFieldsInsert['values'] .= ", '". $subnetDetails[$myField['name']] . "'";
+					}	
+				}
 			}
-		}
-        
-        $query  = 'insert into subnets '. "\n";
-        # is folder?
-        if($subnetDetails['isFolder']) {
-        $query .= '(`isFolder`,`subnet`, `mask`, `sectionId`, `description`, `vlanId`, `vrfId`, `masterSubnetId`, `allowRequests`, `showName`, `permissions`, `discoverSubnet`, `pingSubnet` '.$myFieldsInsert['query'].') ' . "\n";       
-        $query .= 'values (' . "\n";
-        $query .= '1, ' . "\n"; 
-		}
-		else {
-        $query .= '(`subnet`, `mask`, `sectionId`, `description`, `vlanId`, `vrfId`, `masterSubnetId`, `allowRequests`, `showName`, `permissions`, `discoverSubnet`, `pingSubnet` '.$myFieldsInsert['query'].') ' . "\n";
-        $query .= 'values (' . "\n";
-        }
-        $query .= ' "'. $subnetDetails['subnet'] 		 .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['mask'] 			 .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['sectionId'] 	 .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['description']    .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['vlanId'] 		 .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['vrfId'] 		 .'", ' . "\n"; 
-        $query .= ' "'. $subnetDetails['masterSubnetId'] .'", ' . "\n"; 
-        $query .= ''. isCheckbox($subnetDetails['allowRequests']) .','."\n";
-        $query .= ''. isCheckbox($subnetDetails['showName']) .','."\n";  
-        $query .= ' "'. $subnetDetails['permissions'] .'", '."\n"; 
-        $query .= ''. isCheckbox($subnetDetails['discoverSubnet']) .','."\n";  
-        $query .= ''. isCheckbox($subnetDetails['pingSubnet']) .''."\n";  
-        $query .= $myFieldsInsert['values'];
-        $query .= ' );';
+	        
+	        $query  = 'insert into subnets '. "\n";
+	        # is folder?
+	        if($subnetDetails['isFolder']) {
+	        $query .= '(`isFolder`,`subnet`, `mask`, `sectionId`, `description`, `vlanId`, `vrfId`, `masterSubnetId`, `allowRequests`, `showName`, `permissions`, `discoverSubnet`, `pingSubnet` '.$myFieldsInsert['query'].') ' . "\n";       
+	        $query .= 'values (' . "\n";
+	        $query .= '1, ' . "\n"; 
+			}
+			else {
+	        $query .= '(`subnet`, `mask`, `sectionId`, `description`, `vlanId`, `vrfId`, `masterSubnetId`, `allowRequests`, `showName`, `permissions`, `discoverSubnet`, `pingSubnet` '.$myFieldsInsert['query'].') ' . "\n";
+	        $query .= 'values (' . "\n";
+	        }
+	        $query .= ' "'. $subnetDetails['subnet'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['mask'] 			 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['sectionId'] 	 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['description']    .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['vlanId'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['vrfId'] 		 .'", ' . "\n"; 
+	        $query .= ' "'. $subnetDetails['masterSubnetId'] .'", ' . "\n"; 
+	        $query .= ''. isCheckbox($subnetDetails['allowRequests']) .','."\n";
+	        $query .= ''. isCheckbox($subnetDetails['showName']) .','."\n";  
+	        $query .= ' "'. $subnetDetails['permissions'] .'", '."\n"; 
+	        $query .= ''. isCheckbox($subnetDetails['discoverSubnet']) .','."\n";  
+	        $query .= ''. isCheckbox($subnetDetails['pingSubnet']) .''."\n";  
+	        $query .= $myFieldsInsert['values'];
+	        $query .= ' );';	
+    	}
     }
     # Delete subnet
     else if ($subnetDetails['action'] == "delete")

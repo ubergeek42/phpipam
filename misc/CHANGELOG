@@ -1,4 +1,4 @@
-== 1.08.018
+== 1.08.020
 
 	Enhancements:
 	----------------------------
@@ -18,6 +18,13 @@
 	+ Changed install procedure and updated install scripts;
 	+ Added PEAR check for installation;
 	+ Added free range disaply for VLANs;
+	+ API:
+		+ Bugfixes;
+		+ read/delete actions for IP addresses;
+		+ read/delete actions for Subnets;
+		+ read/delete actions for Sections;
+		+ read/delete actions for Vlans;
+		+ read/delete actions for VRFs;
 
 	Security Fixes:
 	----------------------------
