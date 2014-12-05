@@ -18,6 +18,11 @@ $_POST = filter_user_input ($_POST, true, true);
 /* get modified details */
 $device = $_POST;
 
+/* must be numeric */
+if($_POST['action']!="add") {
+	if(!is_numeric($_POST['switchId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+}
+
 /* available devices */
 foreach($device as $key=>$line) {
 	if (strlen(strstr($key,"section-"))>0) {

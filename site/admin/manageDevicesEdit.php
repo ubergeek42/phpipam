@@ -18,6 +18,11 @@ $_POST = filter_user_input ($_POST, true, true);
 /* get custom fields */
 $custom = getCustomFields('devices');
 
+/* must be numeric */
+if($_POST['action']!="add") {
+	if(!is_numeric($_POST['switchId']))		{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+}
+
 /* get switch detaild by Id! */
 if( ($_POST['action'] == "edit") || ($_POST['action'] == "delete") ) {
 	$device = getDeviceDetailsById($_POST['switchId']);
