@@ -17,14 +17,15 @@ version - 1.2
 	+ Define Default Gateway for a Subnet
 				
 	+ Mark subnet as full
-				
+	
+	+ Temporary share IP details / subnet
+	
 
 features for next releases:
 ---------------------------
 	
 	+ Imports
 		+ Import from IPPlan
-		+ Import from 
 	
 	+ Scan subnet for alive hosts and import
 		SNMP router table fetching

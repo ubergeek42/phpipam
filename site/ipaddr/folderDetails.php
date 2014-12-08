@@ -54,6 +54,12 @@ $permissionsSection = checkSectionPermission ($SubnetDetails['sectionId']);
 
 # if 0 die
 if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not have permission to access this folder')."!</div>"); }
+
+# verify that is it displayed in proper section, otherwise warn!
+if($SubnetDetails['sectionId']!=$_GET['section'])	{
+	$sd = getSectionDetailsById($SubnetDetails['sectionId']);
+	print "<div class='alert alert-warning'>Folder is in section <a href='".create_link("folder",$sd['id'],$SubnetDetails['id'])."'>$sd[name]</a>!</div>";
+}
 ?>
 
 <!-- content print! -->
@@ -89,7 +95,18 @@ if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not ha
 			if(strlen($SubnetDetails[$key]) > 0) {
 			print "<tr>";
 			print "	<th>$key</th>";
-			print "	<td>$SubnetDetails[$key]</td>";
+/* 			print "	<td>$SubnetDetails[$key]</td>"; */
+			print "	<td>";
+				//booleans
+				if($field['type']=="tinyint(1)")	{
+					if($SubnetDetails[$field['name']] == "0")		{ print _("No"); }
+					elseif($SubnetDetails[$field['name']] == "1")	{ print _("Yes"); }
+				} 
+				else {
+					print $SubnetDetails[$field['name']];
+					
+				}	
+			print "	</td>";
 			print "</tr>";
 			}
 		}

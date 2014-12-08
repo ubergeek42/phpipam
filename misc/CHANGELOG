@@ -18,6 +18,7 @@
 	+ Changed install procedure and updated install scripts;
 	+ Added PEAR check for installation;
 	+ Added free range disaply for VLANs;
+	+ Addes SSL/TLS option for SMTP mail;
 	+ API:
 		+ Bugfixes;
 		+ Added API admin permissions;

@@ -228,6 +228,7 @@ DROP TABLE IF EXISTS `settingsMail`;
 CREATE TABLE `settingsMail` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `mtype` set('localhost','smtp') NOT NULL DEFAULT 'localhost',
+  `msecure` SET('none','ssl','tls')  NOT NULL  DEFAULT 'none',
   `mauth` set('yes','no') NOT NULL DEFAULT 'no',
   `mserver` varchar(128) DEFAULT NULL,
   `mport` int(5) DEFAULT '25',

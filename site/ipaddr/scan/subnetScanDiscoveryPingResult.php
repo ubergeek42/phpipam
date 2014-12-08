@@ -14,7 +14,7 @@ isUserAuthenticated(true);
 $_POST = filter_user_input($_POST, true, true, false);
 
 /* subnet Id must be a integer */
-if(!is_numeric($_POST['subnetId']))	{ die("<div class='alert alert-danger'>Invalid subnetId!</div>"); }
+if(!is_numeric($_POST['subnetId']) || $_POST['subnetId']==0)	{ die("<div class='alert alert-danger'>Invalid subnetId!</div>"); }
 
 /* verify that user has write permissions for subnet */
 $subnetPerm = checkSubnetPermission ($_POST['subnetId']);

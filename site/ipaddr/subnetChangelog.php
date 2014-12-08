@@ -61,13 +61,14 @@ else {
 	
 	# logs
 	foreach($clogs as $l) {
-	
 		# format diff
 		$l['cdiff'] = str_replace("\n", "<br>", $l['cdiff']);
 	
 		print "<tr>";
 		print "	<td>$l[real_name]</td>";
-		print "	<td><a href='".create_link("subnets",$l['sectionId'],$l['id'])."'>".transform2long($subnetDetails['subnet'])."/$subnetDetails[mask]</a></td>";
+		# folder?
+		if($subnetDetails['isFolder']==1)	{ print "	<td><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'])."'>$subnetDetails[description]</a></td>"; }
+		else 								{ print "	<td><a href='".create_link("subnets",$_GET['section'],$_GET['subnetId'])."'>".transform2long($subnetDetails['subnet'])."/$subnetDetails[mask]</a></td>"; }
 		print "	<td>"._("$l[caction]")."</td>";
 		print "	<td>"._("$l[cresult]")."</td>";
 		print "	<td>$l[cdate]</td>";

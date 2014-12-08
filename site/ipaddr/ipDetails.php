@@ -225,7 +225,7 @@ if(sizeof($ip)>1) {
 		if($ip['class']=="range-dhcp") 
 		{
 			print "		<a class='edit_ipaddress   btn btn-default btn-xs modIPaddr' data-action='edit'   data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' data-stopIP='".$ip['stopIP']."' href='#' 		   rel='tooltip' data-container='body' title='"._('Edit IP address details')."'>	<i class='fa fa-gray fa-pencil'>  </i></a>";
-			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																																													<i class='fa fa-gray fa-exchange'> </i></a>"; 
+			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																																													<i class='fa fa-gray fa-cogs'> </i></a>"; 
 			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																																													<i class='fa fa-gray fa-search'></i></a>";
 			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																																													<i class='fa fa-gray fa-envelope-o'></i></a>";
 			print "		<a class='delete_ipaddress btn btn-default btn-xs modIPaddr' data-action='delete' data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' href='#' id2='".Transform2long($ip['ip_addr'])."' rel='tooltip' data-container='body' title='"._('Delete IP address')."'>		<i class='fa fa-gray fa-times'>  </i></a>";											
@@ -233,7 +233,7 @@ if(sizeof($ip)>1) {
 		else 
 		{
 			print "		<a class='edit_ipaddress   btn btn-default btn-xs modIPaddr' data-action='edit'   data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' href='#' 											   rel='tooltip' data-container='body' title='"._('Edit IP address details')."'>												<i class='fa fa-gray fa-pencil'></i></a>";
-			print "		<a class='ping_ipaddress   btn btn-default btn-xs' data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' href='#' 						   													rel='tooltip' data-container='body' title='"._('Check avalibility')."'>													<i class='fa fa-gray fa-exchange'></i></a>"; 
+			print "		<a class='ping_ipaddress   btn btn-default btn-xs' data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' href='#' 						   													rel='tooltip' data-container='body' title='"._('Check avalibility')."'>													<i class='fa fa-gray fa-cogs'></i></a>"; 
 			print "		<a class='search_ipaddress btn btn-default btn-xs         "; if(strlen($dnsResolved['name']) == 0) { print "disabled"; } print "' href='".create_link("tools","search",$dnsResolved['name'])."' "; if(strlen($dnsResolved['name']) != 0)   { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
 			print "		<a class='mail_ipaddress   btn btn-default btn-xs          ' href='#' data-id='".$ip['id']."' rel='tooltip' data-container='body' title='"._('Send mail notification')."'>																																					<i class='fa fa-gray fa-envelope-o'></i></a>";
 			print "		<a class='delete_ipaddress btn btn-default btn-xs modIPaddr' data-action='delete' data-subnetId='".$ip['subnetId']."' data-id='".$ip['id']."' href='#' id2='".Transform2long($ip['ip_addr'])."' rel='tooltip' data-container='body' title='"._('Delete IP address')."'>														<i class='fa fa-gray fa-times'></i></a>";											

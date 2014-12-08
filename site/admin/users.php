@@ -21,6 +21,11 @@ $custom = getCustomFields('users');
 
 /* get languages */
 $langs = getLanguages ();
+
+/* check customfields */
+$ffields = json_decode($settings['hiddenCustomFields'], true);		
+if(is_array($ffields['users']))	{ $ffields = $ffields['users']; }
+else							{ $ffields = array(); }
 ?>
 
 <!-- display existing users -->
@@ -48,7 +53,9 @@ $langs = getLanguages ();
 	<?php
 	if(sizeof($custom) > 0) {
 		foreach($custom as $field) {
-			print "<th>$field[name]</th>";
+			if(!in_array($field['name'], $ffields)) {
+				print "<th>$field[name]</th>";
+			}
 		}
 	}
 	?>
@@ -119,24 +126,24 @@ foreach ($users as $user)
 	# custom
 	if(sizeof($custom) > 0) {
 		foreach($custom as $field) {
-			print "<td>";
-
-			//booleans
-			if($field['type']=="tinyint(1)")	{
-				if($user[$field['name']] == "0")		{ print _("No"); }
-				elseif($user[$field['name']] == "1")	{ print _("Yes"); }
-			} 
-			//text
-			elseif($field['type']=="text") {
-				if(strlen($user[$field['name']])>0)		{ print "<i class='fa fa-gray fa-comment' rel='tooltip' data-container='body' data-html='true' title='".str_replace("\n", "<br>", $user[$field['name']])."'>"; }
-				else									{ print ""; }
+			if(!in_array($field['name'], $ffields)) {
+				print "<td>";	
+				//booleans
+				if($field['type']=="tinyint(1)")	{
+					if($user[$field['name']] == "0")		{ print _("No"); }
+					elseif($user[$field['name']] == "1")	{ print _("Yes"); }
+				} 
+				//text
+				elseif($field['type']=="text") {
+					if(strlen($user[$field['name']])>0)		{ print "<i class='fa fa-gray fa-comment' rel='tooltip' data-container='body' data-html='true' title='".str_replace("\n", "<br>", $user[$field['name']])."'>"; }
+					else									{ print ""; }
+				}
+				else {
+					print $user[$field['name']];
+					
+				}			
+				print "</td>";
 			}
-			else {
-				print $user[$field['name']];
-				
-			}
-			
-			print "</td>";
 
 		}
 	}

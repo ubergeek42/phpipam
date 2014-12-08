@@ -61,6 +61,7 @@ else {
 	foreach ($vlans as $vlan) {
 
 		# show free vlans - start
+		if($settings['hideFreeRange']!="1") {
 		if($m==0 && $vlan['number']!=1)	{
 			print "<tr class='success'>";
 			print "<td></td>";
@@ -79,6 +80,7 @@ else {
 			print "<td colspan='".(3+$csize)."'><btn class='btn btn-xs btn-default editVLAN' data-action='add' data-number='".($vlans[$m-1]['number']+1)."'><i class='fa fa-plus'></i></btn> "._('VLAN')." ".($vlans[$m-1]['number']+1)." - ".($vlan['number']-1)." (".(($vlans[$m]['number'])-($vlans[$m-1]['number'])-1)." "._('free').")</td>";				
 			}
 			print "</tr>";
+		}
 		}
 		}
 	
@@ -123,6 +125,7 @@ else {
 		print '</tr>'. "\n";
 
 		# show free vlans - last
+		if($settings['hideFreeRange']!="1") {
 		if($m==(sizeof($vlans)-1))	{
 			if($settings['vlanMax']>$vlan['number'])
 			print "<tr class='success'>";
@@ -130,7 +133,7 @@ else {
 			print "<td colspan='".(3+$csize)."'><btn class='btn btn-xs btn-default editVLAN' data-action='add' data-number='".($vlan['number']+1)."'><i class='fa fa-plus'></i></btn> "._('VLAN')." ".($vlan['number']+1)." - ".$settings['vlanMax']." (".(($settings['vlanMax'])-($vlan['number']))." "._('free').")</td>";
 			print "</tr>";
 		}
-
+		}
 	
 	$m++;
 	

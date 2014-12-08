@@ -94,10 +94,11 @@ else															{ $readonly = false; }
         <td>
         	<?php
         	# set CIDR
-        	if ($_POST['location'] == "ipcalc") { $cidr = $_POST['subnet'] .'/'. $_POST['bitmask']; }  
-            if ($_POST['action'] != "add") 		{ $cidr = transform2long($subnetDataOld['subnet']) .'/'. $subnetDataOld['mask']; }       	
+        	if (isset($tempData['subnet']))		{  $cidr = transform2long($tempData['subnet']) .'/'. ($tempData['mask']+1);} 			//for nested
+        	if ($_POST['location'] == "ipcalc") { $cidr = $_POST['subnet'] .'/'. $_POST['bitmask']; }  								//from ipcalc
+            if ($_POST['action'] != "add") 		{ $cidr = transform2long($subnetDataOld['subnet']) .'/'. $subnetDataOld['mask']; } 	//editing existing
         	?>
-            <input type="text" class="form-control input-sm input-w-200" name="subnet"   placeholder="<?php print _('subnet in CIDR'); ?>"   value="<?php print $cidr; ?>" <?php if ($readonly) print "readonly"; ?>>
+            <input type="text" class="form-control input-sm input-w-200" name="subnet"   placeholder="<?php print _('subnet in CIDR'); ?>"   value="<?php print @$cidr; ?>" <?php if ($readonly) print "readonly"; ?>>
         </td>
         <td class="info2">
         	<button class="btn btn-xs btn-default"  id='get-ripe' rel='tooltip' data-placement="bottom" title='<?php print _('Get information from RIPE database'); ?>'><i class="fa fa-refresh"></i></button>

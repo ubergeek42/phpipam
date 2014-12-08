@@ -2490,10 +2490,7 @@ function checkDuplicate ($ip, $subnetId)
  */
 function modifyIpAddress ($ip) 
 {
-    global $database;                                                                     
-    /* escape special characters */
-    $ip['description'] 	= mysqli_real_escape_string($database, $ip['description']); 
-    $ip['note'] 		= mysqli_real_escape_string($database, $ip['note']); 
+    global $database; 
 
     /* set query, open db connection and fetch results */
     $query    = SetInsertQuery($ip);
@@ -3087,10 +3084,6 @@ function getFirstAvailableIPAddress ($subnetId)
 		    if ($net->broadcast == transform2long($firstAvailable)) { 
 		    	$firstAvailable = false; 
 		    }
-	        //else return last
-	        else {
-		    	$firstAvailable = gmp_strval(gmp_add($ipaddressArray[$size-1],1));
-	    	}
 	    }   
     }
     //IPv6
@@ -3136,8 +3129,6 @@ function getFirstAvailableIPAddress ($subnetId)
 	    	
 	    	//if bcast ignore!
 		    $firstAvailable = gmp_strval(gmp_add($ipaddressArray[$size-1],1));
-		    
-		    $subnet;
 	    }   
 
     }

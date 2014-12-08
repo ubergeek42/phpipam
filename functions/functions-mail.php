@@ -108,6 +108,11 @@ $pmail->Debugoutput = 'html';				//debug type
 if($mailsettings['mtype']=="smtp") {
 	//set smtp
 	$pmail->isSMTP();
+	//tls, sll?
+	if($mailsettings['msecure']=='ssl')	{
+	$mail->SMTPSecure = 'ssl';	
+	} elseif($mailsettings['msecure']=='tls')
+	$mail->SMTPSecure = 'tls';	
 	//server
 	$pmail->Host = $mailsettings['mserver'];
 	$pmail->Port = $mailsettings['mport'];

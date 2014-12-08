@@ -52,6 +52,12 @@ $permissionsSection = checkSectionPermission ($SubnetDetails['sectionId']);
 
 # if 0 die
 if($permission == "0")	{ die("<div class='alert alert-danger'>"._('You do not have permission to access this network')."!</div>"); }
+
+# verify that is it displayed in proper section, otherwise warn!
+if($SubnetDetails['sectionId']!=$_GET['section'])	{
+	$sd = getSectionDetailsById($SubnetDetails['sectionId']);
+	print "<div class='alert alert-warning'>Subnet is in section <a href='".create_link("subnets",$sd['id'],$SubnetDetails['id'])."'>$sd[name]</a>!</div>";
+}
 ?>
 
 <!-- content print! -->

@@ -1911,6 +1911,7 @@ function updateMailSettings($settings)
     $query   .= '`mserver` 		  	= "'. $settings['mserver'] .'", ' . "\n";
     $query   .= '`mport` 		  	= "'. $settings['mport'] .'", ' . "\n";
     $query   .= '`mauth` 		  	= "'. $settings['mauth'] .'", ' . "\n";
+    $query   .= '`msecure` 		  	= "'. $settings['msecure'] .'", ' . "\n";
     $query   .= '`muser` 		  	= "'. $settings['muser'] .'", ' . "\n";
     $query   .= '`mpass` 		  	= "'. $settings['mpass'] .'", ' . "\n";
     $query   .= '`mAdminName` 	  	= "'. $settings['mAdminName'] .'", ' . "\n";
@@ -2509,7 +2510,7 @@ function verifyDatabase()
 	$fields['api']			  = array("app_id", "app_code", "app_permissions", "app_comment");
 	$fields['changelog']	  = array("cid", "ctype", "coid", "cuser", "caction", "cresult", "cdate", "cdiff");
 	$fields['widgets']		  = array("wid", "wtitle", "wdescription", "wfile", "wparams", "whref", "wsize", "wadminonly", "wactive");
-	$fields['settingsMail']	  = array("id", "mtype", "mauth", "mserver", "mport", "muser", "mpass", "mAdminName", "mAdminMail");
+	$fields['settingsMail']	  = array("id", "mtype", "mauth", "mserver", "mport", "muser", "mpass", "mAdminName", "mAdminMail", "msecure");
 	
 	/**
 	 * check that each database exist - if it does check also fields

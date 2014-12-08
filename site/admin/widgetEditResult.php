@@ -15,7 +15,9 @@ $_POST = filter_user_input($_POST, true, true, false);
 $_POST['action'] = filter_user_input($_POST['action'], false, false, true);
 
 /* must be numeric */
-if(!is_numeric($_POST['wid']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+if($_POST['action']=="edit"||$_POST['action']=="delete") {
+	if(!is_numeric($_POST['wid']))	{ die('<div class="alert alert-danger">'._("Invalid ID").'</div>'); }
+}
 
 /* Title and path must be present! */
 if($_POST['action']!="delete") {

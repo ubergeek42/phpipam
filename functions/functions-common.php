@@ -147,7 +147,7 @@ function filter_user_input ($input, $sql = true, $xss = true, $actions = false)
 	
 	# actions
 	if($actions) {
-		$permitted = array("add", "edit", "delete", "truncate", "split", "resize");
+		$permitted = array("add", "edit", "delete", "truncate", "split", "resize", "move");
 		if(!in_array($input, $permitted)) {
 			die("<div class='alert alert-danger'>Invalid action!</div>");
 		}

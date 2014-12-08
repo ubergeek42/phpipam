@@ -31,7 +31,7 @@ include('functions/checkPhpBuild.php');		# check for support for PHP modules and
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-custom.css">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome/font-awesome.min.css">
-	<link rel="shortcut icon" href="css/images/favicon.ico">
+	<link rel="shortcut icon" href="css/images/favicon.png">
 		
 	<!-- js -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
