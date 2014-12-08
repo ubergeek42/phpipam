@@ -659,7 +659,7 @@ $('.searchSubmit').click(function () {
     //go to search page
     var prettyLinks = $('#prettyLinks').html();
 	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/"+addresses+"/"+subnets+"/"+vlans+"/"+ip; }
-	else					{ window.location = base + "?page=tools&section=search?addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
+	else					{ window.location = base + "?page=tools&section=search&addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
     return false;
 });
 //submit form - topmenu
@@ -683,7 +683,7 @@ $('form#userMenuSearch').submit(function () {
     //go to search page
     var prettyLinks = $('#prettyLinks').html();
 	if(prettyLinks=="Yes")	{ window.location = base + "tools/search/"+addresses+"/"+subnets+"/"+vlans+"/"+ip; }
-	else					{ window.location = base + "?page=tools&section=search?addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
+	else					{ window.location = base + "?page=tools&section=search&addresses="+addresses+"&subnets="+subnets+"&vlans="+vlans+"&ip="+ip; }
     return false;
 
 });
