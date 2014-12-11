@@ -1,4 +1,4 @@
-== 1.1.004
+== 1.1.005
 
 	Bugfixes:
 	----------------------------
@@ -6,6 +6,7 @@
 	+ Fixed login not working with spaces in password for AD login;
 	+ Fixed Ivalid action when adding vlans from subnet popup menu;
 	+ Fixed custom fields not appearing properly on IP request editing;
+	+ Fixed Invalid ID error for IP address details on sorting;
 
 == 1.1
 
