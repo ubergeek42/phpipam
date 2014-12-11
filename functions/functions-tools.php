@@ -1249,8 +1249,11 @@ function getLatestPHPIPAMversion()
 		fclose($handle);
 	}
 	
+	# replace dots for check
+	$versionT = str_replace(".", "", $version);
+	
 	/* return version */
-	if(is_numeric($version)) 	{ return $version; }
+	if(is_numeric($versionT)) 	{ return $version; }
 	else 						{ return false; }
 }
 
