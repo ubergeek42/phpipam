@@ -1,4 +1,4 @@
-	<?php
+<?php
 
 /**
  *	Mail settings
@@ -58,17 +58,21 @@ if($settings['mtype']=="localhost") {
 elseif($settings['mtype']=="smtp") {
 	// initialize
 	try {
-		$pmail->isSMTP();	
-		
+		//set smtp
+		$pmail->isSMTP();
+		//tls, sll?
+		if($mailsettings['msecure']=='ssl')	{
+		$mail->SMTPSecure = 'ssl';	
+		} elseif($mailsettings['msecure']=='tls')
+		$mail->SMTPSecure = 'tls';	
 		//server
-		$pmail->Host = $settings['mserver'];
-		$pmail->Port = $settings['mport'];
-		
+		$pmail->Host = $mailsettings['mserver'];
+		$pmail->Port = $mailsettings['mport'];
 		//auth or not?
-		if($settings['mauth']=="yes") {
+		if($mailsettings['mauth']=="yes") {
 			$pmail->SMTPAuth = true;
-			$pmail->Username = $settings['muser'];
-			$pmail->Password = $settings['mpass'];
+			$pmail->Username = $mailsettings['muser'];
+			$pmail->Password = $mailsettings['mpass'];
 		} else {
 			$pmail->SMTPAuth = false;	
 		}
