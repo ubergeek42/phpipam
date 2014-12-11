@@ -1,4 +1,4 @@
-== 1.1.008
+== 1.1.009
 
 	Bugfixes:
 	----------------------------
@@ -9,6 +9,7 @@
 	+ Fixed Invalid ID error for IP address details on sorting;
 	+ Fixed warnings if no VLAN search results are present;
 	+ Fixed test mail not sending;
+	+ Fixed unable to login if $phpsessname not defined;
 
 == 1.1
 

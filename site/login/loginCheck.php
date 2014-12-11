@@ -36,7 +36,8 @@ if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 	# captcha check
 	else {
 		# start session
-		session_start($phpsessname);
+		if(strlen($phpsessname)>0) { session_name($phpsessname); } 
+		session_start();
 		# check captcha
 		if($_POST['captcha']!=$_SESSION['securimage_code_value']) {
 												   die("<div class='alert alert-danger'>"._("Invalid security code")."!</div>");

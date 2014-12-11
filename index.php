@@ -6,7 +6,7 @@ require('config.php');
 require('functions/functions.php');
 
 /* start session */
-session_name($phpsessname);
+if(strlen($phpsessname)>0) { session_name($phpsessname); } 
 session_start();
 ob_start();
 

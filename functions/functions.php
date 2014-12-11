@@ -10,7 +10,7 @@ if(!isset($_SESSION)) {
 	ini_set('session.gc_maxlifetime', '86400');
 	ini_set('session.save_path', '/tmp/php_sessions/');
 	*/
-	session_name($phpsessname); 
+	if(strlen($phpsessname)>0) { session_name($phpsessname); }  
 	session_start();
 }
 

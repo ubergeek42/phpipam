@@ -483,7 +483,7 @@ function checkLogin ($username, $md5password, $rawpassword)
 
 		/* start session and set variables */
 		global $phpsessname; 
-		session_name($phpsessname); 
+		if(strlen($phpsessname)>0) { session_name($phpsessname); }  
 		session_start();
 		$_SESSION['ipamusername'] = $username;
 		$_SESSION['ipamlanguage'] = $lang['l_code'];
@@ -554,7 +554,7 @@ function checkAdmin ($die = true)
     
     /* first get active username */
     global $phpsessname; 
-    session_name($phpsessname); 
+    if(strlen($phpsessname)>0) { session_name($phpsessname); }  
     session_start();
     $ipamusername = $_SESSION['ipamusername'];
     session_write_close();

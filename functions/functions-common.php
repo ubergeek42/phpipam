@@ -292,7 +292,7 @@ function reset_inactivity_time()
 function isUserAuthenticated($die = true) 
 {	
     /* open session and get username / pass */
-	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
     /* redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) {
     	# save requested page
@@ -317,7 +317,7 @@ function isUserAuthenticated($die = true)
 function isUserAuthenticatedNoAjax () 
 {
     /* open session and get username / pass */
-	if (!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
+	if (!isset($_SESSION)) { global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
     /* redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) {
     	# save requested page
@@ -331,7 +331,7 @@ function isUserAuthenticatedNoAjax ()
 	    if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install") {
 		    global $settings;
 	    	/* check inactivity time */
-			if( (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
+			if( strlen($settings['inactivityTimeout']>0) && (time()-$_SESSION['lastactive']) > $settings['inactivityTimeout']) {
 	    		# redirect
 	    		$url = createURL ();
 				header("Location:".$url.create_link("login","timeout")); 			
@@ -351,7 +351,7 @@ function isUserAuthenticatedNoAjax ()
 function checkAdmin ($die = true) 
 {    
     /* first get active username */
-    if(!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
+    if(!isset($_SESSION)) { global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
     $ipamusername = $_SESSION['ipamusername'];
     session_write_close();
     
@@ -397,7 +397,7 @@ function checkAdmin ($die = true)
  */
 function getActiveUserDetails ()
 {
-	if (!isset($_SESSION)) { global $phpsessname; session_name($phpsessname); session_start(); }
+	if (!isset($_SESSION)) { global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
 
 	if(isset($_SESSION['ipamusername'])) {
     	return getUserDetailsByName ($_SESSION['ipamusername']);
@@ -548,7 +548,7 @@ function getUserDetailsByName ($username, $killsession = true)
 	    if(!isset($details[0]))	{
 	    	if($killsession) {
 		    	global $phpsessname; 
-		    	session_name($phpsessname); 
+		    	if(strlen($phpsessname)>0) { session_name($phpsessname); }  
 		    	session_start();
 		    	session_destroy();
 			  	return false;
@@ -915,7 +915,7 @@ function getFullFieldData($table, $field)
 function checkSectionPermission ($sectionId)
 {
     # open session and get username / pass
-	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
     # redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) 	{ return "0"; }
     else									{ $username = $_SESSION['ipamusername']; }
@@ -960,7 +960,7 @@ function checkSectionPermission ($sectionId)
 function checkSubnetPermission ($subnetId)
 {
     # open session and get username / pass
-	if (!isset($_SESSION)) {  global $phpsessname; session_name($phpsessname); session_start(); }
+	if (!isset($_SESSION)) {  global $phpsessname; if(strlen($phpsessname)>0) { session_name($phpsessname); }  session_start(); }
     # redirect if not authenticated */
     if (empty($_SESSION['ipamusername'])) 	{ return "0"; }
     else									{ $username = $_SESSION['ipamusername']; }
