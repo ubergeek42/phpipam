@@ -2230,6 +2230,9 @@ function getCustomFields($table)
 		unset($res['vlanId'], $res['name'], $res['number'], $res['description'],$res['editDate']);		
 	}
 	
+	/* reset if empty */
+	if(sizeof($res)==0) { $res = array(); }
+	
 	return $res;
 }
 

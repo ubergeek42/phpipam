@@ -1,4 +1,4 @@
-== 1.1.005
+== 1.1.007
 
 	Bugfixes:
 	----------------------------
@@ -8,6 +8,7 @@
 	+ Fixed custom fields not appearing properly on IP request editing;
 	+ Fixed Invalid ID error for IP address details on sorting;
 	+ Fixed warnings if no VLAN search results are present;
+	+ Fixed test mail not sending;
 
 == 1.1
 

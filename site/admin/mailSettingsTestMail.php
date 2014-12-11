@@ -14,8 +14,9 @@ checkAdmin(false);
 $_POST = filter_user_input($_POST, true, true, false);
 
 /* get settings form post */
-$settings = $_POST;
 $sitesettings = getAllSettings();
+$settings = $_POST;
+
 
 /* set mail parameters */
 require_once '../../functions/phpMailer/class.phpmailer.php';
