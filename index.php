@@ -6,9 +6,11 @@ require('config.php');
 require('functions/functions.php');
 
 /* start session */
+if(!isset($_SESSION)) {
 if(strlen($phpsessname)>0) { session_name($phpsessname); } 
 session_start();
 ob_start();
+}
 
 # set default page
 if(!isset($_GET['page'])) { $_GET['page'] = "dashboard"; }

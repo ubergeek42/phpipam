@@ -1,4 +1,4 @@
-== 1.1.009
+== 1.1.010
 
 	Bugfixes:
 	----------------------------
@@ -10,6 +10,7 @@
 	+ Fixed warnings if no VLAN search results are present;
 	+ Fixed test mail not sending;
 	+ Fixed unable to login if $phpsessname not defined;
+	+ Fixed unable to login after upgrade;
 
 == 1.1
 

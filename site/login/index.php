@@ -115,8 +115,8 @@ include('functions/checkPhpBuild.php');		# check for support for PHP modules and
 	
 	<!-- login response -->
 	<div id="loginCheck">
-		<?php if ($logout)  print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?>
-		<?php if ($timeout) print '<div class="alert alert-success">'._('You session has timed out').'</div>'; ?>
+		<?php if (@$logout)  print '<div class="alert alert-success">'._('You have logged out').'</div>'; ?>
+		<?php if (@$timeout) print '<div class="alert alert-success">'._('You session has timed out').'</div>'; ?>
 	</div>
 
 </div>

@@ -361,8 +361,8 @@ function checkLogin ($username, $md5password, $rawpassword)
 			# ok
 			if($authFailed == false) {
 			
-				# try to update pass to crypt
-				if($updatepass) { update_user_pass_to_crypt($username, $rawpassword); }
+				# try to update pass to crypt, only if version already changed
+				if($updatepass && $settings['version']=="1.1") { update_user_pass_to_crypt($username, $rawpassword); }
 		    	
 		    	# save results
 		    	$uerror = 'Login successful';	
@@ -645,6 +645,7 @@ function update_user_pass_to_crypt($username, $rawpassword)
     # execute
     try { $database->executeQuery( $query ); }
     catch (Exception $e) { 
+    	print "<div class='alert alert-danger'>".$e->getMessage()."</div>";
         return false;
     }
 	return true;
