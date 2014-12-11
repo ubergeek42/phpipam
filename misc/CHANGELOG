@@ -1,9 +1,10 @@
-== 1.1.002
+== 1.1.003
 
 	Bugfixes:
 	----------------------------
 	+ Fixed login fails with LDAP when escape characters are in password;
 	+ Fixed login not working with spaces in password for AD login;
+	+ Fixed Ivalid action when adding vlans from subnet popup menu;
 
 == 1.1
 
