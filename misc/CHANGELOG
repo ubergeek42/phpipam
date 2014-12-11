@@ -7,6 +7,7 @@
 	+ Fixed Ivalid action when adding vlans from subnet popup menu;
 	+ Fixed custom fields not appearing properly on IP request editing;
 	+ Fixed Invalid ID error for IP address details on sorting;
+	+ Fixed warnings if no VLAN search results are present;
 
 == 1.1
 

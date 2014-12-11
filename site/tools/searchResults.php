@@ -233,7 +233,11 @@ if(sizeof($subnets) > 0) {
 
 </table>
 <?php } ?>
-
+<?php
+if(sizeof($subnets) == 0) {
+	print "<div class='alert alert-info'>"._("No results")."</div>";
+}
+?>
 
 <?php if(@$_REQUEST['addresses']=="on") { ?>
 <br>
@@ -269,7 +273,7 @@ if(sizeof($subnets) > 0) {
 	# custom fields
 	if(sizeof($myFields) > 0) {
 		if(!in_array($myField['name'], $iffields)) {
-			foreach($myFields as $myField) 										{ print '<th class="hidden-sm hidden-xs hidden-md">'. $myField['name'] .'</th>'. "\n"; }
+			foreach($myFields as $myField) 									{ print '<th class="hidden-sm hidden-xs hidden-md">'. $myField['name'] .'</th>'. "\n"; }
 		}
 	}
 	
@@ -401,7 +405,12 @@ if(sizeof($result) > 0) {
 }
 ?>
 </table>
-<?php } ?>
+<?php 
+} 
+if(sizeof($result) == 0) {
+	print "<div class='alert alert-info'>"._("No results")."</div>";
+}
+?>
 
 
 <?php if(@$_REQUEST['vlans']=="on") { ?>
@@ -418,10 +427,12 @@ if(sizeof($result) > 0) {
 	<th><?php print _('Number');?></th>
 	<th><?php print _('Description');?></th>
 	<?php
+	$mf=3;
 	if(sizeof($myFieldsV) > 0) {
 		foreach($myFieldsV as $field) {
 			if(!in_array($field['name'], $vffields)) {
 				print "	<th class='hidden-xs hidden-sm'>$field[name]</th>";
+				$mf++;
 			}
 		}
 	}
@@ -431,9 +442,7 @@ if(sizeof($result) > 0) {
 
 
 <?php
-if(sizeof($vlans) == 0) {
-}
-else {
+if(sizeof($vlans) > 0) {
 	# print vlans
 	foreach($vlans as $vlan) {;
 	
@@ -465,4 +474,9 @@ else {
 
 </table>
 <?php } ?>
+<?php
+if(sizeof($vlans) == 0) {
+	print "<div class='alert alert-info'>"._("No results")."</div>";
+}
+?>
 <?php } ?>
