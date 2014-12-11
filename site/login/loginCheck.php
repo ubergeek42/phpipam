@@ -21,7 +21,6 @@ if( !empty($_POST['ipamusername']) && !empty($_POST['ipampassword']) )  {
 	
 	// verify that there are no invalid characters
 	if(strpos($_POST['ipamusername'], " ") >0 ) 	{ die("<div class='alert alert-danger'>"._("Invalid characters in username")."!</div>"); }
-	if(strpos($_POST['ipampassword'], " ") >0 ) 	{ die("<div class='alert alert-danger'>"._("Invalid characters in password")."!</div>"); }
 	
 	// check failed table
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))	{ $ip = $_SERVER['HTTP_X_FORWARDED_FOR']; }

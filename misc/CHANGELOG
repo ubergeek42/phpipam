@@ -3,6 +3,7 @@
 	Bugfixes:
 	----------------------------
 	+ Fixed login fails with LDAP when escape characters are in password;
+	+ Fixed login not working with spaces in password for AD login;
 
 == 1.1
 
