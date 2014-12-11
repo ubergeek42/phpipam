@@ -328,8 +328,6 @@ function checkLogin ($username, $md5password, $rawpassword)
     
 	# escape vars to prevent SQL injection
 	$username 	 = $database->real_escape_string($username);
-	$md5password = $database->real_escape_string($md5password);
-	$rawpassword = $database->real_escape_string($rawpassword);
 
     # try to fetch user
     $query 		= 'select * from `users` where `username` = "'. $username .'" limit 1;';

@@ -1,3 +1,9 @@
+== 1.1.002
+
+	Bugfixes:
+	----------------------------
+	+ Fixed login fails with LDAP when escape characters are in password;
+
 == 1.1
 
 	Enhancements:
