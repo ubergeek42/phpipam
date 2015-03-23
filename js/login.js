@@ -25,28 +25,31 @@ function hideSpinner() {
 
 /*	Login redirect function if success
 ****************************************/
-function loginRedirect() { 
+function loginRedirect() {
 	var base = $('.iebase').html();
-	window.location=base; 
+	window.location=base;
 }
 
-/*	submit login 
+/*	submit login
 *********************/
 $('form#login').submit(function() {
+	//show spinner
+	showSpinner();
     //stop all active animations
     $('div#loginCheck').stop(true,true);
-    
+
     var logindata = $(this).serialize();
-    
+
     $('div#loginCheck').hide();
     //post to check form
-    $.post('site/login/loginCheck.php', logindata, function(data) {
+    $.post('app/login/login_check.php', logindata, function(data) {
+	    hideSpinner();
         $('div#loginCheck').html(data).fadeIn('fast');
         //reload after 2 seconds if succeeded!
         if(data.search("alert alert-danger") == -1) {
             showSpinner();
             //search for redirect
-            if($('form#login input#phpipamredirect').length > 0) { setTimeout(function (){window.location=$('form#login input#phpipamredirect').val();}, 1500); }
+            if($('form#login input#phpipamredirect').length > 0) { setTimeout(function (){window.location=$('form#login input#phpipamredirect').val();}, 1000); }
             else 												 { setTimeout(loginRedirect, 1000);	}
         }
     });
@@ -58,8 +61,8 @@ $('form#login').submit(function() {
 $(document).on("change", "select#subnetId", function() {
 	showSpinner();
 	var subnetId = $('select#subnetId option:selected').attr('value');
-	//post it via json to requestIPfirstFree.php
-	$.post('site/login/requestIPfirstFree.php', { subnetId:subnetId}, function(data) {
+	//post it via json to request_ip_first_free.php
+	$.post('app/login/request_ip_first_free.php', { subnetId:subnetId}, function(data) {
 		$('input.ip_addr').val(data);
 		hideSpinner();
 	});
@@ -71,11 +74,11 @@ $(document).on("submit", "#requestIP", function() {
 	var subnet = $('#requestIPsubnet').serialize();
 	var IPdata = $(this).serialize();
 	var postData = subnet + "&" + IPdata;
-	
+
 	showSpinner();
-	
+
     //post to check form
-    $.post('site/login/requestIPresult.php', postData, function(data) {
+    $.post('app/login/request_ip_result.php', postData, function(data) {
         $('div#requestIPresult').html(data).slideDown('fast');
         hideSpinner();
         //reset sender to prevent duplicates

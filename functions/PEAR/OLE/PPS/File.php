@@ -20,7 +20,7 @@
 // $Id: File.php,v 1.12 2008/02/02 21:00:37 schmidt Exp $
 
 
-require_once '../../functions/PEAR/OLE/PPS.php';
+require_once( dirname(__FILE__) . '/../PPS.php');
 require_once 'System.php';
 
 /**
@@ -50,7 +50,7 @@ class OLE_PPS_File extends OLE_PPS
     	$tempDir = new System();
         $this->_tmp_dir = $tempDir->tmpdir();
         $this->OLE_PPS(
-            null, 
+            null,
             $name,
             OLE_PPS_TYPE_FILE,
             null,
@@ -98,7 +98,7 @@ class OLE_PPS_File extends OLE_PPS
 
         return true;
     }
-    
+
     /**
     * Append data to PPS
     *

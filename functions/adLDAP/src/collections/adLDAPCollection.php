@@ -1,15 +1,17 @@
 <?php
+namespace adLDAP\collections;
+use adLDAP\adLDAP;
 /**
  * PHP LDAP CLASS FOR MANIPULATING ACTIVE DIRECTORY 
- * Version 4.0.3
+ * Version 5.0.0
  * 
  * PHP Version 5 with SSL and LDAP support
  * 
  * Written by Scott Barnett, Richard Hyland
  *   email: scott@wiggumworld.com, adldap@richardhyland.com
- *   http://adldap.sourceforge.net/
+ *   http://github.com/adldap/adLDAP
  * 
- * Copyright (c) 2006-2011 Scott Barnett, Richard Hyland
+ * Copyright (c) 2006-2014 Scott Barnett, Richard Hyland
  * 
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)
@@ -28,13 +30,11 @@
  * @package adLDAP
  * @subpackage Collection
  * @author Scott Barnett, Richard Hyland
- * @copyright (c) 2006-2011 Scott Barnett, Richard Hyland
+ * @copyright (c) 2006-2014 Scott Barnett, Richard Hyland
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPLv2.1
- * @revision $Revision: 97 $
- * @version 4.0.3
- * @link http://adldap.sourceforge.net/
-*/
-
+ * @version 5.0.0
+ * @link http://github.com/adldap/adLDAP
+ */
 abstract class adLDAPCollection
 {
     /**
@@ -58,8 +58,7 @@ abstract class adLDAPCollection
     */
     protected $info;
     
-    public function __construct($info, adLDAP $adldap) 
-    {
+    public function __construct($info, adLDAP $adldap) {
         $this->setInfo($info);   
         $this->adldap = $adldap;
     }
@@ -69,8 +68,7 @@ abstract class adLDAPCollection
     * 
     * @param array $info
     */
-    public function setInfo(array $info) 
-    {
+    public function setInfo(array $info) {
         if ($this->info && sizeof($info) >= 1) {
             unset($this->info);
         }
@@ -83,8 +81,7 @@ abstract class adLDAPCollection
     * @param string $attribute
     * @return mixed
     */
-    public function __get($attribute)
-    {
+    public function __get($attribute) {
         if (isset($this->info[0]) && is_array($this->info[0])) {
             foreach ($this->info[0] as $keyAttr => $valueAttr) {
                 if (strtolower($keyAttr) == strtolower($attribute)) {
@@ -116,5 +113,22 @@ abstract class adLDAPCollection
     * @return bool
     */
     abstract public function __set($attribute, $value);
+    
+    /** 
+    * Magic isset method to check for the existence of an attribute 
+    * 
+    * @param string $attribute 
+    * @return bool 
+    */ 
+    public function __isset($attribute) {
+        if (isset($this->info[0]) && is_array($this->info[0])) { 
+            foreach ($this->info[0] as $keyAttr => $valueAttr) { 
+                if (strtolower($keyAttr) == strtolower($attribute)) { 
+                    return true; 
+                } 
+            } 
+        } 
+        return false; 
+     } 
 }
 ?>

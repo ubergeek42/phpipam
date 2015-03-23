@@ -117,6 +117,9 @@ class Net_Ping
     */
     var $_argRelation = array();
 
+    //pear
+    public $pear;
+
     /**
     * Constructor for the Class
     *
@@ -127,7 +130,9 @@ class Net_Ping
         $this->_ping_path = $ping_path;
         $this->_sysname   = $sysname;
         $this->_initArgRelation();
+        $this->pear = new PEAR ();
     } /* function Net_Ping() */
+
 
     /**
     * Factory for Net_Ping
@@ -141,13 +146,13 @@ class Net_Ping
         $sysname = Net_Ping::_setSystemName();
 
         if (($ping_path = Net_Ping::_setPingPath($sysname)) == NET_PING_CANT_LOCATE_PING_BINARY) {
-            return PEAR::raiseError(NET_PING_CANT_LOCATE_PING_BINARY_MSG, NET_PING_CANT_LOCATE_PING_BINARY);
+            return $this->pear->raiseError(NET_PING_CANT_LOCATE_PING_BINARY_MSG, NET_PING_CANT_LOCATE_PING_BINARY);
         } else {
             return new Net_Ping($ping_path, $sysname);
         }
     } /* function factory() */
 
-    /** 
+    /**
      * Resolve the system name
      *
      * @access private
@@ -187,7 +192,7 @@ class Net_Ping
         }
 
         return $sysname;
-        
+
     } /* function _setSystemName */
 
     /**
@@ -200,7 +205,7 @@ class Net_Ping
     function setArgs($args)
     {
         if (!is_array($args)) {
-            return PEAR::raiseError(NET_PING_INVALID_ARGUMENTS_MSG, NET_PING_INVALID_ARGUMENTS);
+            return $this->pear->raiseError(NET_PING_INVALID_ARGUMENTS_MSG, NET_PING_INVALID_ARGUMENTS);
         }
 
         $this->_setNoArgs($args);
@@ -372,7 +377,6 @@ class Net_Ping
     */
     function ping($host)
     {
-        
         if($this->_noArgs) {
             $this->setArgs(array('count' => 3));
         }
@@ -389,11 +393,11 @@ class Net_Ping
         exec($cmd, $this->_result);
 
         if (!is_array($this->_result)) {
-            return PEAR::raiseError(NET_PING_FAILED_MSG, NET_PING_FAILED);
+            return $this->pear->raiseError(NET_PING_FAILED_MSG, NET_PING_FAILED);
         }
 
         if (count($this->_result) == 0) {
-            return PEAR::raiseError(NET_PING_HOST_NOT_FOUND_MSG, NET_PING_HOST_NOT_FOUND);
+            return $this->pear->raiseError(NET_PING_HOST_NOT_FOUND_MSG, NET_PING_HOST_NOT_FOUND);
         }
         else {
             // Here we pass $this->_sysname to the factory(), but it is
@@ -417,7 +421,7 @@ class Net_Ping
     function checkHost($host, $severely = true)
     {
     	$matches = array();
-    	
+
         $this->setArgs(array("count" => 10,
                              "size"  => 32,
                              "quiet" => null,
@@ -425,7 +429,7 @@ class Net_Ping
                              )
                        );
         $res = $this->ping($host);
-        if (PEAR::isError($res)) {
+        if ($this->pear->isError($res)) {
             return false;
         }
         if ($res->_received == 0) {
@@ -448,7 +452,7 @@ class Net_Ping
     */
     public static function _raiseError($error)
     {
-        if (PEAR::isError($error)) {
+        if ($this->pear->isError($error)) {
             $error = $error->getMessage();
         }
         trigger_error($error, E_USER_WARNING);

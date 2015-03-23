@@ -1,16 +1,11 @@
 <?php
-/* site config */
+ob_start();
+
+/* config */
 require('config.php');
 
 /* site functions */
 require('functions/functions.php');
-
-/* start session */
-if(!isset($_SESSION)) {
-if(strlen($phpsessname)>0) { session_name($phpsessname); } 
-session_start();
-ob_start();
-}
 
 # set default page
 if(!isset($_GET['page'])) { $_GET['page'] = "dashboard"; }
@@ -20,29 +15,33 @@ $url = createURL ();
 
 # if not install fetch settings etc
 if($_GET['page']!="install" ) {
-	# check if this is a new installation
-	require('functions/dbInstallCheck.php');
-	
-	# get all site settings
-	$settings 	= getAllSettings();
+	# database object
+	$Database 	= new Database_PDO;
 
-	# escape GET vars to prevent SQL injection
-	$_GET 		= filter_user_input ($_GET, true, true);
-	$_REQUEST 	= filter_user_input ($_REQUEST, true, true);
+	# check if this is a new installation
+	require('functions/checks/check_db_install.php');
+
+	# initialize objects
+	$Result		= new Result;
+	$User		= new User ($Database);
+	$Sections	= new Sections ($Database);
+	$Subnets	= new Subnets ($Database);
+	$Tools	    = new Tools ($Database);
+	$Addresses	= new Addresses ($Database);
 }
 
 /** include proper subpage **/
-if($_GET['page']=="install")		{ require("site/install/index.php"); }
-elseif($_GET['page']=="upgrade")	{ require("site/upgrade/index.php"); }
-elseif($_GET['page']=="login")		{ require("site/login/index.php"); }
-elseif($_GET['page']=="request_ip")	{ require("site/login/index.php"); }
+if($_GET['page']=="install")		{ require("app/install/index.php"); }
+elseif($_GET['page']=="upgrade")	{ require("app/upgrade/index.php"); }
+elseif($_GET['page']=="login")		{ require("app/login/index.php"); }
+elseif($_GET['page']=="request_ip")	{ require("app/login/index.php"); }
 else {
 	# verify that user is logged in
-	isUserAuthenticatedNoAjax(); 
+	$User->check_user_session();
 
 	# make upgrade and php build checks
-	include('functions/dbUpgradeCheck.php'); 	# check if database needs upgrade 
-	include('functions/checkPhpBuild.php');		# check for support for PHP modules and database connection 
+	include('functions/checks/check_db_upgrade.php'); 	# check if database needs upgrade
+	include('functions/checks/check_php_build.php');	# check for support for PHP modules and database connection
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -52,34 +51,34 @@ else {
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-	
-	<meta name="Description" content=""> 
-	<meta name="title" content="<?php print $settings['siteTitle']; ?>"> 
-	<meta name="robots" content="noindex, nofollow"> 
+
+	<meta name="Description" content="">
+	<meta name="title" content="<?php print $User->settings->siteTitle; ?>">
+	<meta name="robots" content="noindex, nofollow">
 	<meta http-equiv="X-UA-Compatible" content="IE=9" >
-	
+
 	<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1, user-scalable=no">
-	
+
 	<!-- chrome frame support -->
 	<meta http-equiv="X-UA-Compatible" content="chrome=1">
-  
+
 	<!-- title -->
-	<title><?php print $settings['siteTitle']; ?></title>
-		
+	<title><?php print $User->settings->siteTitle; ?></title>
+
 	<!-- css -->
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-custom.css">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/png" href="css/images/favicon.png">
-		
+
 	<!-- js -->
-	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
 	<script type="text/javascript" src="js/jclock.jquery.js"></script>
 	<?php if($_GET['page']=="login" || $_GET['page']=="request_ip") { ?>
 	<script type="text/javascript" src="js/login.js"></script>
 	<?php } ?>
-	<script type="text/javascript" src="js/magic-1.1.min.js"></script>
-<!-- 	<script type="text/javascript" src="js/magic-1.1.js"></script> -->
+<!-- 	<script type="text/javascript" src="js/magic-1.11.min.js"></script> -->
+	<script type="text/javascript" src="js/magic-1.11.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
 	<script type="text/javascript">
@@ -110,6 +109,7 @@ else {
 <div id="popup" class="popup popup_w400"></div>
 <div id="popup" class="popup popup_w500"></div>
 <div id="popup" class="popup popup_w700"></div>
+<div id="popup" class="popup popup_max"></div>
 
 <!-- loader -->
 <div class="loading"><?php print _('Loading');?>...<br><i class="fa fa-spinner fa-spin"></i></div>
@@ -118,23 +118,22 @@ else {
 <div class="row" id="header">
 	<!-- usermenu -->
 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 pull-right" id="user_menu">
-		<?php include('site/userMenu.php'); ?>
+		<?php include('app/sections/user-menu.php'); ?>
 	</div>
 	<!-- title -->
 	<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
 		<div class="hero-pusher hidden-xs hidden-sm"></div>
 		<div class="hero-unit">
-			<a href="<?php print create_link(null); ?>"><?php print $settings['siteTitle']; ?></a>
+			<a href="<?php print create_link(null); ?>"><?php print $User->settings->siteTitle; ?></a>
 		</div>
-	</div>		
-</div>  
+	</div>
+</div>
 
 
 <!-- page sections / menu -->
 <div class="content">
 <div id="sections_overlay">
-	<?php $user = getActiveUserDetails(); ?>
-    <?php if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install" && $user['passChange']!="Yes")  include('site/sections.php');?>
+    <?php if($_GET['page']!="login" && $_GET['page']!="request_ip" && $_GET['page']!="upgrade" && $_GET['page']!="install" && $User->user->passChange!="Yes")  include('app/sections/index.php');?>
 </div>
 </div>
 
@@ -143,70 +142,100 @@ else {
 <div class="content_overlay">
 <div class="container-fluid" id="mainContainer">
 		<?php
-		
+
 		/* error */
 		if($_GET['page'] == "error") {
-			print "<div id='error'>";
-			include_once('site/error.php');
+			print "<div id='error' class='container'>";
+			include_once('app/error.php');
 			print "</div>";
 		}
 		/* password reset required */
-		elseif($user['passChange']=="Yes") {
+		elseif($User->user->passChange=="Yes") {
 			print "<div id='dashboard' class='container'>";
-			include_once("site/tools/changePassRequired.php");
-			print "</div>";					
+			include_once("app/tools/pass-change/form.php");
+			print "</div>";
 		}
 		/* dashboard */
 		elseif(!isset($_GET['page']) || $_GET['page'] == "dashboard") {
 			print "<div id='dashboard'>";
-			include_once("site/dashboard/index.php");
+			include_once("app/dashboard/index.php");
 			print "</div>";
 		}
 		/* widgets */
-		elseif(@$_GET['page']=="widgets") {
-			print "<div id='dashboard'>";
-			include_once("site/dashboard/widgets/".$_GET['section'].".php");
-			print "</div>";			
+		elseif($_GET['page']=="widgets") {
+			print "<div id='dashboard' class='container'>";
+			include_once("app/dashboard/widgets/index.php");
+			print "</div>";
 		}
-		/* side menus */
+		/* content */
 		else {
 			print "<table id='subnetsMenu'>";
 			print "<tr>";
-			
-			print "<td id='subnetsLeft'>";
-			print "<div id='leftMenu' class='menu-$_GET[page]'>";
-				if($_GET['page'] == "subnets" || $_GET['page'] == "vlan" || 
-				   $_GET['page'] == "vrf" 	  || $_GET['page'] == "folder")										{ include_once("site/subnets.php"); }
-				else if ($_GET['page'] == "tools")																{ include_once("site/tools/toolsMenu.php"); }
-				else if ($_GET['page'] == "administration")														{ include_once("site/admin/adminMenu.php"); }	
-			print "</div>";		
-			print "</td>";
-			
+
+			# fix for empty section
+			if( isset($_GET['section']) && (strlen($_GET['section']) == 0) )			{ unset($_GET['section']); }
+
+			# hide left menu
+			if( ($_GET['page']=="tools"||$_GET['page']=="administration") && !isset($_GET['section'])) {
+				//we dont display left menu on empty tools and administration
+			}
+			else {
+				# left menu
+				print "<td id='subnetsLeft'>";
+				print "<div id='leftMenu' class='menu-$_GET[page]'>";
+					if($_GET['page'] == "subnets" || $_GET['page'] == "vlan" ||
+					   $_GET['page'] == "vrf" 	  || $_GET['page'] == "folder")			{ include("app/subnets/subnets-menu.php"); }
+					else if ($_GET['page'] == "tools")									{ include("app/tools/tools-menu.php"); }
+					else if ($_GET['page'] == "administration")							{ include("app/admin/admin-menu.php"); }
+				print "</div>";
+				print "</td>";
+
+			}
+
+			# content
 			print "<td id='subnetsContent'>";
-			print "<div class='row' id='content'>";
-				if( isset($_GET['section']) && (strlen($_GET['section']) == 0) )								{ unset($_GET['section']); }
-				# subnet changelog
-				if($_GET['page'] == "subnets" && $_GET['sPage'] == "changelog")									{ include_once("site/ipaddr/subnetChangelog.php"); }
+			print "<div class='row menu-$_GET[page]' id='content'>";
 				# subnets
-				elseif($_GET['page'] == "subnets" && !isset($_GET['subnetId']))									{ include_once("site/ipaddr/sectionAllSubnets.php"); }
-				# subnets, vrf, vlan, folder
-				else if($_GET['page'] == "subnets" || $_GET['page'] == "vlan" 
-					 || $_GET['page'] == "vrf"	   || $_GET['page'] == "folder")								{ include_once("site/ipaddr/ipAddressSwitch.php"); }
-				# tools		
-				else if ($_GET['page'] == "tools" && !isset($_GET['section']))									{ include_once("site/tools/showAll.php"); }
-				else if ($_GET['page'] == "tools")																{ if(!file_exists("site/tools/$_GET[section].php")) { header("Location: ".create_link("error","404")); } else include_once("site/tools/$_GET[section].php"); }
+				if ($_GET['page']=="subnets") {
+					if(@$_GET['sPage'] == "address-details")							{ include("app/subnets/addresses/address-details.php"); }
+					elseif(@$_GET['sPage'] == "changelog")								{ include("app/subnets/subnet-changelog.php"); }
+					elseif(!isset($_GET['subnetId']))									{ include("app/sections/section-subnets.php"); }
+					else																{ include("app/subnets/index.php"); }
+				}
+				# vrf
+				elseif ($_GET['page']=="vrf") 											{ include("app/vrf/index.php"); }
+				# vlan
+				elseif ($_GET['page']=="vlan") 											{ include("app/vlan/index.php"); }
+				# folder
+				elseif ($_GET['page']=="folder") 										{ include("app/folder/index.php"); }
+				# tools
+				elseif ($_GET['page']=="tools") {
+					if (!isset($_GET['section']))										{ include("app/tools/index.php"); }
+					else {
+						if(!file_exists("app/tools/$_GET[section]/index.php")) 			{ header("Location: ".create_link("error","404")); }
+						else 															{ include("app/tools/$_GET[section]/index.php"); }
+					}
+				}
 				# admin
-				else if ($_GET['page'] == "administration"  && !isset($_GET['section']))						{ include_once("site/admin/showAll.php"); }    	
-				else if ($_GET['page'] == "administration"  && ($_GET['subnetId']=="sectionChangelog"))			{ include_once("site/admin/sectionChangelog.php"); }  
-				else if ($_GET['page'] == "administration")														{ if(!file_exists("site/admin/$_GET[section].php")) { header("Location: ".create_link("error","404")); } else include_once("site/admin/$_GET[section].php"); }  	
+				elseif ($_GET['page']=="administration") {
+					# Admin object
+					$Admin = new Admin ($Database);
+
+					if (!isset($_GET['section']))										{ include("app/admin/index.php"); }
+					elseif (@$_GET['subnetId']=="section-changelog")					{ include("app/sections/section-changelog.php"); }
+					else {
+						if(!file_exists("app/admin/$_GET[section]/index.php")) 			{ header("Location: ".create_link("error","404")); }
+						else 															{ include("app/admin/$_GET[section]/index.php"); }
+					}
+				}
 			print "</div>";
 			print "</td>";
-			
+
 			print "</tr>";
 			print "</table>";
     	}
     	?>
-      	
+
 </div>
 </div>
 
@@ -220,10 +249,10 @@ else {
 </div>
 
 <!-- weather prettyLinks are user, for JS! -->
-<div id="prettyLinks" style="display:none"><?php print $settings['prettyLinks']; ?></div>
+<div id="prettyLinks" style="display:none"><?php print $User->settings->prettyLinks; ?></div>
 
 <!-- Page footer -->
-<div class="footer"><?php include('site/footer.php'); ?></div>
+<div class="footer"><?php include('app/footer.php'); ?></div>
 
 <!-- export div -->
 <div class="exportDIV"></div>

@@ -6,6 +6,7 @@ $db['host'] = "localhost";
 $db['user'] = "phpipam";
 $db['pass'] = "phpipamadmin";
 $db['name'] = "phpipam";
+$db['port'] = 3306;
 
 /**
  * php debugging on/off
@@ -22,13 +23,14 @@ $debugging = false;
  */
 $phpsessname = "phpipam";
 
-/**	
- *	BASE definition if phpipam 
+/**
+ *	BASE definition if phpipam
  * 	is not in root directory (e.g. /phpipam/)
  *
- *  Also change 
+ *  Also change
  *	RewriteBase / in .htaccess
  ******************************/
+if(!defined('BASE'))
 define('BASE', "/");
 
 ?>

@@ -1,6 +1,5 @@
 # Dump of table instructions
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `instructions`;
 
 CREATE TABLE `instructions` (
@@ -8,21 +7,14 @@ CREATE TABLE `instructions` (
   `instructions` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `instructions` WRITE;
-/*!40000 ALTER TABLE `instructions` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `instructions` (`id`, `instructions`)
 VALUES
 	(1,'You can write instructions under admin menu!');
 
-/*!40000 ALTER TABLE `instructions` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table ipaddresses
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `ipaddresses`;
 
 CREATE TABLE `ipaddresses` (
@@ -30,7 +22,7 @@ CREATE TABLE `ipaddresses` (
   `subnetId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `ip_addr` varchar(100) NOT NULL,
   `description` varchar(64) DEFAULT NULL,
-  `dns_name` varchar(100) NOT NULL,
+  `dns_name` varchar(100) DEFAULT NULL,
   `mac` varchar(20) DEFAULT NULL,
   `owner` varchar(32) DEFAULT NULL,
   `state` varchar(1) DEFAULT '1',
@@ -43,30 +35,23 @@ CREATE TABLE `ipaddresses` (
   PRIMARY KEY (`id`),
   KEY `subnetid` (`subnetId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `ipaddresses` WRITE;
-/*!40000 ALTER TABLE `ipaddresses` DISABLE KEYS */;
-
-INSERT INTO `ipaddresses` (`id`, `subnetId`, `ip_addr`, `description`, `dns_name`, `mac`, `owner`, `state`, `port`, `note`)
+/* insert default values */
+INSERT INTO `ipaddresses` (`id`, `subnetId`, `ip_addr`, `description`, `dns_name`, `state`)
 VALUES
-	(1,'3','168427779','Server1','server1.cust1.local','','',1,'',''),
-	(2,'3','168427780','Server2','server2.cust1.local','','',1,'',''),
-	(3,'3','168427781','Server3','server3.cust1.local','','',2,'',''),
-	(4,'3','168427782','Server4','server4.cust1.local','','',2,'',''),
-	(5,'3','168428021','Gateway','','','','1','',''),
-	(6,'4','168428286','Gateway','','','','1','',''),
-	(7,'4','168428042','Server1','ser1.client2.local','','',1,'',''),
-	(8, '6', '172037636', 'DHCP range', '', '', '', 3,'', ''),
-	(9, '6', '172037637', 'DHCP range', '', '', '', 3,'', ''),
-	(10, '6', '172037638', 'DHCP range', '', '', '', 3, '', '');
-
-/*!40000 ALTER TABLE `ipaddresses` ENABLE KEYS */;
-UNLOCK TABLES;
+	(1,3,'168427779','Server1','server1.cust1.local',1),
+	(2,3,'168427780','Server2','server2.cust1.local',1),
+	(3,3,'168427781','Server3','server3.cust1.local',2),
+	(4,3,'168427782','Server4','server4.cust1.local',2),
+	(5,3,'168428021','Gateway',NULL,1),
+	(6,4,'168428286','Gateway',NULL,1),
+	(7,4,'168428042','Server1','ser1.client2.local',1),
+	(8,6,'172037636','DHCP range',NULL,3),
+	(9,6,'172037637','DHCP range',NULL,3),
+	(10,6,'172037638','DHCP range',NULL,3);
 
 
 # Dump of table logs
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `logs`;
 
 CREATE TABLE `logs` (
@@ -81,10 +66,8 @@ CREATE TABLE `logs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-
 # Dump of table requests
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `requests`;
 
 CREATE TABLE `requests` (
@@ -103,10 +86,8 @@ CREATE TABLE `requests` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-
 # Dump of table sections
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `sections`;
 
 CREATE TABLE `sections` (
@@ -125,22 +106,15 @@ CREATE TABLE `sections` (
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `sections` WRITE;
-/*!40000 ALTER TABLE `sections` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `sections` (`id`, `name`, `description`, `permissions`)
 VALUES
 	(1,'Customers','Section for customers','{\"3\":\"1\",\"2\":\"2\"}'),
 	(2,'IPv6','Section for IPv6 addresses','{\"3\":\"1\",\"2\":\"2\"}');
 
-/*!40000 ALTER TABLE `sections` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table settings
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `settings`;
 
 CREATE TABLE `settings` (
@@ -171,28 +145,24 @@ CREATE TABLE `settings` (
   `api` BINARY  NOT NULL  DEFAULT '0',
   `enableChangelog` TINYINT(1)  NOT NULL  DEFAULT '1',
   `scanPingPath` VARCHAR(64)  NULL  DEFAULT '/bin/ping',
+  `scanFPingPath` VARCHAR(64)  NULL  DEFAULT '/bin/fping',
+  `scanPingType` SET('ping','pear','fping')  NOT NULL  DEFAULT 'ping',
   `scanMaxThreads` INT(4)  NULL  DEFAULT '128',
   `prettyLinks` SET("Yes","No")  NOT NULL  DEFAULT 'No',
   `hideFreeRange` tinyint(1) DEFAULT '0',
   `hiddenCustomFields` VARCHAR(1024)  NULL  DEFAULT NULL,
   `inactivityTimeout` INT(5)  NOT NULL  DEFAULT '3600',
+  `authmigrated` TINYINT  NOT NULL  DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `settings` WRITE;
-/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `settings` (`id`, `siteTitle`, `siteAdminName`, `siteAdminMail`, `siteDomain`, `siteURL`, `domainAuth`, `enableIPrequests`, `enableVRF`, `enableDNSresolving`, `version`, `donate`, `IPfilter`, `printLimit`, `vlanDuplicate`, `subnetOrdering`, `visualLimit`, `dhcpCompress`)
 VALUES
 	(1, 'phpipam IP address management', 'Sysadmin', 'admin@domain.local', 'domain.local', 'http://yourpublicurl.com', 0, 0, 0, 0, '1.1', 0, 'mac;owner;state;switch;note', 50, 1, 'subnet,asc', 24, 1);
-	
-/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table settingsDomain
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `settingsDomain`;
 
 CREATE TABLE `settingsDomain` (
@@ -208,21 +178,14 @@ CREATE TABLE `settingsDomain` (
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `settingsDomain` WRITE;
-/*!40000 ALTER TABLE `settingsDomain` DISABLE KEYS */;
-
-INSERT INTO `settingsDomain` (`id`, `account_suffix`, `base_dn`, `domain_controllers`, `use_ssl`, `use_tls`, `ad_port`)
+/* insert default values */
+INSERT INTO `settingsDomain` (`id`, `account_suffix`, `base_dn`, `domain_controllers`)
 VALUES
-	(1,'@domain.local','CN=Users,CN=Company,DC=domain,DC=local','dc1.domain.local;dc2.domain.local',0,0,389);
-
-/*!40000 ALTER TABLE `settingsDomain` ENABLE KEYS */;
-UNLOCK TABLES;
+	(1,'@domain.local','CN=Users,CN=Company,DC=domain,DC=local','dc1.domain.local;dc2.domain.local');
 
 
 # Dump of table settingsMail
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `settingsMail`;
 
 CREATE TABLE `settingsMail` (
@@ -237,31 +200,23 @@ CREATE TABLE `settingsMail` (
   `mAdminName` varchar(64) DEFAULT NULL,
   `mAdminMail` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-LOCK TABLES `settingsMail` WRITE;
-/*!40000 ALTER TABLE `settingsMail` DISABLE KEYS */;
-
-INSERT INTO `settingsMail` (`id`, `mtype`, `mauth`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/* insert default values */
+INSERT INTO `settingsMail` (`id`, `mtype`)
 VALUES
-	(1, 'localhost', 'no');
-
-/*!40000 ALTER TABLE `settingsMail` ENABLE KEYS */;
-UNLOCK TABLES;
-
+	(1, 'localhost');
 
 
 # Dump of table subnets
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `subnets`;
 
 CREATE TABLE `subnets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subnet` varchar(255) NOT NULL,
-  `mask` varchar(255) NOT NULL,
+  `subnet` VARCHAR(255) NULL  DEFAULT NULL,
+  `mask` VARCHAR(255) NULL DEFAULT NULL,
   `sectionId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
-  `description` text NOT NULL,
+  `description` text,
   `vrfId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `masterSubnetId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `allowRequests` tinyint(1) DEFAULT '0',
@@ -274,10 +229,7 @@ CREATE TABLE `subnets` (
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `subnets` WRITE;
-/*!40000 ALTER TABLE `subnets` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `subnets` (`id`, `subnet`, `mask`, `sectionId`, `description`, `vrfId`, `masterSubnetId`, `allowRequests`, `vlanId`, `showName`, `permissions`, `isFolder`)
 VALUES
 	(1,'336395549904799703390415618052362076160','64',2,'Private subnet 1',0,'0',1,1,1,'{\"3\":\"1\",\"2\":\"2\"}',0),
@@ -287,13 +239,9 @@ VALUES
 	(5, '0', '', 1, 'My folder', 0, 0, 0, 0, 0, '{\"3\":\"1\",\"2\":\"2\"}', 1),
 	(6, '172037632', '24', 1, 'DHCP range', 0, 5, 0, 0, 1, '{\"3\":\"1\",\"2\":\"2\"}', 0);
 
-/*!40000 ALTER TABLE `subnets` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table devices
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `devices`;
 
 CREATE TABLE `devices` (
@@ -303,29 +251,21 @@ CREATE TABLE `devices` (
   `type` int(2) DEFAULT '0',
   `vendor` varchar(156) DEFAULT NULL,
   `model` varchar(124) DEFAULT NULL,
-  `version` varchar(128) DEFAULT NULL,
   `description` varchar(256) DEFAULT NULL,
   `sections` varchar(128) DEFAULT NULL,
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `devices` WRITE;
-/*!40000 ALTER TABLE `devices` DISABLE KEYS */;
-
-INSERT INTO `devices` (`id`, `hostname`, `ip_addr`, `type`, `vendor`, `model`, `version`, `description`, `sections`)
+/* insert default values */
+INSERT INTO `devices` (`id`, `hostname`, `ip_addr`, `type`, `vendor`, `model`, `sections`)
 VALUES
-	(1,'CoreSwitch','10.10.10.254',0,'Cisco','c6500','','','1;2;3'),
-	(2,'Wifi-1','10.10.20.245',4,'Cisco','','','','1');
-
-/*!40000 ALTER TABLE `devices` ENABLE KEYS */;
-UNLOCK TABLES;
+	(1,'CoreSwitch','10.10.10.254',0,'Cisco','c6500','1;2;3'),
+	(2,'Wifi-1','10.10.20.245',4,'Cisco','','1');
 
 
 # Dump of table userGroups
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `userGroups`;
 
 CREATE TABLE `userGroups` (
@@ -335,27 +275,21 @@ CREATE TABLE `userGroups` (
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`g_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `userGroups` WRITE;
-/*!40000 ALTER TABLE `userGroups` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `userGroups` (`g_id`, `g_name`, `g_desc`)
 VALUES
 	(2,'Operators','default Operator group'),
 	(3,'Guests','default Guest group (viewers)');
 
-/*!40000 ALTER TABLE `userGroups` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table users
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `authMethod` INT(2)  NULL  DEFAULT 1,
   `password` CHAR(128)  COLLATE utf8_bin DEFAULT NULL,
   `groups` varchar(1024) COLLATE utf8_bin DEFAULT NULL,
   `role` text CHARACTER SET utf8,
@@ -369,38 +303,29 @@ CREATE TABLE `users` (
   `mailChangelog` SET('Yes','No')  NULL  DEFAULT 'No',
   `passChange` SET('Yes','No')  NOT NULL  DEFAULT 'No',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
+  `lastLogin` TIMESTAMP  NULL,
+  `lastActivity` TIMESTAMP  NULL,
   PRIMARY KEY (`username`),
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `users` (`id`, `username`, `password`, `groups`, `role`, `real_name`, `email`, `domainUser`,`widgets`, `passChange`)
 VALUES
 	(1,'Admin',X'243624726F756E64733D33303030244A51454536644C394E70766A6546733424524B3558336F6132382E557A742F6835564166647273766C56652E3748675155594B4D58544A5573756438646D5766507A5A51506252626B38784A6E314B797974342E64576D346E4A4959684156326D624F5A33672E',X'','Administrator','phpIPAM Admin','admin@domain.local',X'30','statistics;favourite_subnets;changelog;access_logs;error_logs;top10_hosts_v4', 'Yes');
 
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table lang
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `lang`;
 
-/**
- * Languages
- */
 CREATE TABLE `lang` (
   `l_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `l_code` varchar(12) NOT NULL DEFAULT '',
   `l_name` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`l_id`)
-) DEFAULT CHARSET=utf8;
-
-/* insert default languages */
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/* insert default values */
 INSERT INTO `lang` (`l_id`, `l_code`, `l_name`)
 VALUES
 	(1, 'en', 'English'),
@@ -411,36 +336,45 @@ VALUES
 	(6, 'pt_BR', 'Brazil');
 
 
-
 # Dump of table vlans
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `vlans`;
 
 CREATE TABLE `vlans` (
   `vlanId` int(11) NOT NULL AUTO_INCREMENT,
+  `domainId` INT  NOT NULL  DEFAULT '1',
   `name` varchar(255) NOT NULL,
   `number` int(4) DEFAULT NULL,
   `description` text,
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`vlanId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `vlans` WRITE;
-/*!40000 ALTER TABLE `vlans` DISABLE KEYS */;
-
+/* insert default values */
 INSERT INTO `vlans` (`vlanId`, `name`, `number`, `description`)
 VALUES
-	(1,'IPv6 private 1',6001,'IPv6 private 1 subnets'),
-	(2,'Servers DMZ',6101,'DMZ public');
+	(1,'IPv6 private 1',2001,'IPv6 private 1 subnets'),
+	(2,'Servers DMZ',4101,'DMZ public');
 
-/*!40000 ALTER TABLE `vlans` ENABLE KEYS */;
-UNLOCK TABLES;
+
+# Dump of table vlanDomains
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `vlanDomains`;
+
+CREATE TABLE `vlanDomains` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) DEFAULT NULL,
+  `description` text,
+  `permissions` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+/* insert default values */
+INSERT INTO `vlanDomains` (`id`, `name`, `description`, `permissions`)
+VALUES
+	(1, 'default', 'default L2 domain', NULL);
 
 
 # Dump of table vrf
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `vrf`;
 
 CREATE TABLE `vrf` (
@@ -455,7 +389,6 @@ CREATE TABLE `vrf` (
 
 # Dump of table api
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `api`;
 
 CREATE TABLE `api` (
@@ -466,7 +399,7 @@ CREATE TABLE `api` (
   `app_comment` TEXT  NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_id` (`app_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 # Dump of table changelog
@@ -489,7 +422,6 @@ CREATE TABLE `changelog` (
 
 # Dump of table widgets
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `widgets`;
 
 CREATE TABLE `widgets` (
@@ -504,7 +436,7 @@ CREATE TABLE `widgets` (
   `wactive` set('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`wid`)
 ) DEFAULT CHARSET=utf8;
-
+/* insert default values */
 INSERT INTO `widgets` (`wid`, `wtitle`, `wdescription`, `wfile`, `wparams`, `whref`, `wsize`, `wadminonly`, `wactive`)
 VALUES
 	(1, 'Statistics', 'Shows some statistics on number of hosts, subnets', 'statistics', NULL, 'no', '4', 'no', 'yes'),
@@ -518,10 +450,8 @@ VALUES
 	(9, 'Last 5 warning / error logs', 'Shows list of last 5 warning and error logs', 'error_logs', NULL, 'yes', '6', 'yes', 'yes');
 
 
-
 # Dump of table deviceTypes
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `deviceTypes`;
 
 CREATE TABLE `deviceTypes` (
@@ -530,7 +460,7 @@ CREATE TABLE `deviceTypes` (
   `tdescription` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`tid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
+/* insert default values */
 INSERT INTO `deviceTypes` (`tid`, `tname`, `tdescription`)
 VALUES
 	(1, 'Switch', 'Switch'),
@@ -544,10 +474,8 @@ VALUES
 	(9, 'Other', 'Other');
 
 
-
 # Dump of table loginAttempts
 # ------------------------------------------------------------
-
 DROP TABLE IF EXISTS `loginAttempts`;
 
 CREATE TABLE `loginAttempts` (
@@ -560,7 +488,28 @@ CREATE TABLE `loginAttempts` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
+# Dump of table usersAuthMethod
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `usersAuthMethod`;
+
+CREATE TABLE `usersAuthMethod` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` set('local','AD','LDAP') NOT NULL DEFAULT 'local',
+  `params` varchar(1024) DEFAULT NULL,
+  `protected` set('Yes','No') NOT NULL DEFAULT 'Yes',
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/* insert default values */
+INSERT INTO `usersAuthMethod` (`id`, `type`, `params`, `protected`, `description`)
+VALUES
+	(1, 'local', NULL, 'Yes', 'Local database');
+
+
+# Dump of table -- for autofix comment, leave as it is
+# ------------------------------------------------------------
+
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.1';
+UPDATE `settings` set `version` = '1.11';
