@@ -77,7 +77,7 @@ else {
 			foreach($temp as $line) {
 				$section = $Sections->fetch_section(null, $line);
 				if(!empty($section)) {
-				print '<div class="switchSections">'. $section->name .'</div>'. "\n";
+				print '<div class="switchSections text-muted">'. $section->name .'</div>'. "\n";
 				}
 			}
 			}

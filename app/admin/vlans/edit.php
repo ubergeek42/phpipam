@@ -17,7 +17,6 @@ $Result 	= new Result ();
 # verify that user is logged in
 $User->check_user_session();
 
-
 # fetch vlan details
 $vlan = $Admin->fetch_object ("vlans", "vlanId", @$_POST['vlanId']);
 $vlan = $vlan!==false ? (array) $vlan : array();
@@ -30,6 +29,17 @@ $readonly = $_POST['action']=="delete" ? "readonly" : "";
 # set form name!
 if(isset($_POST['fromSubnet'])) { $formId = "vlanManagementEditFromSubnet"; }
 else 							{ $formId = "vlanManagementEdit"; }
+
+# domain
+if(!isset($_POST['domain'])) 	{ $_POST['domain']=1; }
+
+# fetch l2 domain
+if($_POST['action']=="add") {
+	$vlan_domain = $Admin->fetch_object("vlanDomains", "id", $_POST['domain']);
+} else {
+	$vlan_domain = $Admin->fetch_object("vlanDomains", "id", $vlan['domainId']);
+}
+if($vlan_domain===false)			{ $Result->show("danger", _("Invalid ID"), true, true); }
 ?>
 
 <script type="text/javascript">
@@ -47,6 +57,14 @@ $(document).ready(function(){
 	<form id="<?php print $formId; ?>">
 
 	<table id="vlanManagementEdit2" class="table table-noborder table-condensed">
+	<!-- domain -->
+	<tr>
+		<td><?php print _('l2 domain'); ?></td>
+		<th><?php print $vlan_domain->name." (".$vlan_domain->description.")"; ?></th>
+	</tr>
+	<tr>
+		<td colspan="2"><hr></td>
+	</tr>
 	<!-- number -->
 	<tr>
 		<td><?php print _('Number'); ?></td>
@@ -68,9 +86,8 @@ $(document).ready(function(){
 		<td><?php print _('Description'); ?></td>
 		<td>
 			<input type="text" class="description form-control input-sm" name="description" placeholder="<?php print _('Description'); ?>" value="<?php print @$vlan['description']; ?>" <?php print $readonly; ?>>
-			<?php
-			if( ($_POST['action'] == "edit") || ($_POST['action'] == "delete") ) { print '<input type="hidden" name="vlanId" value="'. @$_POST['vlanId'] .'">'. "\n"; }
-			?>
+			<input type="hidden" name="vlanId" value="<?php print @$_POST['vlanId']; ?>">
+			<input type="hidden" name="domainId" value="<?php print $vlan_domain->id; ?>">
 			<input type="hidden" name="action" value="<?php print $_POST['action']; ?>">
 		</td>
 	</tr>

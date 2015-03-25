@@ -389,7 +389,7 @@ class Sections  {
 	 * @param mixed $sectionId
 	 * @return void
 	 */
-	function fetch_section_vrfs ($sectionId) {
+	public function fetch_section_vrfs ($sectionId) {
 		# set query
 		$query = "select distinct(`v`.`vrfId`),`v`.`name`,`v`.`description` from `subnets` as `s`,`vrf` as `v` where `s`.`sectionId` = ? and `s`.`vrfId`=`v`.`vrfId` order by `v`.`name` asc;";
 		# fetch
@@ -400,6 +400,28 @@ class Sections  {
 		}
 		# result
 		return sizeof($vrfs)>0 ? $vrfs : false;
+	}
+
+
+	public function fetch_section_domains ($sectionId) {
+		# first fetch all domains
+		$Admin = new Admin ($this->Database, false);
+		$domains = $Admin->fetch_all_objects ("vlanDomains");
+		# loop and check
+		foreach($domains as $d) {
+			//default
+			if($d->id==1) {
+					$permitted[] = $d->id;
+			}
+			else {
+				//array
+				if(in_array($sectionId, explode(";", $d->permissions))) {
+					$permitted[] = $d->id;
+				}
+			}
+		}
+		# return permitted
+		return $permitted;
 	}
 
 

@@ -20,11 +20,16 @@ $User->check_user_session();
 # fetch custom fields
 $custom = $Tools->fetch_custom_fields('vlans');
 
-
 //if it already exist die
 if($User->settings->vlanDuplicate==0 && $_POST['action']=="add") {
-	//try to fetch
-	if($Admin->fetch_object("vlans", "number", $_POST['number'])!==false)	{ $Result->show("danger", _("VLAN already exists")."!", true); }
+	$check_vlan = $Admin->fetch_multiple_objects ("vlans", "domainId", $_POST['domainId'], "vlanId");
+	if($check_vlan!==false) {
+		foreach($check_vlan as $v) {
+			if($v->number == $_POST['number']) {
+																			{ $Result->show("danger", _("VLAN already exists"), true); }
+			}
+		}
+	}
 }
 
 //if number too high
@@ -33,13 +38,15 @@ if($_POST['action']=="add") {
 	if($_POST['number']<0)													{ $Result->show("danger", _('VLAN number cannot be negative').'!', true); }
 	elseif(!is_numeric($_POST['number']))									{ $Result->show("danger", _('Not number').'!', true); }
 }
+if(strlen($_POST['name'])==0)												{ $Result->show("danger", _('Name is required').'!', true); }
 
 
 # formulate update query
 $values = array("vlanId"=>@$_POST['vlanId'],
 				"number"=>$_POST['number'],
 				"name"=>$_POST['name'],
-				"description"=>@$_POST['description']
+				"description"=>@$_POST['description'],
+				"domainId"=>$_POST['domainId']
 				);
 # append custom
 if(sizeof($custom) > 0) {
@@ -59,5 +66,6 @@ else																		{ $Result->show("success", _("VLAN $_POST[action] successf
 if($_POST['action']=="delete") { $Admin->remove_object_references ("subnets", "vlanId", $_POST['vlanId']); }
 
 # print value for on the fly
-if($_POST['action']=="add")	   { print '<p id="vlanidforonthefly" style="display:none">'.$Admin->lastId.'</p>'; }
+if($_POST['action']=="add")	   { print '<p id="vlanidforonthefly"    style="display:none">'.$Admin->lastId.'</p>'; }
+
 ?>

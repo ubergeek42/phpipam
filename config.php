@@ -14,7 +14,7 @@ $db['port'] = 3306;
  * true  = SHOW all php errors
  * false = HIDE all php errors
  ******************************/
-$debugging = false;
+$debugging = true;
 
 /**
  *	manual set session name for auth

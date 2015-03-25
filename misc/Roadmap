@@ -17,8 +17,6 @@ version - 1.2
 
 	+ per-section DNS resolvers (PEAR DNS2)
 
-	+ l2 vlan domains
-
 	+ assign a state to a subnet, ipaddr, vlan, user-editable
 
 	+ status - available, trash (preveri kako)
@@ -32,6 +30,8 @@ version - 1.2
 	+ Temporary share IP details / subnet
 
 	+ phpipam scan Agents
+
+	+ custom fields for IP requests
 
 
 features for next releases:
@@ -47,8 +47,6 @@ features for next releases:
 	+ Scan subnet for alive hosts and import
 		SNMP router table fetching
 		NMAP scan
-
-	+ Permissions for custom fields;
 
 	Martin Komon:
 

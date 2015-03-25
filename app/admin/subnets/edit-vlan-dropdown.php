@@ -13,43 +13,79 @@ if(!is_object($User)) {
 	$Database 	= new Database_PDO;
 	$User 		= new User ($Database);
 	$Tools	 	= new Tools ($Database);
+	$Sections	= new Sections ($Database);
 	$Result 	= new Result ();
-
-	# fetch vlans
-	$vlans = $Tools->fetch_object("vlans", "number");
 }
 
 # verify that user is logged in
 $User->check_user_session();
+
+# fetch all permitted domains
+$permitted_domains = $Sections->fetch_section_domains ($_POST['sectionId']);
+# fetch all belonging vlans
+$cnt = 0;
+foreach($permitted_domains as $k=>$d) {
+	// fetch vlans and append
+	$vlans = $Tools->fetch_multiple_objects("vlans", "domainId", $d, "number");
+	//fetch domain
+	$domain = $Tools->fetch_object("vlanDomains","id",$d);
+	//save to array
+	$out[$d]['domain'] = $domain;
+	$out[$d]['vlans']  = $vlans;
+	//count add
+	$vlans===false ? : $cnt++;
+}
+//filter out empty
+$permitted_domains = array_filter($out);
 ?>
 
 <select name="vlanId" class="form-control input-sm input-w-auto">
 	<option disabled="disabled"><?php print _('Select VLAN'); ?>:</option>
+	<option value="0"><?php print _('No VLAN'); ?></option>
 	<?php
-	if($_POST['action'] == "add") { $vlan['vlanId'] = 0; }
+	# print all available domains
+	foreach($permitted_domains as $d) {
+		//more than default
+		if($cnt>1) {
+			print "<optgroup label='".$d['domain']->name."'>";
+			//add
+			print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
 
-	$tmp[0]['vlanId'] = 0;
-	$tmp[0]['number'] = _('No VLAN');
+			if($d['vlans'][0]!==null) {
+				foreach($d['vlans'] as $v) {
+					// set print
+					$printVLAN = $v->number;
+					if(!empty($v->name)) { $printVLAN .= " ($v->name)"; }
 
-	# on-the-fly
-	$tmp[1]['vlanId'] = 'Add';
-	$tmp[1]['number'] = _('+ Add new VLAN');
+					/* selected? */
+					if(@$subnetDataOld['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+					elseif(@$_POST['vlanId'] == $v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+					else 										{ print '<option value="'. $v->vlanId .'">'. $printVLAN .'</option>'. "\n"; }
+				}
+			}
+			else {
+				print "<option value='0' disabled>"._('No VLANs')."</option>";
+				//add
+				print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
+			}
+			print "</optgroup>";
+		}
+		//only default domain
+		else {
+			//add
+			print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
 
-	array_unshift($vlans, $tmp[0]);
-	array_unshift($vlans, $tmp[1]);
+			foreach($d['vlans'] as $v) {
+				// set print
+				$printVLAN = $v->number;
+				if(!empty($v->name)) { $printVLAN .= " ($v->name)"; }
 
-	foreach($vlans as $vlan) {
-		//cast
-		$vlan = (array) $vlan;
-		/* set structure */
-		$printVLAN = $vlan['number'];
-
-		if(!empty($vlan['name'])) { $printVLAN .= " ($vlan[name])"; }
-
-		/* selected? */
-		if(@$subnetDataOld['vlanId']==$vlan['vlanId']) 	{ print '<option value="'. $vlan['vlanId'] .'" selected>'. $printVLAN .'</option>'. "\n"; }
-		elseif(@$_POST['vlanId'] == $vlan['vlanId']) 	{ print '<option value="'. $vlan['vlanId'] .'" selected>'. $printVLAN .'</option>'. "\n"; }
-		else 											{ print '<option value="'. $vlan['vlanId'] .'">'. $printVLAN .'</option>'. "\n"; }
+				/* selected? */
+				if(@$subnetDataOld['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+				elseif(@$_POST['vlanId'] == $v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+				else 										{ print '<option value="'. $v->vlanId .'">'. $printVLAN .'</option>'. "\n"; }
+			}
+		}
 	}
 	?>
 </select>

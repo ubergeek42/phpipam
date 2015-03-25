@@ -50,6 +50,14 @@ table.table-noborder td {
 table th {
 	vertical-align: top !important;
 }
+table tr.text-top td {
+	vertical-align: top !important;
+}
+table.table-auto-wide th,
+table.table-auto-wide td {
+	padding-left: 25px !important;
+	padding-right: 25px !important;
+}
 
 hr {
   margin: 5px;
@@ -1033,6 +1041,27 @@ table.ipaddresses {
 	border-bottom: 1px solid #ddd;
 }
 
+/* vlans */
+table.vlans tr.odd td {
+	background: white;
+}
+table.vlans tr.odd:hover td {
+	background: rgba(0,0,0,0.005);
+}
+table.vlans tr.even td {
+	background: #f9f9f9;
+}
+table.vlans tr.even:hover td {
+	background: rgba(0,0,0,0.015);
+}
+table.vlans tr.success td {
+	background: rgba(223,240,216,0.35) !important;
+	text-shadow: 1px 1px 1px white;
+	color: #aaa;
+}
+table.vlans tr.change td {
+	border-top: 1px solid #efefef !important;
+}
 
 
 .table.ipaddresses th,

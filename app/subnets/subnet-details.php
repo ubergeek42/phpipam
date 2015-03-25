@@ -202,7 +202,7 @@ $rowSpan = 10 + sizeof($custom_fields);
 		else
 		print "<a class='modIPaddr btn btn-xs btn-default btn-success' 	href='' data-container='body' rel='tooltip' title='"._('Add new IP address')."' data-subnetId='$subnet[id]' data-action='add' data-id=''>	<i class='fa fa-plus'></i></a> ";
 		//requests
-		if($subnet['allowRequests'] == 1 && $subnet_permission == 1)  {
+		if($subnet['allowRequests'] == 1)  {
 		print "<a class='request_ipaddress btn btn-xs btn-default btn-success' 	href='' data-container='body' rel='tooltip' title='"._('Request new IP address')."' data-subnetId='$subnet[id]'>					<i class='fa fa-plus-circle'>  </i></a>";
 		}
 		// subnet scan

@@ -13,6 +13,46 @@ $(document).ready(function () {
 function showSpinner() { $('div.loading').show(); }
 function hideSpinner() { $('div.loading').fadeOut('fast'); }
 
+
+/* this functions opens popup */
+/* -------------------------- */
+function open_popup (popup_class, target_script, post_data) {
+	// show spinner
+	showSpinner();
+	// post
+    $.post(target_script, post_data, function(data) {
+        $('div.popup_w'+popup_class).html(data);
+        showPopup('popup_w'+popup_class);
+        hideSpinner();
+    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText+"<br>Status: "+textStatus+"<br>Error: "+errorThrown); });
+    // prevent reload
+    return false;
+}
+
+/* this functions saves popup result */
+/* --------------------------------- */
+function submit_popup_data (result_div, target_script, post_data, reload) {
+	// show spinner
+	showSpinner();
+	// set reload
+	reload = typeof reload !== 'undefined' ? reload : true;
+	// post
+    $.post(target_script, post_data, function(data) {
+        $('div'+result_div).html(data).slideDown('fast');
+        //reload after 2 seconds if succeeded!
+        if(reload) {
+	        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
+	        else                               		  { hideSpinner(); }
+        }
+        else {
+	        hideSpinner();
+        }
+    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
+    // prevent reload
+    return false;
+}
+
+
 /* hide error div if jquery loads ok
 *********************************************/
 $('div.jqueryError').hide();
@@ -1500,10 +1540,10 @@ $(document).on("click", '.edit_subnet, button.edit_subnet, button#add_subnet', f
 /* Show add new VLAN on subnet add/edit on-thy-fly
 ***************************************************/
 $(document).on("change", "select[name=vlanId]", function() {
-    var vlanId    = $(this).val();
-    if(vlanId == 'Add') {
+    var domain = $("select[name=vlanId] option:selected").attr('data-domain');
+    if($(this).val() == 'Add') {
         showSpinner();
-        $.post('app/admin/vlans/edit.php', {action:"add", fromSubnet:"true"}, function(data) {
+        $.post('app/admin/vlans/edit.php', {action:"add", fromSubnet:"true", domain:domain}, function(data) {
             $('div.popup_w400').html(data);
             showPopup('popup_w400');
             $('.popup_w700').css("z-index", "99");        //set behind popup
@@ -1523,7 +1563,8 @@ $(document).on("click", ".vlanManagementEditFromSubnetButton", function() {
         // ok
         if(data.search("alert-danger") == -1) {
             var vlanId	  = $('#vlanidforonthefly').html();
-            $.post('app/admin/subnets/edit-vlan-dropdown.php', {vlanId:vlanId} , function(data) {
+            var sectionId = $('#editSubnetDetails input[name=sectionId]').val();
+            $.post('app/admin/subnets/edit-vlan-dropdown.php', {vlanId:vlanId, sectionId:sectionId} , function(data) {
                 $('.editSubnetDetails td#vlanDropdown').html(data);
                 //bring to front
                 $('.popup_w700').delay(1000).css("z-index", "101");        //bring to front
@@ -1649,92 +1690,63 @@ $(document).on("click", "#editDevTypeSubmit", function() {
 });
 
 
-/* VLAN
-********************************/
+
+/* ---- VLANs ----- */
 //load edit form
 $(document).on("click", ".editVLAN", function() {
-    showSpinner();
-    var vlanId   = $(this).attr('data-vlanid');
-    var action   = $(this).attr('data-action');
-    if($(this).attr("data-number")) { var vlanNum = $(this).attr('data-number'); }
-    else							{ var vlanNum = ""; }
-    $.post('app/admin/vlans/edit.php', {vlanId:vlanId, action:action, vlanNum:vlanNum}, function(data) {
-        $('div.popup_w400').html(data);
-        showPopup('popup_w400');
-        hideSpinner();
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+    vlanNum = $(this).attr("data-number") ? $(this).attr('data-number') : "";		//set number
+	open_popup("400", "app/admin/vlans/edit.php", {vlanId:$(this).attr('data-vlanid'), action:$(this).attr('data-action'), vlanNum:vlanNum, domain:$(this).attr('data-domain')} );
 });
-//result
+//submit form
 $(document).on("click", "#editVLANsubmit", function() {
-    showSpinner();
-    var vlandata = $('form#vlanManagementEdit').serialize();
-    $.post('app/admin/vlans/edit-result.php', vlandata, function(data) {
-        $('div.vlanManagementEditResult').html(data).slideDown('fast');
-        //reload after 2 seconds if succeeded!
-        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                               		  { hideSpinner(); }
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+    submit_popup_data (".vlanManagementEditResult", "app/admin/vlans/edit-result.php", $('form#vlanManagementEdit').serialize());
+});
+//move
+$(".moveVLAN").click(function() {
+	open_popup("400", "app/admin/vlans/move-vlan.php", {vlanId:$(this).attr('data-vlanid')} );
+});
+//submit form
+$(document).on("click", "#moveVLANsubmit", function() {
+    submit_popup_data (".moveVLANSubmitResult", "app/admin/vlans/move-vlan-result.php", $('form#moveVLAN').serialize());
 });
 
 
-/*    VRF
-*********/
-//Load edit VRF form
-$('button.vrfManagement').click(function() {
-    showSpinner();
-    var vrfId    = $(this).attr('data-vrfid');
-    var action   = $(this).attr('data-action');
-    var switchpost = "vrfId=" + vrfId + "&action=" + action;
-    $.post('app/admin/vrfs/edit.php', switchpost, function(data) {
-        $('div.popup_w400').html(data);
-        showPopup('popup_w400');
-        hideSpinner();
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+/* ---- VLAN domains ----- */
+//load edit form
+$('.editVLANdomain').click(function() {
+	open_popup("400", "app/admin/vlans/edit-domain.php", {id:$(this).attr('data-domainid'), action:$(this).attr('data-action')} );
 });
-//Edit VRF details
+//submit form
+$(document).on("click", "#editVLANdomainsubmit", function() {
+    submit_popup_data (".domainEditResult", "app/admin/vlans/edit-domain-result.php", $('form#editVLANdomain').serialize());
+});
+
+
+/* ---- VRF ----- */
+//load edit form
+$('.vrfManagement').click(function() {
+	open_popup("400", "app/admin/vrfs/edit.php", {vrfId:$(this).attr('data-vrfid'), action:$(this).attr('data-action')} );
+});
+//submit form
 $(document).on("click", "#editVRF", function() {
-    showSpinner();
-    var vrfdata = $('form#vrfManagementEdit').serialize();
-    $.post('app/admin/vrfs/edit-result.php', vrfdata, function(data) {
-        $('div.vrfManagementEditResult').html(data).slideDown('fast');
-        //reload after 2 seconds if succeeded!
-        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                             { hideSpinner(); }
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+    submit_popup_data (".vrfManagementEditResult", "app/admin/vrfs/edit-result.php", $('form#vrfManagementEdit').serialize());
 });
 
 
-/*    edit IP request
-***********************/
-//show form
-$(document).on("click",'table#requestedIPaddresses button', function() {
-    showSpinner();
-    var requestId = $(this).attr('data-requestid');
-    $.post('app/admin/requests/edit.php', { requestId: requestId }, function(data) {
-        $('div.popup_w700').html(data);
-        showPopup('popup_w700');
-        hideSpinner();
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+/* ---- IP requests ----- */
+//load edit form
+$('table#requestedIPaddresses button').click(function() {
+	open_popup("700", "app/admin/requests/edit.php", {requestId:$(this).attr('data-requestid')} );
 });
-//approve / reject
+//submit form
 $(document).on("click", "button.manageRequest", function() {
-    showSpinner();
     var postValues = $('form.manageRequestEdit').serialize();
     var action     = $(this).attr('data-action');
     var postData   = postValues+"&action="+action;
-    $.post('app/admin/requests/edit-result.php', postData, function(data) {
-        $('div.manageRequestResult').html(data);
-        //reload after 2 seconds if succeeded!
-        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                             { hideSpinner(); }
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+    // submit
+    submit_popup_data (".manageRequestResult", "app/admin/requests/edit-result.php", postData);
 });
+
 
 
 /*    Ripe AS import

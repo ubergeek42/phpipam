@@ -43,7 +43,6 @@ $('form#login').submit(function() {
     $('div#loginCheck').hide();
     //post to check form
     $.post('app/login/login_check.php', logindata, function(data) {
-	    hideSpinner();
         $('div#loginCheck').html(data).fadeIn('fast');
         //reload after 2 seconds if succeeded!
         if(data.search("alert alert-danger") == -1) {
@@ -51,6 +50,9 @@ $('form#login').submit(function() {
             //search for redirect
             if($('form#login input#phpipamredirect').length > 0) { setTimeout(function (){window.location=$('form#login input#phpipamredirect').val();}, 1000); }
             else 												 { setTimeout(loginRedirect, 1000);	}
+        }
+        else {
+	        hideSpinner();
         }
     });
     return false;

@@ -110,14 +110,14 @@ $(document).ready(function(){
 
 	<!-- auth type -->
 	<tr>
-		<td><?php print _("Authentication methods"); ?></td>
+		<td><?php print _("Authentication method"); ?></td>
 		<td>
 			<select name="authMethod" class="form-control input-sm input-w-auto">
 			<?php
 			foreach($auth_types as $type) {
 				# match
-				if($type->id==@$user['id'])	{ print "<option value='$type->id' selected>$type->type ($type->description)</option>"; }
-				else						{ print "<option value='$type->id'         >$type->type ($type->description)</option>"; }
+				if($type->id==@$user['authMethod'])	{ print "<option value='$type->id' selected>$type->type ($type->description)</option>"; }
+				else								{ print "<option value='$type->id'         >$type->type ($type->description)</option>"; }
 			}
 			?>
 			</select>

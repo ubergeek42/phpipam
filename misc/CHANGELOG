@@ -1,10 +1,11 @@
-== 1.11.001
+== 1.11.002
 
 	New features:
 	------------
 	+ Added multiple authentication methods (AD, LDAP);
 	+ Added fping scanning support;
 	+ Added selectable scanning type (ping/pear/fping);
+	+ Added L2 domains;
 
 	Enhancements:
 	----------------------------

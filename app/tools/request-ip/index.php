@@ -1,6 +1,6 @@
 <?php
 
-/** Show IP request form for non-rivileged users - AJAX-loaded **/
+/** Show IP request form for non-privileged users - AJAX-loaded **/
 
 # include required scripts
 require( dirname(__FILE__) . '/../../../functions/functions.php' );
@@ -59,14 +59,14 @@ $User->check_user_session();
 		<td><?php print _('Owner');?></td>
 		<td>
 		<!-- autocomplete -->
-		<input type="text" class="form-control" name="owner" id="owner" size="30" placeholder="<?php print _('Owner of IP address');?>"></td>
+		<input type="text" class="form-control" name="owner" id="owner" size="30" placeholder="<?php print _('Owner of IP address');?>" value="<?php print @$User->user->real_name; ?>"></td>
 	</tr>
 
 	<!-- requester -->
 	<tr>
 		<td><?php print _('Requester');?> *</td>
 		<td>
-			<input type="text" class="form-control" name="requester" size="30" placeholder="<?php print _('your email address');?>"></textarea>
+			<input type="text" class="form-control" name="requester" size="30" placeholder="<?php print _('your email address');?>" value="<?php print @$User->user->email; ?>"></textarea>
 		</td>
 	</tr>
 

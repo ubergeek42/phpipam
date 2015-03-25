@@ -188,7 +188,7 @@ class Tools  {
 		# null table
 		if(is_null($table)||strlen($table)==0) return false;
 		else {
-			try { $res = $this->Database->findObjects($table, $field, $value); }
+			try { $res = $this->Database->findObjects($table, $field, $value, $sortField, $sortAsc); }
 			catch (Exception $e) {
 				$this->Result->show("danger", _("Error: ").$e->getMessage());
 				return false;
@@ -217,9 +217,10 @@ class Tools  {
 	 * Fetch vlans and subnets for tools vlan display. Joined query
 	 *
 	 * @access public
+	 * @param int $domainId (default: 1)
 	 * @return void
 	 */
-	public function fetch_vlans_and_subnets () {
+	public function fetch_vlans_and_subnets ($domainId=1) {
 	    # custom fields
 	    $custom_fields = $this->fetch_custom_fields("vlans");
 		# if set add to query
@@ -229,15 +230,20 @@ class Tools  {
 			}
 		}
 	    # set query
-	    $query = 'SELECT vlans.vlanId,vlans.number,vlans.name,vlans.description,subnets.subnet,subnets.mask,subnets.id AS subnetId,subnets.sectionId'.@$custom_fields_query.' FROM vlans LEFT JOIN subnets ON subnets.vlanId = vlans.vlanId ORDER BY vlans.number ASC;';
+	    $query = 'SELECT vlans.vlanId,vlans.number,vlans.name,vlans.description,subnets.subnet,subnets.mask,subnets.id AS subnetId,subnets.sectionId'.@$custom_fields_query.' FROM vlans LEFT JOIN subnets ON subnets.vlanId = vlans.vlanId where vlans.`domainId` = ? ORDER BY vlans.number ASC;';
 		# fetch
-		try { $vlans = $this->Database->getObjectsQuery($query); }
+		try { $vlans = $this->Database->getObjectsQuery($query, array($domainId)); }
 		catch (Exception $e) {
 			$this->Result->show("danger", _("Error: ").$e->getMessage());
 			return false;
 		}
+
+		# reorder
+		foreach ($vlans as $vlan) {
+			$out[$vlan->vlanId][] = $vlan;
+		}
 		# result
-		return $vlans;
+		return is_array($out) ? array_values($out) : false;
 	}
 
 	/**
@@ -1390,33 +1396,6 @@ class Tools  {
 
 		# save
 		return sizeof($subnets)>0 ? (array) $subnets : NULL;
-	}
-
-	/**
-	 * Adds new IP request
-	 *
-	 * @access public
-	 * @param mixed $request
-	 * @return void
-	 */
-	public function request_add ($request) {
-		# no XSS
-		$request = $this->strip_input_tags($request);
-		# associative array of values to be inserted
-	    $values = array("subnetId"=>$request['subnetId'], "ip_addr"=>$request['ip_addr'],
-	    				"description"=>$request['description'], "dns_name"=>$request['dns_name'],
-	    				"owner"=>$request['owner'], "requester"=>$request['requester'], "comment"=>$request['comment'], "processed"=>0);
-
-		# insert request
-		try { $this->Database->insertObject("requests", $values, false, false); }
-		catch (Exception $e) {
-			$this->Result->show("danger", $e->getMessage(), false);
-			write_log ( "IP request failed", $e->getMessage(), 2);
-			return false;
-		}
-	    # write log and return success
-	    write_log ( "New IP request submitted", array_to_log ($request), 0);
-	    return true;
 	}
 
 

@@ -134,7 +134,11 @@ class Admin  {
 		# save settings
 		$this->settings = $this->User->settings;
 		# if required die !
-		if($this->User->isadmin!==true && $this->admin_required==true) { $this->Result->show("danger", _("Administrative privileges required"),true); }
+		if($this->User->isadmin!==true && $this->admin_required==true) {
+			// popup ?
+			if(@$_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest") 	{ $this->Result->show("danger", _("Administrative privileges required"),true, true); }
+			else 														{ $this->Result->show("danger", _("Administrative privileges required"),true); }
+		}
 	}
 
 
@@ -232,7 +236,7 @@ class Admin  {
 		# null table
 		if(is_null($table)||strlen($table)==0) return false;
 		else {
-			try { $res = $this->Database->findObjects($table, $field, $value); }
+			try { $res = $this->Database->findObjects($table, $field, $value, $sortField, $sortAsc); }
 			catch (Exception $e) {
 				$this->Result->show("danger", _("Error: ").$e->getMessage());
 				return false;
@@ -425,6 +429,24 @@ class Admin  {
 	 */
 	public function remove_object_references ($table, $field, $old_value) {
 		try { $this->Database->runQuery("update `$table` set `$field` = NULL where `$field` = ?;", array($old_value)); }
+		catch (Exception $e) {
+			$this->Result->show("danger", _("Error: ").$e->getMessage(), false);
+			return false;
+		}
+	}
+
+	/**
+	 * Resets or replaces all old object references
+	 *
+	 * @access public
+	 * @param mixed $table
+	 * @param mixed $field
+	 * @param mixed $old_value
+	 * @param mixed $new_value
+	 * @return void
+	 */
+	public function update_object_references ($table, $field, $old_value, $new_value) {
+		try { $this->Database->runQuery("update `$table` set `$field` = ? where `$field` = ?;", array($new_value, $old_value)); }
 		catch (Exception $e) {
 			$this->Result->show("danger", _("Error: ").$e->getMessage(), false);
 			return false;

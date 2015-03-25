@@ -63,8 +63,6 @@ else {
 
 # fetch custom fields
 $custom_fields = $Tools->fetch_custom_fields('subnets');
-# fetch vlans
-$vlans = $Tools->fetch_all_objects("vlans", "number");
 # fetch vrfs
 $vrfs  = $Tools->fetch_all_objects("vrf", "name");
 # check if it has slaves - if yes it cannot be splitted!
