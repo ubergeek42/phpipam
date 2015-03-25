@@ -1690,6 +1690,18 @@ $(document).on("click", "#editDevTypeSubmit", function() {
 });
 
 
+/* ---- tags ----- */
+//load edit form
+$('.editType').click(function() {
+	open_popup("400", "app/admin/tags/edit.php", {id:$(this).attr('data-id'), action:$(this).attr('data-action')} );
+});
+//submit form
+$(document).on("click", "#editTypesubmit", function() {
+    submit_popup_data (".editTypeResult", "app/admin/tags/edit-result.php", $('form#editType').serialize());
+});
+
+
+
 
 /* ---- VLANs ----- */
 //load edit form

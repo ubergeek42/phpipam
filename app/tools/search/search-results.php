@@ -302,7 +302,7 @@ if(sizeof($result_addresses) > 0) {
 			if(in_array('switch', $selected_ip_fields)) 										{
 				if(strlen($line['switch'])>0 && $line['switch']!="0") {
 					# get switch
-					$switch = getDeviceDetailsById($line['switch']);
+					$switch = (array) $Tools->fetch_object("devices", "id", $line['switch']);
 					$line['switch'] = $switch['hostname'];
 				}
 				else {

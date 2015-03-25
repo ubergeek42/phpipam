@@ -140,9 +140,12 @@ require( dirname(__FILE__) . '/../admin/admin-menu-config.php' );
 			print "<li class='nav-header'>"._($k)."</li>";
 			# items
 			foreach($item as $i) {
-				# active?
-				$active = $_GET['section']==$i['href'] ? "active" : "";
-				print "<li class='$active'><a href='".create_link("administration",$i['href'])."'>"._($i['name'])."</a></li>";
+				# only selected
+				if($i['show']) {
+					# active?
+					$active = $_GET['section']==$i['href'] ? "active" : "";
+					print "<li class='$active'><a href='".create_link("administration",$i['href'])."'>"._($i['name'])."</a></li>";
+				}
 			}
 		}
 
@@ -172,9 +175,12 @@ require( dirname(__FILE__) . '/../admin/admin-menu-config.php' );
 					print "<li class='nav-header'>"._($k)."</li>";
 					# items
 					foreach($item as $i) {
-						# active?
-						$active = $_GET['section']==$i['href'] ? "active" : "";
-						print "<li class='$active'><a href='".create_link("tools",$i['href'])."'>"._($i['name'])."</a></li>";
+						# only active
+						if($i['show']) {
+							# active?
+							$active = $_GET['section']==$i['href'] ? "active" : "";
+							print "<li class='$active'><a href='".create_link("tools",$i['href'])."'>"._($i['name'])."</a></li>";
+						}
 					}
 				}
 				?>
@@ -226,9 +232,12 @@ require( dirname(__FILE__) . '/../admin/admin-menu-config.php' );
 					print "<li class='nav-header'>"._($k)."</li>";
 					# items
 					foreach($item as $i) {
-						# active?
-						$active = $_GET['section']==$i['href'] ? "active" : "";
-						print "<li class='$active'><a href='".create_link("tools",$i['href'])."'>"._($i['name'])."</a></li>";
+						# only selected
+						if($i['show']) {
+							# active?
+							$active = $_GET['section']==$i['href'] ? "active" : "";
+							print "<li class='$active'><a href='".create_link("tools",$i['href'])."'>"._($i['name'])."</a></li>";
+						}
 					}
 				}
     			?>

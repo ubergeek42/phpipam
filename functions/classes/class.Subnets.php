@@ -546,6 +546,24 @@ class Subnets {
 		return sizeof($subnets)>0 ? $subnets : false;
 	}
 
+	/**
+	 * Finds gateway in subnet
+	 *
+	 * @access public
+	 * @param int $subnetId
+	 * @return void
+	 */
+	public function find_gateway ($subnetId) {
+		// set query
+		$query = "select `ip_addr`,`id` from `ipaddresses` where `subnetId` = ? and `is_gateway` = 1;";
+		# fetch
+		try { $gateway = $this->Database->getObjectQuery($query, array($subnetId)); }
+		catch (Exception $e) {
+			$this->Result->show("danger", _("Error: ").$e->getMessage());
+			return false;
+		}
+		return sizeof($gateway)>0 ? $gateway : false;
+	}
 
 
 

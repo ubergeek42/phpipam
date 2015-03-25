@@ -1,4 +1,4 @@
-== 1.11.003
+== 1.12.002
 
 	New features:
 	------------
@@ -6,6 +6,8 @@
 	+ Added fping scanning support;
 	+ Added selectable scanning type (ping/pear/fping);
 	+ Added L2 domains;
+	+ Added option to define address as default GW for subnet;
+	+ Added customizable address Tags;
 
 	Enhancements:
 	----------------------------

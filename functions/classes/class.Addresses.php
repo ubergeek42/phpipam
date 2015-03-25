@@ -143,15 +143,19 @@ class Addresses {
 			return $this->address_types;
 		}
 		else {
-			# set array of all address types
-			$addresses[0] = array("index"=>0, 	"type"=>"Offline", 	"bgcolor"=>"#f59c99",	"fgcolor"=>"#ffffff",	"showtag"=>1,	$locked=true);
-			$addresses[1] = array("index"=>1, 	"type"=>"Used", 	"bgcolor"=>"#a9c9a4",	"fgcolor"=>"#ffffff",	"showtag"=>0,	$locked=true);
-			$addresses[2] = array("index"=>2, 	"type"=>"Reserved", "bgcolor"=>"#9ac0cd",	"fgcolor"=>"#ffffff",	"showtag"=>1,	$locked=true);
-			$addresses[3] = array("index"=>3, 	"type"=>"DHCP", 	"bgcolor"=>"#c9c9c9",	"fgcolor"=>"#ffffff",	"showtag"=>1,	$locked=true);
-			# save to cahce
-			$this->address_types = $addresses;
+			try { $types = $this->Database->getObjects("ipTags", 'id', true); }
+			catch (Exception $e) {
+				$this->Result->show("danger", _("Error: ").$e->getMessage(), false);
+				return false;
+			}
+			# save to array
+			foreach($types as $t) {
+				$types_out[$t->id] = (array) $t;
+			}
+			# save to cache
+			$this->address_types = $types_out;
 			# return
-			return $addresses;
+			return $types_out;
 		}
 	}
 
@@ -164,14 +168,14 @@ class Addresses {
 	 */
 	public function address_type_format_tag ($state) {
 		# fetch address states
-		$states = $this->addresses_types_fetch();
+		$this->addresses_types_fetch();
 		# result
-		if(!isset($states[$state]))	{
+		if(!isset($this->address_types[$state]))	{
 			return $state;
 		}
 		else {
-			if($states[$state]['showtag']==1) {
-				return "<i class='fa fa-".$states[$state]['type']." fa-tag state' rel='tooltip' style='color:".$states[$state]['bgcolor']."' title='"._($states[$state]['type'])."'></i>";
+			if($this->address_types[$state]['showtag']==1) {
+				return "<i class='fa fa-".$this->address_types[$state]['type']." fa-tag state' rel='tooltip' style='color:".$this->address_types[$state]['bgcolor']."' title='"._($this->address_types[$state]['type'])."'></i>";
 			}
 		}
 	}
@@ -187,10 +191,10 @@ class Addresses {
 	 */
 	public function address_type_index_to_type ($index) {
 		# fetch address states
-		$states = $this->addresses_types_fetch();
+		$this->addresses_types_fetch();
 		# return
-		if(isset($states[$index])) {
-			return $states[$index]['type'];
+		if(isset($this->address_types[$index])) {
+			return $this->address_types[$index]['type'];
 		}
 		else {
 			return $index;
@@ -208,9 +212,9 @@ class Addresses {
 	 */
 	public function address_type_type_to_index ($type) {
 		# fetch address states
-		$states = $this->addresses_types_fetch();
+		$this->addresses_types_fetch();
 		# reindex
-		foreach($states as $s) {
+		foreach($this->address_types as $s) {
 			$states_assoc[$s['type']] = $s;
 		}
 		# return
@@ -325,10 +329,19 @@ class Addresses {
 	 */
 	protected function modify_address_add ($address) {
 		# set insert array
-		$insert = array("ip_addr"=>$this->transform_address($address['ip_addr'],"decimal"), "subnetId"=>$address['subnetId'], "description"=>@$address['description'],
-						"dns_name"=>@$address['dns_name'], "mac"=>@$address['mac'], "owner"=>@$address['owner'], "state"=>@$address['state'],
-						"switch"=>@$address['switch'], "port"=>@$address['port'], "note"=>@$address['note'], "excludePing"=>@$address['excludePing']);
-
+		$insert = array("ip_addr"=>$this->transform_address($address['ip_addr'],"decimal"),
+						"subnetId"=>$address['subnetId'],
+						"description"=>@$address['description'],
+						"dns_name"=>@$address['dns_name'],
+						"mac"=>@$address['mac'],
+						"owner"=>@$address['owner'],
+						"state"=>@$address['state'],
+						"switch"=>@$address['switch'],
+						"port"=>@$address['port'],
+						"note"=>@$address['note'],
+						"is_gateway"=>@$address['is_gateway'],
+						"excludePing"=>@$address['excludePing']
+						);
 		# custom fields, append to array
 		foreach($this->set_custom_fields() as $c) {
 			$insert[$c['name']] = strlen(@$address[$c['name']])>0 ? @$address[$c['name']] : null;
@@ -336,6 +349,9 @@ class Addresses {
 
 		# null empty values
 		$insert = $this->reformat_empty_array_fields ($insert, null);
+
+		# remove gateway
+		if($address['is_gateway']==1)	{ $this->remove_gateway ($address['subnetId']); }
 
 		# execute
 		try { $this->Database->insertObject("ipaddresses", $insert); }
@@ -369,6 +385,7 @@ class Addresses {
 						"switch"=>@$address['switch'],
 						"port"=>@$address['port'],
 						"note"=>@$address['note'],
+						"is_gateway"=>@$address['is_gateway'],
 						"excludePing"=>@$address['excludePing']
 						);
 		# custom fields, append to array
@@ -385,6 +402,10 @@ class Addresses {
 			$id1 = "id";
 			$id2 = null;
 		}
+
+		# remove gateway
+		if($address['is_gateway']==1)	{ $this->remove_gateway ($address['subnetId']); }
+
 		# execute
 		try { $this->Database->updateObject("ipaddresses", $insert, $id1, $id2); }
 		catch (Exception $e) {
@@ -437,6 +458,20 @@ class Addresses {
 		}
 		# ok
 		return true;
+	}
+	/**
+	 * Removes gateway if it exists
+	 *
+	 * @access public
+	 * @param mixed $subnetId
+	 * @return void
+	 */
+	public function remove_gateway ($subnetId) {
+		try { $this->Database->updateObject("ipaddresses", array("subnetId"=>$subnetId, "is_gateway"=>0), "subnetId"); }
+		catch (Exception $e) {
+			$this->Result->show("danger", _("Error: ").$e->getMessage());
+			return false;
+		}
 	}
 
 	/**

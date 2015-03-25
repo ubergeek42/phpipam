@@ -159,7 +159,7 @@ if (strlen(strstr($address['ip_addr'],"-")) > 0) {
 
 	    	/* @mail functions ------------------- */
 			include_once('../../../functions/functions-mail.php');
-			sendObjectUpdateMails("ip", $action, array(), $address, true);
+			//sendObjectUpdateMails("ip", $action, array(), $address, true);
 
 			$Result->show("success", _("Range")." $address[start] - $address[stop] "._($action)." "._("successfull")."!", false);
 			write_log( "IP address modification", "Range $address[start] - $address[stop] $action successfull!", 0, $User->username);

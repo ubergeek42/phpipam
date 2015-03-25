@@ -25,8 +25,8 @@ $User->check_user_session();
 $Tools->validate_action ($_POST['action']);
 
 # validate post
-is_numeric($_POST['subnetId']) ?:						$Result->show("danger", _("Invalid ID"), true);
-is_numeric($_POST['id']) || strlen($_POST['id'])==0 ?:	$Result->show("danger", _("Invalid ID"), true);
+is_numeric($_POST['subnetId']) ?:						$Result->show("danger", _("Invalid ID"), true, true);
+is_numeric($_POST['id']) || strlen($_POST['id'])==0 ?:	$Result->show("danger", _("Invalid ID"), true, true);
 
 # get posted values
 $subnetId= $_POST['subnetId'];
@@ -35,7 +35,7 @@ $id      = $_POST['id'];
 
 # fetch subnet
 $subnet = (array) $Subnets->fetch_subnet(null, $subnetId);
-sizeof($subnet)>0 ?:			$Result->show("danger", _("Invalid subnet"), true);
+sizeof($subnet)>0 ?:			$Result->show("danger", _("Invalid subnet"), true, true);
 
 # set and check permissions
 $subnet_permission = $Subnets->check_permission($User->user, $subnet['id']);
@@ -234,13 +234,13 @@ else				{ $delete = ""; }
 		if(!is_numeric(@$address['state'])) 		{ $address['state'] = 1; }
 
 		print '<tr>'. "\n";
-		print '	<td>'._('Type').'</td>'. "\n";
+		print '	<td>'._('Tag').'</td>'. "\n";
 		print '	<td>'. "\n";
 		print '		<select name="state" '.$delete.' class="ip_addr form-control input-sm input-w-auto">'. "\n";
 		# printout
-		foreach($ip_types as $type) {
-			if($address['state']==$type['index'])	{ print "<option value='$type[index]' selected>"._($type['type'])."</option>"; }
-			else									{ print "<option value='$type[index]'>"._($type['type'])."</option>"; }
+		foreach($ip_types as $k=>$type) {
+			if($address['state']==$k)				{ print "<option value='$k' selected>"._($type['type'])."</option>"; }
+			else									{ print "<option value='$k'>"._($type['type'])."</option>"; }
 		}
 		print '		</select>'. "\n";
 		print '	</td>'. "\n";
@@ -264,6 +264,18 @@ else				{ $delete = ""; }
 	 	print '</tr>';
 	}
 	?>
+
+	<!-- set gateway -->
+	<tr>
+		<td><?php print _("Is gateway"); ?></td>
+		<td>
+			<select name="is_gateway" class="form-control input-w-auto">
+				<option value="0"><?php print _('No'); ?></option>
+				<option value="1" <?php if(@$address['is_gateway']==1) print "selected='selected'"; ?>><?php print _('Yes'); ?></option>
+			</select>
+		</td>
+	</tr>
+
 	<tr>
 		<td colspan="2"><hr></td>
 	</tr>

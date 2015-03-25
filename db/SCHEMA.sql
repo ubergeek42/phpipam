@@ -21,11 +21,12 @@ CREATE TABLE `ipaddresses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subnetId` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `ip_addr` varchar(100) NOT NULL,
+  `is_gateway` TINYINT(1)  NULL  DEFAULT '0',
   `description` varchar(64) DEFAULT NULL,
   `dns_name` varchar(100) DEFAULT NULL,
   `mac` varchar(20) DEFAULT NULL,
   `owner` varchar(32) DEFAULT NULL,
-  `state` varchar(1) DEFAULT '1',
+  `state`  INT(3)  NULL  DEFAULT '1',
   `switch` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `port` varchar(32) DEFAULT NULL,
   `note` text,
@@ -506,10 +507,33 @@ VALUES
 	(1, 'local', NULL, 'Yes', 'Local database');
 
 
+# Dump of table usersAuthMethod
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `ipTags`;
+
+CREATE TABLE `ipTags` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(32) DEFAULT NULL,
+  `showtag` tinyint(4) DEFAULT '1',
+  `bgcolor` varchar(7) DEFAULT '#000',
+  `fgcolor` varchar(7) DEFAULT '#fff',
+  `locked` set('No','Yes') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index` (`index`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/* insert default values */
+INSERT INTO `ipTypes` (`id`, `type`, `showtag`, `bgcolor`, `fgcolor`, `locked`)
+VALUES
+	(0, 'Offline', 1, '#f59c99', '#ffffff', 'Yes'),
+	(1, 'Used', 0, '#a9c9a4', '#ffffff', 'Yes'),
+	(2, 'Reserved', 1, '#9ac0cd', '#ffffff', 'Yes'),
+	(3, 'DHCP', 1, '#c9c9c9', '#ffffff', 'Yes');
+
+
 # Dump of table -- for autofix comment, leave as it is
 # ------------------------------------------------------------
 
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.11';
+UPDATE `settings` set `version` = '1.12';

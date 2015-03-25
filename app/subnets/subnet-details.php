@@ -42,12 +42,23 @@ $rowSpan = 10 + sizeof($custom_fields);
 			?>
 		</td>
 	</tr>
+
+	<!-- gateway -->
+	<?php
+	$gateway = $Subnets->find_gateway($subnet['id']);
+	if($gateway !==false) { ?>
+	<tr>
+		<th><?php print _('Gateway'); ?></th>
+		<td><strong><?php print $Subnets->transform_to_dotted($gateway->ip_addr);?></strong></td>
+	</tr>
+	<?php } ?>
+
 	<?php } ?>
 	<tr>
 		<th><?php print _('VLAN'); ?></th>
 		<td>
 		<?php
-		if(empty($vlan['number']) || $vlan['number'] == 0) { $vlan['number'] = "/"; }	//Display fix for emprt VLAN
+		if(empty($vlan['number']) || $vlan['number'] == 0) { $vlan['number'] = "<span class='text-muted'>/</span>"; }	//Display fix for emprt VLAN
 		print $vlan['number'];
 
 		if(!empty($vlan['name'])) 		 { print ' - '.$vlan['name']; }					//Print name if provided
@@ -72,25 +83,31 @@ $rowSpan = 10 + sizeof($custom_fields);
 	}
 
 	if(!$slaves) {
+		# divider
+		print "<tr>";
+		print "	<th><hr></th>";
+		print "	<td></td>";
+		print "</tr>";
+
 		# Are IP requests allowed?
-		if ($User->settings->enableIPrequests == 1) {
+		if ($User->settings->enableIPrequests==1) {
 			print "<tr>";
 			print "	<th>"._('IP requests')."</th>";
 			if($subnet['allowRequests'] == 1) 		{ print "	<td>"._('enabled')."</td>"; }		# yes
-			else 									{ print "	<td>"._('disabled')."</td>";}		# no
+			else 									{ print "	<td class='info2'>"._('disabled')."</td>";}		# no
 			print "</tr>";
 		}
 		# ping-check hosts inside subnet
 		print "<tr>";
 		print "	<th>"._('Hosts check')."</th>";
 		if($subnet['pingSubnet'] == 1) 				{ print "	<td>"._('enabled')."</td>"; }		# yes
-		else 										{ print "	<td>"._('disabled')."</td>";}		# no
+		else 										{ print "	<td class='info2'>"._('disabled')."</td>";}		# no
 		print "</tr>";
 		# scan subnet for new hosts *
 		print "<tr>";
 		print "	<th>"._('Discover new hosts')."</th>";
 		if($subnet['discoverSubnet'] == 1) 			{ print "	<td>"._('enabled')."</td>"; }		# yes
-		else 										{ print "	<td>"._('disabled')."</td>";}		# no
+		else 										{ print "	<td class='info2'>"._('disabled')."</td>";}		# no
 		print "</tr>";
 	}
 	?>
@@ -98,25 +115,36 @@ $rowSpan = 10 + sizeof($custom_fields);
 	<?php
 	# custom subnet fields
 	if(sizeof($custom_fields) > 0) {
+
+		# divider
+		print "<tr>";
+		print "	<th><hr></th>";
+		print "	<td></td>";
+		print "</tr>";
+
 		foreach($custom_fields as $key=>$field) {
 			if(strlen($subnet[$key])>0) {
-			$subnet[$key] = str_replace("\n", "<br>",$subnet[$key]);
-			print "<tr>";
-			print "	<th>$key</th>";
-			print "	<td>";
-			#booleans
-			if($field['type']=="tinyint(1)")	{
-				if($subnet[$key] == "0")		{ print _("No"); }
-				elseif($subnet[$key] == "1")	{ print _("Yes"); }
-			}
-			else {
-				print $subnet[$key];
-			}
-			print "	</td>";
-			print "</tr>";
+				$subnet[$key] = str_replace("\n", "<br>",$subnet[$key]);
+				print "<tr>";
+				print "	<th>$key</th>";
+				print "	<td>";
+				#booleans
+				if($field['type']=="tinyint(1)")	{
+					if($subnet[$key] == "0")		{ print _("No"); }
+					elseif($subnet[$key] == "1")	{ print _("Yes"); }
+				}
+				else {
+					print $subnet[$key];
+				}
+				print "	</td>";
+				print "</tr>";
 			}
 		}
 	}
+
+	print "<tr>";
+	print "<td colspan=2><hr></td>";
+	print "</tr>";
 
 	# action button groups
 	print "<tr>";
@@ -202,7 +230,7 @@ $rowSpan = 10 + sizeof($custom_fields);
 		else
 		print "<a class='modIPaddr btn btn-xs btn-default btn-success' 	href='' data-container='body' rel='tooltip' title='"._('Add new IP address')."' data-subnetId='$subnet[id]' data-action='add' data-id=''>	<i class='fa fa-plus'></i></a> ";
 		//requests
-		if($subnet['allowRequests'] == 1)  {
+		if($subnet['allowRequests'] == 1  && $subnet_permission<3)  {
 		print "<a class='request_ipaddress btn btn-xs btn-default btn-success' 	href='' data-container='body' rel='tooltip' title='"._('Request new IP address')."' data-subnetId='$subnet[id]'>					<i class='fa fa-plus-circle'>  </i></a>";
 		}
 		// subnet scan
