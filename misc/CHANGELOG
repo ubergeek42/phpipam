@@ -1,4 +1,4 @@
-== 1.11.002
+== 1.11.003
 
 	New features:
 	------------
@@ -14,6 +14,7 @@
 	+ Parametized all SQL queries, moved from MySQLI to PDO;
 	+ Added VLAN to search results export;
 	+ Redesigned admin and tools menu;
+	+ Added scanned/discovered subnets to tools for faster overview;
 
 	Security Fixes:
 	----------------------------

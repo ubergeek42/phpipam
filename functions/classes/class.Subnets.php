@@ -513,7 +513,6 @@ class Subnets {
 		return sizeof($subnets)>0 ? (array) $subnets : false;
 	}
 
-
 	/**
 	 * Checks if subnet is in vrf
 	 *
@@ -527,6 +526,24 @@ class Subnets {
 		$subnet = $this->fetch_subnet ("id", $subnetId);
 		# same id?
 		return @$subnet->vrfId==$vrfId ? true : false;
+	}
+
+	/**
+	 * Checks for all subnets that are marked for scanning and new hosts discovery
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function fetch_scanned_subnets () {
+		// set query
+		$query = "select * from `subnets` where `pingSubnet`=1 or `discoverSubnet`=1;";
+		# fetch
+		try { $subnets = $this->Database->getObjectsQuery($query); }
+		catch (Exception $e) {
+			$this->Result->show("danger", _("Error: ").$e->getMessage());
+			return false;
+		}
+		return sizeof($subnets)>0 ? $subnets : false;
 	}
 
 

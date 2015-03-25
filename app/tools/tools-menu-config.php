@@ -18,7 +18,6 @@ if($User->settings->enableChangelog == 1)
 $tools_menu['Tools'][] = array("icon"=>"fa-info", 	  		"name"=>"Instructions",  		"href"=>"instructions", "description"=>"Instructions for managing IP addresses");
 $tools_menu['Tools'][] = array("icon"=>"fa-list", 			"name"=>"Log files", 			"href"=>"logs",		 	"description"=>"Browse phpipam log files");
 
-
 # Subnets
 $tools_menu['Subnets'][] 	= array("icon"=>"fa-star", 	  	"name"=>"Favourite networks",  	"href"=>"favourites", 	"description"=>"Show favourite networks");
 $tools_menu['Subnets'][] 	= array("icon"=>"fa-sitemap", 	"name"=>"Subnets",  		   	"href"=>"subnets", 		"description"=>"Show all subnets");
@@ -26,6 +25,7 @@ $tools_menu['Subnets'][] 	= array("icon"=>"fa-cloud", 	"name"=>"VLAN",  				"hre
 if($User->settings->enableVRF == 1)
 $tools_menu['Subnets'][] 	= array("icon"=>"fa-cloud", 	 "name"=>"VRF",  				"href"=>"vrf", 			"description"=>"Show VRFs and belonging networks");
 $tools_menu['Subnets'][] 	= array("icon"=>"fa-desktop", 	 "name"=>"Devices",  			"href"=>"devices", 		"description"=>"Show all configured devices");
+$tools_menu['Subnets'][] 	= array("icon"=>"fa-eye", 		 "name"=>"Scanned networks", 	"href"=>"scanned-networks",	"description"=>"List of subnets to be scanned for online hosts and detect new hosts");
 
 # user menu
 $tools_menu['User Menu'][] = array("icon"=>"fa-user", 		"name"=>"My account",  			"href"=>"user-menu", 	"description"=>"Manage your account");
