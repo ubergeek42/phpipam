@@ -105,9 +105,8 @@ include('functions/checks/check_php_build.php');		# check for support for PHP mo
 		<?php
 		# deauthenticate user
 		if ( $User->authenticated == true ) {
-
 			# print result
-			if($User->timeout == true)			{ $Result->show("success", _('You session has timed out')); }
+			if($_GET['section']=="timeout")		{ $Result->show("success", _('You session has timed out')); }
 			else								{ $Result->show("success", _('You have logged out')); }
 
 			# write log

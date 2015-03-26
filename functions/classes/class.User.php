@@ -60,12 +60,12 @@ class User {
 		$this->Result = new Result ();
 		# register new session
 		$this->register_session ();
-		# set authenticated flag
-		$this->is_authenticated ();
 		# get settings
 		$this->get_settings ();
 		# check timeut
 		$this->check_timeout ();
+		# set authenticated flag
+		$this->is_authenticated ();
 		# get users IP address
 		$this->block_get_ip ();
 	}
@@ -218,7 +218,7 @@ class User {
 		if($this->authenticated===false && $redirect) {
 			# set redirect cookie
 			$this->set_redirect_cookie ();
-
+			# set url
 			$url = createURL ();
 			# redirect
 			$this->timeout ? header("Location:".$url.create_link("login","timeout")) : header("Location:".$url.create_link ("login"));
@@ -248,9 +248,11 @@ class User {
 	 * @return none
 	 */
 	private function check_timeout () {
-		if($this->authenticated) {
-			if( strlen($this->settings->inactivityTimeout>0) && (time()-$_SESSION['lastactive']) > $this->settings->inactivityTimeout) {
+		//session set
+		if(isset($_SESSION['lastactive'])) {
+			if( strlen($this->settings->inactivityTimeout)>0 && (time()-@$_SESSION['lastactive']) > $this->settings->inactivityTimeout) {
 				$this->timeout = true;
+				unset($_SESSION['lastactive']);
 			}
 		}
 	}

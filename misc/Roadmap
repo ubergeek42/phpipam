@@ -5,7 +5,9 @@ version - 1.2
 
 	+ Add request resolve to subnet for RWA users;
 
-	+ shortcuts
+	+ New widgets
+		+ tools widget (icons only)
+		+ subnet tags widget
 
 	+ Add missing api actions;
 
