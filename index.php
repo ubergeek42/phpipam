@@ -47,7 +47,7 @@ else {
 <html lang="en">
 
 <head>
-	<base href="<?php print $url.BASE; ?>">
+	<base href="<?php print BASE; ?>">
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">

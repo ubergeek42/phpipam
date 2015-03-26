@@ -52,6 +52,10 @@ empty($address['dns_name']) ? : 		$content[] = "&bull; "._('Hostname').": \t $ad
 $s_descrip = empty($address['description']) ? "" : 	 " (" . $subnet['description']. ")";
 # subnet
 										$content[] = "&bull; "._('Subnet').": \t $subnet[ip]/$subnet[mask] $s_descrip";
+# gateway
+$gateway = $Subnets->find_gateway($subnet['id']);
+if($gateway !==false)
+ 										$content[] = "&bull; "._('Gateway').": \t". $Subnets->transform_to_dotted($gateway->ip_addr);
 # VLAN
 empty($address['vlan']) ? : 			$content[] = "&bull; "._('VLAN').": \t\t $address[vlan]";
 # Switch

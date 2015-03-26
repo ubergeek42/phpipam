@@ -50,6 +50,8 @@ class Scan {
 		$this->set_debugging();
 		# fetch settings
 		is_null($settings) ? $this->get_settings() : $this->settings = (object) $settings;
+		# set type
+		$this->reset_scan_method ($this->settings->scanPingType);
 		# set php exec
 		$this->set_php_exec ();
 	}

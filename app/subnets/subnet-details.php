@@ -124,7 +124,7 @@ $rowSpan = 10 + sizeof($custom_fields);
 
 		foreach($custom_fields as $key=>$field) {
 			if(strlen($subnet[$key])>0) {
-				$subnet[$key] = str_replace("\n", "<br>",$subnet[$key]);
+				$subnet[$key] = str_replace(array("\n", "\r\n"), "<br>",$subnet[$key]);
 				print "<tr>";
 				print "	<th>$key</th>";
 				print "	<td>";

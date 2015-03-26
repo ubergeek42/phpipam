@@ -191,7 +191,7 @@ if(sizeof($address)>1) {
 	if(sizeof($custom_fields) > 0) {
 		foreach($custom_fields as $key=>$field) {
 			if(strlen($address[$key])>0) {
-			$address[$key] = str_replace("\n", "<br>",$address[$key]);
+			$address[$key] = str_replace(array("\n", "\r\n"), "<br>",$address[$key]);
 			print "<tr>";
 			print "	<th>$key</th>";
 			print "	<td>";

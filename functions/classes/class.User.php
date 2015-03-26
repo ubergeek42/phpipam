@@ -216,25 +216,27 @@ class User {
 	public function check_user_session ($redirect = true) {
 		# not authenticated
 		if($this->authenticated===false && $redirect) {
-			# set redirect cookie
-			$this->set_redirect_cookie ();
 			# set url
-			$url = createURL ();
-			# redirect
-			$this->timeout ? header("Location:".$url.create_link("login","timeout")) : header("Location:".$url.create_link ("login"));
+			$url = createURL();
 
 			# error print for AJAX
 			if(@$_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest") {
 				# for AJAX always check origin
 				$this->check_referrer ();
+				# kill session
+				$this->destroy_session ();
 				# error
 				$this->Result->show("danger", _('Please login first')."!<hr><a class='btn btn-sm btn-default' href='".$url.create_link ("login")."'>"._('Login')."</a>", true, true);
 			}
 			# timeout
 			elseif ($this->timeout) {
+				# set redirect cookie
+				$this->set_redirect_cookie ();
 				header("Location:".$url.create_link ("login","timeout"));
 			}
 			else {
+				# set redirect cookie
+				$this->set_redirect_cookie ();
 				header("Location:".$url.create_link ("login"));
 			}
 		}
@@ -264,7 +266,9 @@ class User {
 	 * @return void
 	 */
 	private function reset_inactivity_time () {
-		$_SESSION['lastactive'] = time();
+		if($this->timeout!==true) {
+			$_SESSION['lastactive'] = time();
+		}
 	}
 
 	/**
