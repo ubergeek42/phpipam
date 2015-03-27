@@ -518,11 +518,10 @@ CREATE TABLE `ipTags` (
   `bgcolor` varchar(7) DEFAULT '#000',
   `fgcolor` varchar(7) DEFAULT '#fff',
   `locked` set('No','Yes') NOT NULL DEFAULT 'No',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `index` (`index`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /* insert default values */
-INSERT INTO `ipTypes` (`id`, `type`, `showtag`, `bgcolor`, `fgcolor`, `locked`)
+INSERT INTO `ipTags` (`id`, `type`, `showtag`, `bgcolor`, `fgcolor`, `locked`)
 VALUES
 	(0, 'Offline', 1, '#f59c99', '#ffffff', 'Yes'),
 	(1, 'Used', 0, '#a9c9a4', '#ffffff', 'Yes'),

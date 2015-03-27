@@ -1634,59 +1634,26 @@ $(document).on("click", ".editFolderSubmitDelete", function() {
 
 
 
-/*    devices
-********************************/
-//open form
-$('.editSwitch').click(function() {
-    showSpinner();
-    var switchId = $(this).attr('data-switchid');
-    var action   = $(this).attr('data-action');
-    $.post('app/admin/devices/edit.php', {switchId:switchId, action:action}, function(data) {
-        $('div.popup_w400').html(data);
-        showPopup('popup_w400');
-        hideSpinner();
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+
+/* ---- Devices ----- */
+//load edit form
+$(document).on("click", ".editSwitch", function() {
+	open_popup("400", "app/admin/devices/edit.php", {switchId:$(this).attr('data-switchid'), action:$(this).attr('data-action')} );
 });
-//Edit device result
+//submit form
 $(document).on("click", "#editSwitchsubmit", function() {
-    showSpinner();
-    var switchdata = $('form#switchManagementEdit').serialize();
-    $.post('app/admin/devices/edit-result.php', switchdata, function(data) {
-        $('div.switchManagementEditResult').html(data).slideDown('fast');
+    submit_popup_data (".switchManagementEditResult", "app/admin/devices/edit-result.php", $('form#switchManagementEdit').serialize());
+});
 
-        //reload after 2 seconds if succeeded!
-        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                             { hideSpinner(); hideSpinner();
-        }
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+
+/* ---- Device types ----- */
+//load edit form
+$(document).on("click", ".editDevType", function() {
+	open_popup("400", "app/admin/device-types/edit.php", {tid:$(this).attr('data-tid'), action:$(this).attr('data-action')} );
 });
-//open form
-$('.editDevType').click(function() {
-    showSpinner();
-    var tid 	= $(this).attr('data-tid');
-    var action  = $(this).attr('data-action');
-    $.post('app/admin/device-types/edit.php', {tid:tid, action:action}, function(data) {
-        $('div.popup_w400').html(data);
-        showPopup('popup_w400');
-        hideSpinner();
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
-});
-//Edit switch result
+//submit form
 $(document).on("click", "#editDevTypeSubmit", function() {
-    showSpinner();
-    var switchdata = $('form#devTypeEdit').serialize();
-    $.post('app/admin/device-types/edit-result.php', switchdata, function(data) {
-        $('div.devTypeEditResult').html(data).slideDown('fast');
-
-        //reload after 2 seconds if succeeded!
-        if(data.search("alert-danger") == -1)     { setTimeout(function (){window.location.reload();}, 1500); }
-        else                             { hideSpinner(); hideSpinner();
-        }
-    }).fail(function(jqxhr, textStatus, errorThrown) { showError(jqxhr.statusText + "<br>Status: " + textStatus + "<br>Error: "+errorThrown); });
-    return false;
+    submit_popup_data (".devTypeEditResult", "app/admin/device-types/edit-result.php", $('form#devTypeEdit').serialize());
 });
 
 
@@ -1699,8 +1666,6 @@ $('.editType').click(function() {
 $(document).on("click", "#editTypesubmit", function() {
     submit_popup_data (".editTypeResult", "app/admin/tags/edit-result.php", $('form#editType').serialize());
 });
-
-
 
 
 /* ---- VLANs ----- */

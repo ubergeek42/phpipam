@@ -950,10 +950,7 @@ class User {
 	public function update_activity_time () {
 		# update
 		try { $this->Database->updateObject("users", array("lastActivity"=>date("Y-m-d H:i:s"), "id"=>$this->user->id)); }
-		catch (Exception $e) {
-			$this->debugging!==true ?  : $this->Result->show("danger", _("Error: ").$e->getMessage(), false);
-			return false;
-		}
+		catch (Exception $e) { }
 	}
 
 

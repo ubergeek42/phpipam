@@ -25,6 +25,10 @@ version - 1.2
 
 	+ IP address owner (from internal users)
 
+	+ Autocomplete mail addresses;
+
+	+ IPv6 pinging;
+
 	+ Mark subnet as full
 
 	+ Temporary share IP details / subnet
@@ -32,6 +36,10 @@ version - 1.2
 	+ phpipam scan Agents
 
 	+ custom fields for IP requests
+
+	+ Templating;
+
+	+ ARIN whois (https://www.arin.net/resources/whoisrws/whois_api.html);
 
 
 features for next releases:

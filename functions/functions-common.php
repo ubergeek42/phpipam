@@ -344,7 +344,7 @@ function print_folder_breadcrumbs ($Section, $Subnet, $req) {
 		}
 		# parent subnet
 		$subnet = (array) $Subnet->fetch_subnet(null,$req['subnetId']);
-		print "	<li><a href='".create_link("subnets",$section['id'],$subnet['id'])."'>$subnet[description] ($subnet[subnet]/$subnet[mask])</a> <span class='divider'></span></li>";																		# active subnet
+		print "	<li>$subnet[description]</li>";																		# active subnet
 		print "</ul>";
 	}
 }
