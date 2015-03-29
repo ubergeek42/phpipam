@@ -402,7 +402,7 @@ class User {
 	 * @return void
 	 */
 	public function fetch_available_auth_method_types () {
-		return array("AD", "LDAP");
+		return array("AD", "LDAP", "Radius");
 	}
 
 
@@ -784,6 +784,61 @@ class User {
 	private function auth_LDAP ($username, $password) {
 		$this->ldap = true;					//set ldap flag
 		$this->auth_AD ();					//we use AD class for login
+	}
+
+	/**
+	 * Authenticates user on radius server
+	 *
+	 * @access private
+	 * @param mixed $username
+	 * @param mixed $password
+	 * @return void
+	 */
+	private function auth_radius ($username, $password) {
+		# decode radius parameters
+		$params = json_decode($this->authmethodparams);
+
+		# check for socket support !
+		if(!in_array("sockets", get_loaded_extensions())) {
+			write_log( "Radius login", "php Socket extension missing", 2 );
+			$this->Result->show("danger", _("php Socket extension missing"), true);
+		}
+
+		# initialize radius class
+		require( dirname(__FILE__) . '/class.Radius.php' );
+		$Radius = new Radius ($params->hostname, $params->secret, $params->suffix, $params->timeout, $params->port);
+		$Radius->SetNasIpAddress($params->hostname);
+		//debugging
+		$this->debugging!==true ? : $Radius->SetDebugMode(TRUE);
+
+		# authenticate
+		$auth = $Radius->AccessRequest($username, $password);
+		# debug?
+		if($this->debugging) {
+			print "<pre style='width:700px;margin:auto;margin-top:10px;'>";
+			print(implode("<br>", $Radius->debug_text));
+			print "</pre>";
+		}
+
+		# authenticate user
+		if($auth) {
+			# save to session
+			$this->write_session_parameters ();
+
+	    	write_log( "Radius login", "User ".$this->user->real_name." logged in via radius", 0, $username );
+	    	$this->Result->show("success", _("Radius login successful"));
+
+			# write last logintime
+			$this->update_login_time ();
+			# remove possible blocked IP
+			$this->block_remove_entry ();
+		}
+		else {
+			# add blocked count
+			$this->block_ip ();
+			write_log( "Radius login", "Failed to authenticate user on radius server", 1 );
+			$this->Result->show("danger", _("Invalid username or password"), true);
+		}
 	}
 
 

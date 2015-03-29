@@ -19,7 +19,7 @@ $User->check_user_session();
 $User->is_admin(true);
 
 # try to upgrade database
-if($Install->upgrade_database()) {	$Result->show("success", _("Database upgraded successfully! <a class='btn btn-sm btn-default' href='".create_link('Dashboard')."'>Dashboard</a>"), false); }
+if($Install->upgrade_database()) {	$Result->show("success", _("Database upgraded successfully! <a class='btn btn-sm btn-default' href='".create_link('dashboard')."'>Dashboard</a>"), false); }
 
 # migrate settings
 $User->migrate_domain_settings ();

@@ -154,6 +154,7 @@ CREATE TABLE `settings` (
   `hiddenCustomFields` VARCHAR(1024)  NULL  DEFAULT NULL,
   `inactivityTimeout` INT(5)  NOT NULL  DEFAULT '3600',
   `authmigrated` TINYINT  NOT NULL  DEFAULT '0',
+  `tempAccess` TEXT  NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /* insert default values */
@@ -495,7 +496,7 @@ DROP TABLE IF EXISTS `usersAuthMethod`;
 
 CREATE TABLE `usersAuthMethod` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type` set('local','AD','LDAP') NOT NULL DEFAULT 'local',
+  `type` set('local','AD','LDAP', 'Radius') NOT NULL DEFAULT 'local',
   `params` varchar(1024) DEFAULT NULL,
   `protected` set('Yes','No') NOT NULL DEFAULT 'Yes',
   `description` text,
@@ -535,4 +536,4 @@ VALUES
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.12';
+UPDATE `settings` set `version` = '1.13';

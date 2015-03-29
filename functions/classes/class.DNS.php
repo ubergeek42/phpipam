@@ -80,7 +80,7 @@ class DNS  {
 	 	# make sure it is dotted format
 	 	$address->ip = $Address->transform_address ($address->ip_addr, "dotted");
 		# if dns_nameis set try to check
-		if(empty(@$address->dns_name) || is_null(@$address->dns_name)) {
+		if(empty($address->dns_name) || is_null($address->dns_name)) {
 			# if permitted in settings
 			if($this->settings->enableDNSresolving == 1 || $override) {
 				# resolve

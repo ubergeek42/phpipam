@@ -45,7 +45,7 @@ $('form#login').submit(function() {
     $.post('app/login/login_check.php', logindata, function(data) {
         $('div#loginCheck').html(data).fadeIn('fast');
         //reload after 2 seconds if succeeded!
-        if(data.search("alert alert-danger") == -1) {
+        if(data.search("alert alert-success") != -1) {
             showSpinner();
             //search for redirect
             if($('form#login input#phpipamredirect').length > 0) { setTimeout(function (){window.location=$('form#login input#phpipamredirect').val();}, 1000); }

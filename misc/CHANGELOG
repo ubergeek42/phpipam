@@ -1,8 +1,8 @@
-== 1.12.004
+== 1.13.001
 
 	New features:
 	------------
-	+ Added multiple authentication methods (AD, LDAP);
+	+ Added multiple simultaneous authentication methods (AD, LDAP, Radius);
 	+ Added fping scanning support;
 	+ Added selectable scanning type (ping/pear/fping);
 	+ Added L2 domains;

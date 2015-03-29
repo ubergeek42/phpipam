@@ -83,11 +83,12 @@ foreach($all_methods as $method) {
 <div class="alert alert-info alert-absolute" style="margin-top:30px;">
 	<?php print _("Here you can set different authentication methods for your users."); ?>
 	<hr>
-	<?php print _("phpIPAM currently supports 3 methods for authentication:"); ?>
+	<?php print _("phpIPAM currently supports 4 methods for authentication:"); ?>
 	<ul>
 		<li><?php print _("Local authentication"); ?></li>
 		<li><?php print _("AD (Active Directory) authentication"); ?></li>
 		<li><?php print _("LDAP authentication"); ?></li>
+		<li><?php print _("Radius authentication"); ?></li>
 	</ul>
 	<br>
 	<?php print _("For AD/LDAP connection phpipam is using adLDAP, for documentationplease check ")."<a href='http://adldap.sourceforge.net/'>adLDAP</a><br><br>"; ?>
