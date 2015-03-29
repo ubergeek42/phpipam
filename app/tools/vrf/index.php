@@ -16,7 +16,7 @@ $vrfs = $Tools->fetch_all_objects("vrf", "vrfId");
 print "<h4>"._('Available VRFs and belonging subnets')."</h4>";
 print "<hr>";
 if($User->isadmin) {
-	print "<a class='btn btn-sm btn-default' href='".create_link("administration","manageVRF")."' data-action='add'  data-switchid=''><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
+	print "<a class='btn btn-sm btn-default' href='".create_link("administration","vrfs")."' data-action='add'  data-switchid=''><i class='fa fa-pencil'></i> ". _('Manage')."</a>";
 }
 
 
@@ -79,7 +79,13 @@ else {
 
 					print "	<td>$subnet[VLAN]</td>";
 					print "	<td>$subnet[description]</td>";
-					print "	<td><a href='".create_link("subnets",$section['id'],$subnet['id'])."'>".$Subnets->transform_to_dotted($subnet['subnet'])."/$subnet[mask]</a></td>";
+					# folder?
+					if($subnet->isFolder==1) {
+						print "	<td><a href='".create_link("folder",$section['id'],$subnet['id'])."'>$subnet[description]</a></td>";
+					}
+					else {
+						print "	<td><a href='".create_link("subnets",$section['id'],$subnet['id'])."'>".$Subnets->transform_to_dotted($subnet['subnet'])."/$subnet[mask]</a></td>";
+					}
 
 					if($masterSubnet) {
 						print '	<td>/</td>' . "\n";
@@ -88,6 +94,8 @@ else {
 						$master = (array) $Subnets->fetch_subnet (null, $subnet['masterSubnetId']);
 						# orphaned
 						if(strlen($master['subnet']) == 0)	{ print "	<td>".$Result->show('warning', _('Master subnet does not exist')."!", false)."</td>";}
+						# folder
+						elseif($master['isFolder']==1)		{ print "	<td><i class='fa fa-folder fa-gray'></i> <a href='".create_link("folder",$subnet['sectionId'],$subnet['masterSubnetId'])."'>$master[description]</a></td>"; }
 						else 								{ print "	<td><a href='".create_link("subnets",$subnet['sectionId'],$subnet['masterSubnetId'])."'>".$Subnets->transform_to_dotted($master['subnet'])."/$master[mask] ($master[description])</a></td>"; }
 					}
 

@@ -48,10 +48,11 @@ else {
 	print "<table class='table vlans table-condensed table-top'>";
 
 	# headers
+	print "<thead>";
 	print '<tr">' . "\n";
-	print ' <th>'._('Number').'</th>' . "\n";
-	print ' <th>'._('Name').'</th>' . "\n";
-	print ' <th>'._('Description').'</th>' . "\n";
+	print ' <th data-field="number" data-sortable="true">'._('Number').'</th>' . "\n";
+	print ' <th data-field="name" data-sortable="true">'._('Name').'</th>' . "\n";
+	print ' <th data-field="description" data-sortable="true">'._('Description').'</th>' . "\n";
 	print ' <th>'._('Belonging subnets').'</th>' . "\n";
 	print ' <th>'._('Section').'</th>' . "\n";
 	if(sizeof(@$custom) > 0) {
@@ -62,8 +63,10 @@ else {
 		}
 	}
 	print "	<th></th>";
-	print '</tr>' . "\n";
+	print "</tr>";
+	print "</thead>";
 
+	print "<tbody>";
 	$m = 0;
 	foreach ($vlans as $vlan) {
 
@@ -188,6 +191,7 @@ else {
 		# next index
 		$m++;
 	}
+	print "</tbody>";
 
 	print '</table>';
 }

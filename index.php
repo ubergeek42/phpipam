@@ -228,6 +228,10 @@ else {
 						else 															{ include("app/admin/$_GET[section]/index.php"); }
 					}
 				}
+				# default - error
+				else {
+																						{ header("Location: ".create_link("error","404")); }
+				}
 			print "</div>";
 			print "</td>";
 

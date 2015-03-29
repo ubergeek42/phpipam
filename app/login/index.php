@@ -7,7 +7,7 @@ include('functions/checks/check_php_build.php');		# check for support for PHP mo
 <html lang="en">
 
 <head>
-	<base href="<?php print $url; ?>">
+	<base href="<?php print $url.BASE; ?>">
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">

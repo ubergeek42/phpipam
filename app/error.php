@@ -58,7 +58,7 @@ $http_codes = array(
 );
 ?>
 
-<div class="container">
+<div class="container" style="margin-top:20px;">
 <div class="row">
 <div class="col-xs-12 col-md-6 col-md-offset-3 alert alert alert-danger">
 	<strong><h3><?php print _('Oops! Something went wrong!'); ?></h3></strong><hr>
