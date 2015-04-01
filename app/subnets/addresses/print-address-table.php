@@ -94,7 +94,7 @@ if($selected_ip_fields_size==1 && strlen($selected_ip_fields[0])==0) { $selected
 # save for visual display !
 $addresses_visual = $addresses;
 # compress DHCP ranges If compress is set in settings
-if($User->settings->dhcpCompress==1 && $addresses && @$orphaned!=true) {
+if($User->user->dhcpCompress==1 && $addresses && @$orphaned!=true) {
 	$addresses = $Addresses->compress_dhcp_ranges ($addresses);
 }
 
@@ -128,7 +128,7 @@ foreach($custom_fields as $field) {
 /* output variables */
 
 # set page limit for pagination
-$page_limit = $User->settings->printLimit;
+$page_limit = $User->user->printLimit;
 if($page_limit == 0)			{ $page_limit = "100000000"; }
 else if(empty($page_limit)) 	{ $page_limit = "124"; }
 # times to repeat body
@@ -213,7 +213,7 @@ $m = sizeof($addresses) -1;		//last address index
 
 # if no IP is configured only display free subnet!
 if ($addresses===false || sizeof($addresses)==0) {
-	if($User->settings->hideFreeRange!=1) {
+	if($User->user->hideFreeRange!=1) {
     	$unused = $Addresses->find_unused_addresses($Subnets->transform_to_decimal($subnet_detailed['network']), $Subnets->transform_to_decimal($subnet_detailed['broadcast']), $subnet['mask'], $empty=true );
 		print '<tr class="th"><td colspan="'.$colspan['empty'].'" class="unused">'.$unused['ip'].' (' .$Subnets->reformat_number($unused['hosts']).')</td></tr>'. "\n";
     }
@@ -247,13 +247,13 @@ else {
 		       	# check unused space between IP addresses
 		       	else {
 		       		// compressed and dhcp?
-		       		if($User->settings->dhcpCompress && $addresses[$n-1]->class=="range-dhcp") 	{ $unused = $Addresses->find_unused_addresses ( $addresses[$n-1]->stopIP, $addresses[$n]->ip_addr, $subnet['mask'] );  }
+		       		if($User->user->dhcpCompress && $addresses[$n-1]->class=="range-dhcp") 	{ $unused = $Addresses->find_unused_addresses ( $addresses[$n-1]->stopIP, $addresses[$n]->ip_addr, $subnet['mask'] );  }
 		       		//uncompressed
 		       		else 																		{ $unused = $Addresses->find_unused_addresses ( $addresses[$n-1]->ip_addr, $addresses[$n]->ip_addr, $subnet['mask'] );  }
 		       	}
 
 		       	# if there is some result for unused print it - if sort == ip_addr
-		       	if($User->settings->hideFreeRange!=1) {
+		       	if($User->user->hideFreeRange!=1) {
 				    if ( $unused && ($sort['field'] == 'ip_addr') && $sort['direction'] == "asc" ) {
 		        		print "<tr class='th'>";
 		        		print "	<td></td>";
@@ -268,7 +268,7 @@ else {
 			    #
 
 			    # ip - range
-			    if($addresses[$n]->class=="range-dhcp")
+			    if(@$addresses[$n]->class=="range-dhcp")
 			    {
 			    	print "<tr class='dhcp'>";
 				    print "	<td>";
@@ -390,7 +390,7 @@ else {
 				}
 				# write permitted
 				elseif( $subnet_permission > 1) {
-					if($addresses[$n]->class=="range-dhcp")
+					if(@$addresses[$n]->class=="range-dhcp")
 					{
 						print "<a class='edit_ipaddress   btn btn-xs btn-default modIPaddr' data-action='edit'   data-subnetId='".$addresses[$n]->subnetId."' data-id='".$addresses[$n]->id."' data-stopIP='".$addresses[$n]->stopIP."' href='#'>				<i class='fa fa-gray fa-pencil'></i></a>";
 						print "<a class='				   btn btn-xs btn-default disabled' href='#'>																																									<i class='fa fa-gray fa-cogs'></i></a>";
@@ -435,7 +435,7 @@ else {
 				****************************************************/
 				if ( $n == $m )
 				{
-					if($User->settings->hideFreeRange!=1) {
+					if($User->user->hideFreeRange!=1) {
 						# compressed?
 						if(isset($addresses[$n]->stopIP))	{ $unused = $Addresses->find_unused_addresses ( $addresses[$n]->stopIP,  $Subnets->transform_to_decimal($subnet_detailed['broadcast']), $subnet['mask'] ); }
 						else 								{ $unused = $Addresses->find_unused_addresses ( $addresses[$n]->ip_addr, $Subnets->transform_to_decimal($subnet_detailed['broadcast']), $subnet['mask'] ); }

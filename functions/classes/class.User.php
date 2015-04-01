@@ -405,6 +405,17 @@ class User {
 		return array("AD", "LDAP", "Radius");
 	}
 
+	/**
+	 * Function to verify checkbox if 0 length
+	 *
+	 * @access public
+	 * @param mixed $field
+	 * @return void
+	 */
+	public function verify_checkbox ($field=0) {
+		return $field==""||$field=="0" ? 0 : 1;
+	}
+
 
 
 
@@ -933,14 +944,20 @@ class User {
 	 */
 	public function self_update($post) {
 		# set items to update
-		if(strlen($post['password1'])>0)
-		$items['password']   	= $this->crypt_user_pass ($post['password1']);
-		$items['real_name']  	= $post['real_name'];
-		$items['mailNotify'] 	= $post['mailNotify'];
-		$items['mailChangelog'] = $post['mailChangelog'];
-		$items['email'] 		= $post['email'];
-		$items['lang'] 			= $post['lang'];
-		$items['id']			= $this->user->id;
+		$items  = array("real_name"=>$post['real_name'],
+						"mailNotify"=>$post['mailNotify'],
+						"mailChangelog"=>$post['mailChangelog'],
+						"email"=>$post['email'],
+						"lang"=>$post['lang'],
+						"id"=>$this->user->id,
+						//display
+						"dhcpCompress"=>$this->verify_checkbox(@$_POST['dhcpCompress']),
+						"hideFreeRange"=>$this->verify_checkbox(@$_POST['hideFreeRange']),
+						"printLimit"=>@$_POST['printLimit']
+						);
+		if(strlen($post['password1'])>0) {
+		$items['password'] = $this->crypt_user_pass ($post['password1']);
+		}
 
 	    # prepare log file
 	    $log = array_to_log ($post);

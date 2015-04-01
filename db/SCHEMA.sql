@@ -133,7 +133,6 @@ CREATE TABLE `settings` (
   `dbverified` BINARY(1)  NOT NULL  DEFAULT '0',
   `donate` tinyint(1) DEFAULT '0',
   `IPfilter` varchar(128) DEFAULT NULL,
-  `printLimit` int(4) unsigned DEFAULT '25',
   `vlanDuplicate` int(1) DEFAULT '0',
   `vlanMax` INT(8)  NULL  DEFAULT '4096',
   `subnetOrdering` varchar(16) DEFAULT 'subnet,asc',
@@ -142,7 +141,6 @@ CREATE TABLE `settings` (
   `defaultLang` INT(3)  NULL  DEFAULT NULL,
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   `vcheckDate` DATETIME  NULL  DEFAULT NULL ,
-  `dhcpCompress` BOOL  NOT NULL  DEFAULT '0',
   `api` BINARY  NOT NULL  DEFAULT '0',
   `enableChangelog` TINYINT(1)  NOT NULL  DEFAULT '1',
   `scanPingPath` VARCHAR(64)  NULL  DEFAULT '/bin/ping',
@@ -150,17 +148,17 @@ CREATE TABLE `settings` (
   `scanPingType` SET('ping','pear','fping')  NOT NULL  DEFAULT 'ping',
   `scanMaxThreads` INT(4)  NULL  DEFAULT '128',
   `prettyLinks` SET("Yes","No")  NOT NULL  DEFAULT 'No',
-  `hideFreeRange` tinyint(1) DEFAULT '0',
   `hiddenCustomFields` VARCHAR(1024)  NULL  DEFAULT NULL,
   `inactivityTimeout` INT(5)  NOT NULL  DEFAULT '3600',
   `authmigrated` TINYINT  NOT NULL  DEFAULT '0',
+  `tempShare` TINYINT(1)  NULL  DEFAULT '0',
   `tempAccess` TEXT  NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /* insert default values */
-INSERT INTO `settings` (`id`, `siteTitle`, `siteAdminName`, `siteAdminMail`, `siteDomain`, `siteURL`, `domainAuth`, `enableIPrequests`, `enableVRF`, `enableDNSresolving`, `version`, `donate`, `IPfilter`, `printLimit`, `vlanDuplicate`, `subnetOrdering`, `visualLimit`, `dhcpCompress`)
+INSERT INTO `settings` (`id`, `siteTitle`, `siteAdminName`, `siteAdminMail`, `siteDomain`, `siteURL`, `domainAuth`, `enableIPrequests`, `enableVRF`, `enableDNSresolving`, `version`, `donate`, `IPfilter`, `vlanDuplicate`, `subnetOrdering`, `visualLimit`)
 VALUES
-	(1, 'phpipam IP address management', 'Sysadmin', 'admin@domain.local', 'domain.local', 'http://yourpublicurl.com', 0, 0, 0, 0, '1.1', 0, 'mac;owner;state;switch;note', 50, 1, 'subnet,asc', 24, 1);
+	(1, 'phpipam IP address management', 'Sysadmin', 'admin@domain.local', 'domain.local', 'http://yourpublicurl.com', 0, 0, 0, 0, '1.1', 0, 'mac;owner;state;switch;note', 1, 'subnet,asc', 24);
 
 
 # Dump of table settingsDomain
@@ -307,6 +305,9 @@ CREATE TABLE `users` (
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   `lastLogin` TIMESTAMP  NULL,
   `lastActivity` TIMESTAMP  NULL,
+  `dhcpCompress` BOOL  NOT NULL  DEFAULT '0',
+  `hideFreeRange` tinyint(1) DEFAULT '0',
+  `printLimit` int(4) unsigned DEFAULT '30',
   PRIMARY KEY (`username`),
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)

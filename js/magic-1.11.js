@@ -1725,6 +1725,24 @@ $(document).on("click", "button.manageRequest", function() {
 });
 
 
+/* ---- Share subnet ----- */
+//load edit form
+$('.shareTemp').click(function() {
+	open_popup("700", "app/tools/temp-shares/edit.php", {type:$(this).attr('data-type'), id:$(this).attr('data-id')} );
+	return false;
+});
+//submit form
+$(document).on("click", "#shareTempSubmit", function() {
+    submit_popup_data (".shareTempSubmitResult", "app/tools/temp-shares/edit-result.php", $('form#shareTempEdit').serialize());
+});
+//remove temp
+$('.removeSharedTemp').click(function() {
+	showPopup("popup_w400");
+    submit_popup_data (".popup_w400", "app/tools/temp-shares/delete-result.php", {code:$(this).attr('data-code')});
+    hideSpinner();
+});
+
+
 
 /*    Ripe AS import
 ****************************/

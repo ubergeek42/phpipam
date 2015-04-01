@@ -194,14 +194,14 @@ $settings = (array) $User->settings;
 	</td>
 </tr>
 
-<!-- duplicate VLANs -->
+<!-- Share -->
 <tr>
-	<td class="title"><?php print _('Duplicate VLANs'); ?></td>
+	<td class="title"><?php print _('Temporary shares'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="vlanDuplicate" <?php if($settings['vlanDuplicate'] == 0) print ''; else print 'checked'; ?>>
+		<input type="checkbox" value="1" name="tempShare" <?php if($settings['tempShare'] == 0) print ''; else print 'checked'; ?>>
 	</td>
 	<td class="info2">
-		<?php print _('Allow duplicate VLAN numbers'); ?>
+		<?php print _('Allow temporary subnet sharing'); ?>
 	</td>
 </tr>
 
@@ -223,7 +223,7 @@ $settings = (array) $User->settings;
 		<input type="checkbox" value="1" name="enableChangelog" <?php if($settings['enableChangelog'] == 0) print ''; else print 'checked'; ?>>
 	</td>
 	<td class="info2">
-		<?php print _('Enable changelog'); ?>
+		<?php print _('Enable changelog module'); ?>
 	</td>
 </tr>
 
@@ -316,28 +316,6 @@ $settings = (array) $User->settings;
 	<th colspan="3"><h4><?php print _('Display settings'); ?></h4></th>
 </tr>
 
-<!-- DHCP compress -->
-<tr>
-	<td class="title"><?php print _('DHCP compress'); ?></td>
-	<td>
-		<input type="checkbox" value="1" name="dhcpCompress" <?php if($settings['dhcpCompress'] == 1) print 'checked'; ?>>
-	</td>
-	<td class="info2">
-		<?php print _('Compress DHCP ranges in IP table'); ?>
-	</td>
-</tr>
-
-<!-- Hide free range -->
-<tr>
-	<td class="title"><?php print _('Hide free range'); ?></td>
-	<td>
-		<input type="checkbox" value="1" name="hideFreeRange" <?php if($settings['hideFreeRange'] == 1) print 'checked'; ?>>
-	</td>
-	<td class="info2">
-		<?php print _('Do not display free range in IP address and subnets list'); ?>
-	</td>
-</tr>
-
 <!-- Disable donation field -->
 <tr>
 	<td class="title"><?php print _('Hide donation button'); ?></td>
@@ -375,36 +353,6 @@ $settings = (array) $User->settings;
 	</td>
 	<td class="info2">
 		<?php print _('Select netmask limit for visual display of IP addresses (mask equal or bigger than - more then /22 not recommended)'); ?>
-	</td>
-</tr>
-
-
-<!-- Output limit -->
-<tr>
-	<td class="title"><?php print _('IP address print limit'); ?></td>
-	<td>
-		<select name="printLimit" class="form-control input-sm input-w-auto">
-			<?php
-			$opts = array(
-				"0"=>_("Show all"),
-				"10"=>"10",
-				"30"=>"30",
-				"62"=>"62",
-				"100"=>"100",
-				"126"=>"126",
-				"254"=>"254"
-			);
-
-			foreach($opts as $key=>$line) {
-				if($settings['printLimit'] == $key) { print "<option value='$key' selected>$line</option>"; }
-				else 								{ print "<option value='$key'>$line</option>"; }
-			}
-
-			?>
-		</select>
-	</td>
-	<td class="info2">
-		<?php print _('Number of IP addresses per page'); ?>
 	</td>
 </tr>
 

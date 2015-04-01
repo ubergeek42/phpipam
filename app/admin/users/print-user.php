@@ -29,7 +29,7 @@ $custom_fields = $Tools->fetch_custom_fields('users');
 <a class='btn btn-sm btn-default' href="<?php print create_link("administration","users"); ?>" style="margin-bottom:10px;"><i class='fa fa-angle-left'></i> <?php print _('All users'); ?></a>
 
 <!-- table -->
-<table id="userPrint" class="table table-hover table-auto">
+<table id="userPrint" class="table table-hover table-auto table-condensed">
 
 <tr>
 	<td><?php print _('Real Name'); ?></td>
@@ -59,7 +59,7 @@ $custom_fields = $Tools->fetch_custom_fields('users');
 
 
 <tr>
-	<td colspan="2"><hr></td>
+	<td colspan="2"><h4><?php print _('Authentication settings'); ?></h4><hr></td>
 </tr>
 
 <tr>
@@ -105,10 +105,33 @@ $custom_fields = $Tools->fetch_custom_fields('users');
 	?>
 	</td>
 </tr>
+<tr>
+	<td><?php print _('Password change required'); ?></td>
+	<td><?php print $user->passChange; ?></td>
+</tr>
+
 
 
 <tr>
-	<td colspan="2"><hr></td>
+	<td colspan="2"><h4><?php print _('Display settings'); ?></h4><hr></td>
+</tr>
+<tr>
+	<td><?php print _('DHCP compress'); ?></td>
+	<td><?php print $user->dhcpCompress==1 ? _("Yes") : _("No") ?></td>
+</tr>
+<tr>
+	<td><?php print _('Hide free range'); ?></td>
+	<td><?php print $user->hideFreeRange==1 ? _("Yes") : _("No") ?></td>
+</tr>
+<tr>
+	<td><?php print _('IP address print limit'); ?></td>
+	<td><?php print $user->printLimit; ?></td>
+</tr>
+
+
+
+<tr>
+	<td colspan="2"><h4><?php print _('Mail settings'); ?></h4><hr></td>
 </tr>
 <tr>
 	<td><?php print _('Mail notifications'); ?></td>
@@ -118,14 +141,11 @@ $custom_fields = $Tools->fetch_custom_fields('users');
 	<td><?php print _('Changelog notifications'); ?></td>
 	<td><?php print $user->role == "Administrator" ? _($user->mailChangelog) : _("No"); ?></td>
 </tr>
-<tr>
-	<td><?php print _('Password change'); ?></td>
-	<td><?php print $user->passChange; ?></td>
-</tr>
+
 
 
 <tr>
-	<td colspan="2"><hr></td>
+	<td colspan="2"><h4><?php print _('Custom fields'); ?></h4><hr></td>
 </tr>
 
 <?php

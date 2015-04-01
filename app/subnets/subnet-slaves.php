@@ -33,7 +33,7 @@ foreach ($slave_subnets as $slave_subnet) {
 	$slave_subnet = (array) $slave_subnet;
 
 	# if first check for free space if permitted
-	if($User->settings->hideFreeRange!=1) {
+	if($User->user->hideFreeRange!=1) {
 	if($m == 0) {
 		# if master start != first slave start print free space
 		if($subnet['subnet'] != $slave_subnet['subnet']) {
@@ -97,7 +97,7 @@ foreach ($slave_subnets as $slave_subnet) {
 
 
 	# check if some free space between this and next subnet
-	if($User->settings->hideFreeRange!=1) {
+	if($User->user->hideFreeRange!=1) {
 	if(isset($slave_subnets[$m+1])) {
 
 		# set max host > (bcast) from current slave
@@ -121,7 +121,7 @@ foreach ($slave_subnets as $slave_subnet) {
 	$m++;
 
 	# if last check for free space
-	if($User->settings->hideFreeRange!=1) {
+	if($User->user->hideFreeRange!=1) {
 	if($m == sizeof($slave_subnets)) {
 
 		# top subnet limit

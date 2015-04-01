@@ -115,30 +115,84 @@ $rowSpan = 10 + sizeof($custom_fields);
 	<?php
 	# custom subnet fields
 	if(sizeof($custom_fields) > 0) {
-
-		# divider
-		print "<tr>";
-		print "	<th><hr></th>";
-		print "	<td></td>";
-		print "</tr>";
-
 		foreach($custom_fields as $key=>$field) {
 			if(strlen($subnet[$key])>0) {
 				$subnet[$key] = str_replace(array("\n", "\r\n"), "<br>",$subnet[$key]);
-				print "<tr>";
-				print "	<th>$key</th>";
-				print "	<td>";
+				$html_custom[] = "<tr>";
+				$html_custom[] = "	<th>$key</th>";
+				$html_custom[] = "	<td>";
 				#booleans
 				if($field['type']=="tinyint(1)")	{
-					if($subnet[$key] == "0")		{ print _("No"); }
-					elseif($subnet[$key] == "1")	{ print _("Yes"); }
+					if($subnet[$key] == "0")		{ $html_custom[] = _("No"); }
+					elseif($subnet[$key] == "1")	{ $html_custom[] = _("Yes"); }
 				}
 				else {
-					print $subnet[$key];
+					$html_custom[] = $subnet[$key];
 				}
-				print "	</td>";
-				print "</tr>";
+				$html_custom[] = "	</td>";
+				$html_custom[] = "</tr>";
 			}
+		}
+
+		# any?
+		if(isset($html_custom)) {
+			# divider
+			print "<tr>";
+			print "	<th><hr></th>";
+			print "	<td></td>";
+			print "</tr>";
+
+			print implode("\n", $html_custom);
+		}
+	}
+
+	# check for temporary shares!
+	if($User->settings->tempShare==1) {
+		foreach(json_decode($User->settings->tempAccess) as $s) {
+			if($s->type=="subnets" && $s->id==$subnet['id']) {
+				if(time()<$s->validity) {
+					$active_shares[] = $s;
+				}
+				else {
+					$expired_shares[] = $s;
+				}
+			}
+		}
+		if(sizeof(@$active_shares)>0) {
+			# divider
+			print "<tr>";
+			print "	<th><hr></th>";
+			print "	<td></td>";
+			print "</tr>";
+			# print
+			print "<tr>";
+			print "<th>"._("Active subnet shares").":</th>";
+			print "<td>";
+			$m=1;
+			foreach($active_shares as $s) {
+				print "<button class='btn btn-xs btn-default removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expires")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				$m++;
+			}
+			print "<td>";
+			print "</tr>";
+		}
+		if(sizeof(@$expired_shares)>0) {
+			# divider
+			print "<tr>";
+			print "	<th><hr></th>";
+			print "	<td></td>";
+			print "</tr>";
+			# print
+			print "<tr>";
+			print "<th>"._("Expired subnet shares").":</th>";
+			print "<td>";
+			$m=1;
+			foreach($expired_shares as $s) {
+				print "<button class='btn btn-xs btn-danger removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expired")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				$m++;
+			}
+			print "<td>";
+			print "</tr>";
 		}
 	}
 
@@ -249,6 +303,10 @@ $rowSpan = 10 + sizeof($custom_fields);
 		print "<a class='btn btn-xs btn-default disabled'  	href='' data-container='body' rel='tooltip' title='"._('Import IP addresses')."'>											<i class='fa fa-upload'></i></a>";
 		//export
 		print "<a class='csvExport btn btn-xs btn-default'  href='' data-container='body' rel='tooltip' title='"._('Export IP addresses')."' data-subnetId='$subnet[id]'>		<i class='fa fa-download'></i></a>";
+		//share
+		if($subnet_permission>1 && $User->settings->tempShare==1) {
+		print "<a class='shareTemp btn btn-xs btn-default'  href='' data-container='body' rel='tooltip' title='"._('Temporary share subnet')."' data-id='$subnet[id]' data-type='subnets'>		<i class='fa fa-share-alt'></i></a>";
+		}
 	print "</div>";
 	}
 

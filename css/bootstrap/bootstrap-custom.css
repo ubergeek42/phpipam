@@ -1777,6 +1777,9 @@ table.changelog td {
 table#userPrint td {
 	vertical-align: top !important;
 }
+table#userPrint h4 {
+	padding-top: 15px;
+}
 
 
 

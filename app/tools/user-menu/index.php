@@ -19,7 +19,7 @@ print "<hr><br>";
 
 
 <form id="userModSelf">
-<table id="userModSelf" class="table table-striped table-condensed">
+<table id="userModSelf" class="table table-condensed">
 
 <!-- real name -->
 <tr>
@@ -102,6 +102,69 @@ if($User->user->authMethod == 1) {
 	<td class="info2"><?php print _('Select yes to receive notification change mail for changelog'); ?></td>
 </tr>
 <?php } ?>
+
+
+<!-- display settings -->
+<tr>
+	<td colspan="2"><hr></td>
+</tr>
+<!-- Display -->
+<tr class="settings-title">
+	<th colspan="3"><h4><?php print _('Display settings'); ?></h4></th>
+</tr>
+
+<!-- DHCP compress -->
+<tr>
+	<td class="title"><?php print _('DHCP compress'); ?></td>
+	<td>
+		<input type="checkbox" value="1" name="dhcpCompress" <?php if($User->user->dhcpCompress == 1) print 'checked'; ?>>
+	</td>
+	<td class="info2">
+		<?php print _('Compress DHCP ranges in IP table'); ?>
+	</td>
+</tr>
+
+<!-- Hide free range -->
+<tr>
+	<td class="title"><?php print _('Hide free range'); ?></td>
+	<td>
+		<input type="checkbox" value="1" name="hideFreeRange" <?php if($User->user->hideFreeRange == 1) print 'checked'; ?>>
+	</td>
+	<td class="info2">
+		<?php print _('Do not display free range in IP address and subnets list'); ?>
+	</td>
+</tr>
+
+<!-- Output limit -->
+<tr>
+	<td class="title"><?php print _('IP address print limit'); ?></td>
+	<td>
+		<select name="printLimit" class="form-control input-sm input-w-auto">
+			<?php
+			$opts = array(
+				"0"=>_("Show all"),
+				"10"=>"10",
+				"30"=>"30",
+				"62"=>"62",
+				"100"=>"100",
+				"126"=>"126",
+				"254"=>"254"
+			);
+
+			foreach($opts as $key=>$line) {
+				if($User->user->printLimit == $key) { print "<option value='$key' selected>$line</option>"; }
+				else 								{ print "<option value='$key'>$line</option>"; }
+			}
+
+			?>
+		</select>
+	</td>
+	<td class="info2">
+		<?php print _('Number of IP addresses per page'); ?>
+	</td>
+</tr>
+
+
 
 <!-- Submit and hidden values -->
 <tr class="th">

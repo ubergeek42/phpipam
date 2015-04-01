@@ -56,6 +56,7 @@ $values = array("id"=>1,
 				"vlanDuplicate"=>$Admin->verify_checkbox(@$_POST['vlanDuplicate']),
 				"vlanMax"=>@$_POST['vlanMax'],
 				"enableChangelog"=>$Admin->verify_checkbox(@$_POST['enableChangelog']),
+				"tempShare"=>$Admin->verify_checkbox(@$_POST['tempShare']),
 				//display
 				"dhcpCompress"=>$Admin->verify_checkbox(@$_POST['dhcpCompress']),
 				"hideFreeRange"=>$Admin->verify_checkbox(@$_POST['hideFreeRange']),

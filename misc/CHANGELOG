@@ -1,4 +1,4 @@
-== 1.13.002
+== 1.14.001
 
 	New features:
 	------------
@@ -8,6 +8,7 @@
 	+ Added L2 domains;
 	+ Added option to define address as default GW for subnet;
 	+ Added customizable address tags;
+	+ Added temporary subnet / address shares;
 
 	Enhancements:
 	----------------------------
@@ -17,6 +18,7 @@
 	+ Added VLAN to search results export;
 	+ Redesigned admin and tools menu;
 	+ Added scanned/discovered subnets to tools for faster overview;
+	+ Per-user display settings;
 
 	Security Fixes:
 	----------------------------

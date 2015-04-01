@@ -71,7 +71,7 @@ else {
 	foreach ($vlans as $vlan) {
 
 		// show free vlans - start
-		if($User->settings->hideFreeRange!=1) {
+		if($User->user->hideFreeRange!=1) {
 			if($m==0 && $vlan->number!=1)	{
 				print "<tr class='success'>";
 				print "<td></td>";
@@ -178,7 +178,7 @@ else {
 		}
 
 		# show free vlans - last
-		if($User->settings->hideFreeRange!=1) {
+		if($User->user->hideFreeRange!=1) {
 			if($m==(sizeof($vlans)-1)) {
 				if($User->settings->vlanMax > $vlan[0]->number) {
 					print "<tr class='success'>";

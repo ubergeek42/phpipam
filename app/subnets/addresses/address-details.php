@@ -45,7 +45,7 @@ $DNS = new DNS ($Database);
 $resolve = $DNS->resolve_address((object) $address);
 
 # reformat empty fields
-$address = $Addresses->reformat_empty_array_fields($address, "");
+$address = $Addresses->reformat_empty_array_fields($address, "<span class='text-muted'>/</span>");
 
 #header
 print "<h4>"._('IP address details')."</h4><hr>";
@@ -139,7 +139,7 @@ if(sizeof($address)>1) {
 		# get device
 		$device = (array) $Tools->fetch_device(null, $address['switch']);
 		$device = $Addresses->reformat_empty_array_fields($device, "");
-		print "	<td>$device[hostname] $device[description]</td>";
+		print "	<td>".@$device['hostname']." ".@$device['description']."</td>";
 	} else {
 		print "	<td>$address[switch]</td>";
 	}
@@ -209,6 +209,56 @@ if(sizeof($address)>1) {
 		}
 	}
 
+	# check for temporary shares!
+	if($User->settings->tempShare==1) {
+		foreach(json_decode($User->settings->tempAccess) as $s) {
+			if($s->type=="ipaddresses" && $s->id==$address['id']) {
+				if(time()<$s->validity) {
+					$active_shares[] = $s;
+				}
+				else {
+					$expired_shares[] = $s;
+				}
+			}
+		}
+		if(sizeof(@$active_shares)>0) {
+			# divider
+			print "<tr>";
+			print "	<th colspan='2'><hr></th>";
+			print "</tr>";
+			# print
+			print "<tr>";
+			print "<th>"._("Active shares").":</th>";
+			print "<td>";
+			$m=1;
+			foreach($active_shares as $s) {
+				print "<button class='btn btn-xs btn-default removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expires")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				$m++;
+			}
+			print "<td>";
+			print "</tr>";
+		}
+		if(sizeof(@$expired_shares)>0) {
+			# divider
+			print "<tr>";
+			print "	<th><hr></th>";
+			print "	<td></td>";
+			print "</tr>";
+			# print
+			print "<tr>";
+			print "<th>"._("Expired shares").":</th>";
+			print "<td>";
+			$m=1;
+			foreach($expired_shares as $s) {
+				print "<button class='btn btn-xs btn-danger removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expired")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				$m++;
+			}
+			print "<td>";
+			print "</tr>";
+		}
+	}
+
+
 	# actions
 	print "<tr>";
 	print "	<td colspan='2'><hr></td>";
@@ -221,7 +271,7 @@ if(sizeof($address)>1) {
 	print "	<div class='btn-group'>";
 	# write permitted
 	if( $subnet_permission > 1) {
-		if($address['class']=="range-dhcp")
+		if(@$address['class']=="range-dhcp")
 		{
 			print "		<a class='edit_ipaddress   btn btn-default btn-xs modIPaddr' data-action='edit'   data-subnetId='".$address['subnetId']."' data-id='".$address['id']."' data-stopIP='".$address['stopIP']."' href='#' 		   rel='tooltip' data-container='body' title='"._('Edit IP address details')."'>	<i class='fa fa-gray fa-pencil'>  </i></a>";
 			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																																													<i class='fa fa-gray fa-cogs'> </i></a>";
@@ -236,11 +286,15 @@ if(sizeof($address)>1) {
 			print "		<a class='search_ipaddress btn btn-default btn-xs         "; if(strlen($resolve['name']) == 0) { print "disabled"; } print "' href='".create_link("tools","search",$resolve['name'])."' "; if(strlen($resolve['name']) != 0)   { print "rel='tooltip' data-container='body' title='"._('Search same hostnames in db')."'"; } print ">	<i class='fa fa-gray fa-search'></i></a>";
 			print "		<a class='mail_ipaddress   btn btn-default btn-xs          ' href='#' data-id='".$address['id']."' rel='tooltip' data-container='body' title='"._('Send mail notification')."'>																																<i class='fa fa-gray fa-envelope-o'></i></a>";
 			print "		<a class='delete_ipaddress btn btn-default btn-xs modIPaddr' data-action='delete' data-subnetId='".$address['subnetId']."' data-id='".$address['id']."' href='#' id2='$address[ip]' rel='tooltip' data-container='body' title='"._('Delete IP address')."'>													<i class='fa fa-gray fa-times'></i></a>";
+			//share
+			if($User->settings->tempShare==1) {
+			print "		<a class='shareTemp btn btn-xs btn-default'  data-container='body' rel='tooltip' title='"._('Temporary share address')."' data-id='$address[id]' data-type='ipaddresses'>		<i class='fa fa-share-alt'></i></a>";
+			}
 		}
 	}
 	# write not permitted
 	else {
-		if($address['class']=="range-dhcp")
+		if(@$address['class']=="range-dhcp")
 		{
 			print "		<a class='edit_ipaddress   btn btn-default btn-xs disabled' rel='tooltip' data-container='body' title='"._('Edit IP address details (disabled)')."'>	<i class='fa fa-gray fa-pencil'>  </i></a>";
 			print "		<a class='				   btn btn-default btn-xs disabled' href='#'>																<i class='fa fa-gray fa-retweet'> </i></a>";
@@ -257,6 +311,7 @@ if(sizeof($address)>1) {
 			print "		<a class='delete_ipaddress btn btn-default btn-xs disabled' rel='tooltip' data-container='body' title='"._('Delete IP address (disabled)')."'>				<i class='fa fa-gray fa-times'>  </i></a>";
 		}
 	}
+
 	print "	</div>";
 	print "	</div>";
 	print "</td>";
