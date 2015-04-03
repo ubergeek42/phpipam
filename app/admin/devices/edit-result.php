@@ -52,7 +52,7 @@ if(sizeof($custom) > 0) {
 			}
 		}
 		//not null!
-		if($myField['Null']=="NO" && strlen($device[$myField['name']])==0 && !checkAdmin(false,false)) {
+		if($myField['Null']=="NO" && strlen($device[$myField['name']])==0) {
 																		{ $Result->show("danger", $myField['name'].'" can not be empty!', true); }
 		}
 	}

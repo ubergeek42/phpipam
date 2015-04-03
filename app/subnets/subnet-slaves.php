@@ -102,7 +102,7 @@ foreach ($slave_subnets as $slave_subnet) {
 
 		# set max host > (bcast) from current slave
 		$current_slave_details = $Subnets->get_network_boundaries ($slave_subnet['subnet'], $slave_subnet['mask']);
-		$current_slave_bcast  = $Subnets->transform_to_decimal($current_slave_details['broadcast']);
+		$current_slave_bcast  =  $Subnets->transform_to_decimal($current_slave_details['broadcast']);
 		# calculate next slave
 		$next_slave_subnet  = $slave_subnets[$m+1]->subnet;
 		# calculate diff

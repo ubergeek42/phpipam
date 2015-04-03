@@ -39,7 +39,7 @@ elseif($script_result->status===1)				{ $Result->show("danger", $script_result->
 elseif(!isset($script_result->values->alive)) 	{ $Result->show("danger", _("No alive host found")."!", false); }
 # ok
 else {
-	print "<form name='".$_POST['type']."Form' class='".$_POST['type']."Form'>";
+	print "<form name='".$_POST['type']."-form' class='".$_POST['type']."-form'>";
 	print "<table class='table table-striped table-top table-condensed'>";
 
 	// titles

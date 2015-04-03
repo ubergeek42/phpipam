@@ -321,7 +321,7 @@ class Subnets {
 		$this->get_settings ();
 		$order = $this->get_subnet_order ();
 		# fetch
-		try { $subnets = $this->Database->getObjectsQuery("SELECT * FROM `subnets` where `sectionId` = ? order by isFolder desc, ? ?;", array($sectionId, $order[0], $order[1])); }
+		try { $subnets = $this->Database->getObjectsQuery("SELECT * FROM `subnets` where `sectionId` = ? order by isFolder desc, $order[0] $order[1];", array($sectionId)); }
 		catch (Exception $e) {
 			$this->Result->show("danger", _("Error: ").$e->getMessage());
 			return false;
@@ -1100,7 +1100,7 @@ class Subnets {
 	 */
 	public function get_first_possible_subnet ($address, $free, $print = true) {
 		# set max possible mask for IP range
-		$maxmask =  $this->get_max_netmask ($address);
+		$maxmask =  $this->get_max_netmask ($this->transform_address ($address, "dotted"));
 
 		# calculate maximum possible IP mask
 		$mask = floor(log($free)/log(2));
@@ -1111,12 +1111,13 @@ class Subnets {
 		for($m=$mask; $m<=$maxmask; $m++) {
 			# validate
 			$err = $this->verify_cidr_address( $address."/".$m , 1);
-			if(strlen($err)==0) {
+			if($err===true) {
 				# ok, it is possible!
 				$result = $address."/".$m;
 				break;
 			}
 		}
+
 		# result
 		if(isset($result)) {
 			# print or return?

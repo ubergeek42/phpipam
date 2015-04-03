@@ -1,3 +1,17 @@
+<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-switch.min.css">
+<script type="text/javascript" src="js/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	/* bootstrap switch */
+	var switch_options = {
+	    onColor: 'default',
+	    offColor: 'default',
+	    size: "mini"
+	};
+	$(".input-switch").bootstrapSwitch(switch_options);
+});
+</script>
+
 <?php
 
 /**
@@ -117,7 +131,7 @@ if($User->user->authMethod == 1) {
 <tr>
 	<td class="title"><?php print _('DHCP compress'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="dhcpCompress" <?php if($User->user->dhcpCompress == 1) print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="dhcpCompress" <?php if($User->user->dhcpCompress == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Compress DHCP ranges in IP table'); ?>
@@ -128,7 +142,7 @@ if($User->user->authMethod == 1) {
 <tr>
 	<td class="title"><?php print _('Hide free range'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="hideFreeRange" <?php if($User->user->hideFreeRange == 1) print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="hideFreeRange" <?php if($User->user->hideFreeRange == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Do not display free range in IP address and subnets list'); ?>

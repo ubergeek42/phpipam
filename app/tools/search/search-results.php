@@ -422,7 +422,7 @@ if(sizeof($result_vlans) > 0) {
 		}
 		# for admins print link
 		print " <td class='actions'>";
-		if(checkAdmin(false)) {
+		if($User->isadmin) {
 		print '<div class="btn-group">';
 		print '	<a class="btn btn-xs btn-default editVLAN" data-action="edit"   data-vlanid="'.$vlan['vlanId'].'"><i class="fa fa-gray fa-pencil"></i></a>';
 		print '	<a class="btn btn-xs btn-default editVLAN" data-action="delete" data-vlanid="'.$vlan['vlanId'].'"><i class="fa fa-gray fa-times"></i></a>';

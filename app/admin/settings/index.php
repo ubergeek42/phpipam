@@ -1,3 +1,17 @@
+<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-switch.min.css">
+<script type="text/javascript" src="js/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	/* bootstrap switch */
+	var switch_options = {
+	    onColor: 'default',
+	    offColor: 'default',
+	    size: "mini"
+	};
+	$(".input-switch").bootstrapSwitch(switch_options);
+});
+</script>
+
 <?php
 
 /**
@@ -74,7 +88,6 @@ $settings = (array) $User->settings;
 		<a href="http://phpipam.net/prettified-links-with-mod_rewrite/">http://phpipam.net/prettified-links-with-mod_rewrite/</a>
 		</td>
 </tr>
-
 <!-- Default language -->
 <tr>
 	<td class="title"><?php print _('Default language'); ?></td>
@@ -112,7 +125,16 @@ $settings = (array) $User->settings;
 	</td>
 	<td class="info2"><?php print _('Select inactive timeout for user sessions. Please note that if default php session settings in php.ini are lower they will override this'); ?></td>
 </tr>
-
+<!-- Max VLAN number -->
+<tr>
+	<td class="title"><?php print _('Highest VLAN number'); ?></td>
+	<td>
+		<input type="text" class="form-control input-sm" name="vlanMax" value="<?php print $settings['vlanMax']; ?>">
+	</td>
+	<td class="info2">
+		<?php print _('Set highest VLAN number (default 4096)'); ?>
+	</td>
+</tr>
 
 
 
@@ -154,7 +176,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('API'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="api" <?php if($settings['api'] == 1) print 'checked'; ?>>
+		<input type="checkbox" class="input-switch" value="1" name="api" <?php if($settings['api'] == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Enable or disable API server module'); ?>
@@ -165,7 +187,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('IP request module'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="enableIPrequests" <?php if($settings['enableIPrequests'] == 1) print 'checked'; ?>>
+		<input type="checkbox" class="input-switch" value="1" name="enableIPrequests" <?php if($settings['enableIPrequests'] == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Enable or disable IP request module'); ?>
@@ -176,7 +198,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('Enable VRF support'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="enableVRF" <?php if($settings['enableVRF'] == 1) print 'checked'; ?>>
+		<input type="checkbox" class="input-switch" value="1" name="enableVRF" <?php if($settings['enableVRF'] == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Enable or disable VRF module'); ?>
@@ -187,7 +209,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('Resolve DNS names'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="enableDNSresolving" <?php if($settings['enableDNSresolving'] == 1) print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="enableDNSresolving" <?php if($settings['enableDNSresolving'] == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Check reverse dns lookups for IP addresses that do not have hostname in database. (Activating this feature can significantly increase ip address pages loading time!)'); ?>
@@ -198,21 +220,10 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('Temporary shares'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="tempShare" <?php if($settings['tempShare'] == 0) print ''; else print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="tempShare" <?php if($settings['tempShare'] == 0) print ''; else print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Allow temporary subnet sharing'); ?>
-	</td>
-</tr>
-
-<!-- Max VLAN number -->
-<tr>
-	<td class="title"><?php print _('Highest VLAN number'); ?></td>
-	<td>
-		<input type="text" class="form-control input-sm" name="vlanMax" value="<?php print $settings['vlanMax']; ?>">
-	</td>
-	<td class="info2">
-		<?php print _('Set highest VLAN number (default 4096)'); ?>
 	</td>
 </tr>
 
@@ -220,7 +231,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('Changelog'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="enableChangelog" <?php if($settings['enableChangelog'] == 0) print ''; else print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="enableChangelog" <?php if($settings['enableChangelog'] == 0) print ''; else print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Enable changelog module'); ?>
@@ -320,7 +331,7 @@ $settings = (array) $User->settings;
 <tr>
 	<td class="title"><?php print _('Hide donation button'); ?></td>
 	<td>
-		<input type="checkbox" value="1" name="donate" <?php if($settings['donate'] == 1) print 'checked'; ?>>
+		<input type="checkbox" value="1" class="input-switch" name="donate" <?php if($settings['donate'] == 1) print 'checked'; ?>>
 	</td>
 	<td class="info2">
 		<?php print _('Hide donation button'); ?>

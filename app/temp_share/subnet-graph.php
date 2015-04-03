@@ -10,7 +10,7 @@ $details = $Subnets->calculate_subnet_usage_detailed( $subnet['subnet'], $subnet
 ?>
 
 
-<h4><?php print _('Usage chart'); ?></h4>
+<h4><?php print _('Usage graph'); ?></h4>
 <hr>
 <div id="pieChart" style="height:220px;width:100%;"></div>
 

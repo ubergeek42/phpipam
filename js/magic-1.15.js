@@ -52,7 +52,6 @@ function submit_popup_data (result_div, target_script, post_data, reload) {
     return false;
 }
 
-
 /* hide error div if jquery loads ok
 *********************************************/
 $('div.jqueryError').hide();

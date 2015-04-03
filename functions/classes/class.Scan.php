@@ -355,6 +355,9 @@ class Scan {
 	    	}
 	    }
 
+	    # save to var
+	    $this->fping_result = $out;
+
 	    # return result?
 	    if($return_result)		{ return $out; }
 

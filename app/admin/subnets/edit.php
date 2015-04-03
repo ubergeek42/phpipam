@@ -41,7 +41,6 @@ else {
  *
  */
 
-
 # we are editing or deleting existing subnet, get old details
 if ($_POST['action'] != "add") {
     $subnet_old_details = (array) $Subnets->fetch_subnet(null, $_POST['subnetId']);
@@ -60,7 +59,6 @@ else {
 		$subnet_old_details['masterSubnetId'] 	= $_POST['freespaceMSID'];		// dumb name, but it will do :)
 	}
 }
-
 # fetch custom fields
 $custom_fields = $Tools->fetch_custom_fields('subnets');
 # fetch vrfs
@@ -78,6 +76,24 @@ if(isset($_POST['vlanId'])) {
 # set readonly flag
 $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : false;
 ?>
+
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-switch.min.css">
+<script type="text/javascript" src="js/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+/* bootstrap switch */
+var switch_options = {
+	onText: "Yes",
+	offText: "No",
+    onColor: 'default',
+    offColor: 'default',
+    size: "mini"
+};
+
+$(".input-switch").bootstrapSwitch(switch_options);
+});
+</script>
 
 
 
@@ -195,6 +211,10 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
 	?>
 	<?php if($_POST['action']=="edit") { ?>
 	<!-- resize / split -->
+    <tr>
+	    <td colspan="3"><hr></td>
+    </tr>
+
 	<tr>
         <td class="middle"><?php print _('Resize'); ?> / <?php print _('split'); ?></td>
         <td>
@@ -208,6 +228,10 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
     </tr>
     <?php } ?>
 
+    <tr>
+	    <td colspan="3"><hr></td>
+    </tr>
+
 	<?php
 	/* allow / deny IP requests if enabled in settings */
 	if($User->settings->enableIPrequests==1) {
@@ -217,7 +241,7 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
 		print '<tr>' . "\n";
         print '	<td>'._('IP Requests').'</td>' . "\n";
         print '	<td>' . "\n";
-        print '		<input type="checkbox" name="allowRequests" value="1" '.$checked.'>'. "\n";
+        print '		<input type="checkbox" name="allowRequests" class="input-switch" value="1" '.$checked.'>'. "\n";
         print '	</td>' . "\n";
         print '	<td class="info2">'._('Allow or deny IP requests for this subnet').'</td>' . "\n";
     	print '</tr>' . "\n";
@@ -231,7 +255,7 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
 		print '<tr>' . "\n";
         print '	<td>'._('Show as name').'</td>' . "\n";
         print '	<td>' . "\n";
-        print '		<input type="checkbox" name="showName" value="1" ' . "\n";
+        print '		<input type="checkbox" name="showName" class="input-switch" value="1" ' . "\n";
         if( @$subnet_old_details['showName'] == 1) { print 'checked';}
         print ' >'. "\n";
 
@@ -258,7 +282,7 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
 		print '<tr>' . "\n";
         print '	<td>'._('Check hosts status').'</td>' . "\n";
         print '	<td>' . "\n";
-        print '		<input type="checkbox" name="pingSubnet" value="1" '.$checked.'>'. "\n";
+        print '		<input type="checkbox" name="pingSubnet" class="input-switch" value="1" '.$checked.'>'. "\n";
         print '	</td>' . "\n";
         print '	<td class="info2">'._('Ping hosts inside subnet to check avalibility').'</td>' . "\n";
         print '</tr>';
@@ -268,7 +292,7 @@ $readonly = $_POST['action']=="edit" || $_POST['action']=="delete" ? true : fals
 		print '<tr>' . "\n";
         print '	<td>'._('Discover new hosts').'</td>' . "\n";
         print '	<td>' . "\n";
-        print '		<input type="checkbox" name="discoverSubnet" value="1" '.$checked.'>'. "\n";
+        print '		<input type="checkbox" name="discoverSubnet" class="input-switch" value="1" '.$checked.'>'. "\n";
         print '	</td>' . "\n";
         print '	<td class="info2">'._('Discover new hosts in this subnet').'</td>' . "\n";
         print '</tr>';

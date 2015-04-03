@@ -31,6 +31,25 @@ isset($filters[$_POST['table']]) ? : $filters[$_POST['table']] = array();
 $custom = $Tools->fetch_custom_fields($_POST['table']);
 ?>
 
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-switch.min.css">
+<script type="text/javascript" src="js/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+/* bootstrap switch */
+var switch_options = {
+	onText: "Hidden",
+	offText: "Visible",
+    onColor: 'default',
+    offColor: 'default',
+    size: "mini",
+    inverse: true
+};
+
+$(".input-switch").bootstrapSwitch(switch_options);
+});
+</script>
+
 <!-- header -->
 <div class="pHeader"><?php print _('Filter custom field display'); ?></div>
 
@@ -46,9 +65,9 @@ $custom = $Tools->fetch_custom_fields($_POST['table']);
 	foreach($custom as $k=>$c) {
 		print "<tr>";
 		# select
-		print "	<td>";
-		if(in_array($k, $filters[$_POST['table']]))	{ print "<input type='checkbox' name='$k' checked>"; }
-		else										{ print "<input type='checkbox' name='$k'>"; }
+		print "	<td style='width:20px;'>";
+		if(in_array($k, $filters[$_POST['table']]))	{ print "<input type='checkbox' class='input-switch' name='$k' checked>"; }
+		else										{ print "<input type='checkbox' class='input-switch' name='$k'>"; }
 		print "	</td>";
 		# name and comment
 		print "	<td>".$k." (".$c['Comment'].")</td>";

@@ -35,7 +35,6 @@ if(filter_var($_POST['siteAdminMail'], FILTER_VALIDATE_EMAIL) === false)	{ $Resu
 //verify numbers
 if(!is_numeric($_POST['vlanMax']))											{ $Result->show("danger", _("Invalid value for Max VLAN number"), true); }
 
-
 # set update values
 $values = array("id"=>1,
 				//site settings
@@ -58,11 +57,8 @@ $values = array("id"=>1,
 				"enableChangelog"=>$Admin->verify_checkbox(@$_POST['enableChangelog']),
 				"tempShare"=>$Admin->verify_checkbox(@$_POST['tempShare']),
 				//display
-				"dhcpCompress"=>$Admin->verify_checkbox(@$_POST['dhcpCompress']),
-				"hideFreeRange"=>$Admin->verify_checkbox(@$_POST['hideFreeRange']),
 				"donate"=>$Admin->verify_checkbox(@$_POST['donate']),
 				"visualLimit"=>@$_POST['visualLimit'],
-				"printLimit"=>@$_POST['printLimit'],
 				"subnetOrdering"=>@$_POST['subnetOrdering'],
 				//ping
 				"scanPingType"=>@$_POST['scanPingType'],

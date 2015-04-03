@@ -13,8 +13,6 @@ version - 1.2
 
 	+ Add missing api actions;
 
-	+ http://www.bootstrap-switch.org/index.html;
-
 	+ add customers module;
 
 	+ per-section DNS resolvers (PEAR DNS2)
@@ -22,8 +20,6 @@ version - 1.2
 	+ assign a state to a subnet, ipaddr, vlan
 
 	+ Mail subnet details
-
-	+ status - available, trash (preveri kako)
 
 	+ IP address owner (from internal users)
 
@@ -36,6 +32,8 @@ version - 1.2
 	+ phpipam scan Agents
 
 	+ custom fields for IP requests
+
+	+ custom VRF fields
 
 	+ Templating;
 

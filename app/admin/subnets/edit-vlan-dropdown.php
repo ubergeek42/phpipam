@@ -58,7 +58,7 @@ $permitted_domains = array_filter($out);
 					if(!empty($v->name)) { $printVLAN .= " ($v->name)"; }
 
 					/* selected? */
-					if(@$subnetDataOld['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+					if(@$subnet_old_details['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
 					elseif(@$_POST['vlanId'] == $v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
 					else 										{ print '<option value="'. $v->vlanId .'">'. $printVLAN .'</option>'. "\n"; }
 				}
@@ -81,7 +81,7 @@ $permitted_domains = array_filter($out);
 				if(!empty($v->name)) { $printVLAN .= " ($v->name)"; }
 
 				/* selected? */
-				if(@$subnetDataOld['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
+				if(@$subnet_old_details['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
 				elseif(@$_POST['vlanId'] == $v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
 				else 										{ print '<option value="'. $v->vlanId .'">'. $printVLAN .'</option>'. "\n"; }
 			}

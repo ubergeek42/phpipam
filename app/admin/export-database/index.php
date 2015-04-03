@@ -4,9 +4,8 @@
  *	Script to export IP database to excel file!
  **********************************************/
 
-
-/* verify that user is admin */
-checkAdmin();
+# verify that user is logged in
+$User->check_user_session();
 
 ?>
 

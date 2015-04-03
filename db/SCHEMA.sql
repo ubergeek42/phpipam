@@ -26,7 +26,7 @@ CREATE TABLE `ipaddresses` (
   `dns_name` varchar(100) DEFAULT NULL,
   `mac` varchar(20) DEFAULT NULL,
   `owner` varchar(32) DEFAULT NULL,
-  `state`  INT(3)  NULL  DEFAULT '1',
+  `state`  INT(3)  NULL  DEFAULT '2',
   `switch` INT(11)  UNSIGNED  NULL  DEFAULT NULL,
   `port` varchar(32) DEFAULT NULL,
   `note` text,
@@ -39,16 +39,16 @@ CREATE TABLE `ipaddresses` (
 /* insert default values */
 INSERT INTO `ipaddresses` (`id`, `subnetId`, `ip_addr`, `description`, `dns_name`, `state`)
 VALUES
-	(1,3,'168427779','Server1','server1.cust1.local',1),
-	(2,3,'168427780','Server2','server2.cust1.local',1),
-	(3,3,'168427781','Server3','server3.cust1.local',2),
-	(4,3,'168427782','Server4','server4.cust1.local',2),
-	(5,3,'168428021','Gateway',NULL,1),
-	(6,4,'168428286','Gateway',NULL,1),
-	(7,4,'168428042','Server1','ser1.client2.local',1),
-	(8,6,'172037636','DHCP range',NULL,3),
-	(9,6,'172037637','DHCP range',NULL,3),
-	(10,6,'172037638','DHCP range',NULL,3);
+	(1,3,'168427779','Server1','server1.cust1.local',2),
+	(2,3,'168427780','Server2','server2.cust1.local',2),
+	(3,3,'168427781','Server3','server3.cust1.local',3),
+	(4,3,'168427782','Server4','server4.cust1.local',3),
+	(5,3,'168428021','Gateway',NULL,2),
+	(6,4,'168428286','Gateway',NULL,2),
+	(7,4,'168428042','Server1','ser1.client2.local',2),
+	(8,6,'172037636','DHCP range',NULL,4),
+	(9,6,'172037637','DHCP range',NULL,4),
+	(10,6,'172037638','DHCP range',NULL,4);
 
 
 # Dump of table logs
@@ -103,6 +103,7 @@ CREATE TABLE `sections` (
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   `showVLAN` BOOL  NOT NULL  DEFAULT '0',
   `showVRF` BOOL  NOT NULL  DEFAULT '0',
+  `DNS` VARCHAR(128)  NULL  DEFAULT NULL,
   PRIMARY KEY (`name`),
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)
@@ -137,6 +138,8 @@ CREATE TABLE `settings` (
   `vlanMax` INT(8)  NULL  DEFAULT '4096',
   `subnetOrdering` varchar(16) DEFAULT 'subnet,asc',
   `visualLimit` int(2) NOT NULL DEFAULT '0',
+  `autoSuggestNetwork` TINYINT(1)  NOT NULL  DEFAULT '0',
+  `permitUserVlanCreate` TINYINT(1)  NOT NULL  DEFAULT '0',
   `pingStatus` VARCHAR(12)  NOT NULL  DEFAULT '1800;3600',
   `defaultLang` INT(3)  NULL  DEFAULT NULL,
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
@@ -226,6 +229,8 @@ CREATE TABLE `subnets` (
   `pingSubnet` BOOL NULL  DEFAULT '0',
   `discoverSubnet` BINARY(1)  NULL  DEFAULT '0',
   `isFolder` BOOL NULL  DEFAULT '0',
+  `isFull` TINYINT(1)  NULL  DEFAULT '0',
+  `state` INT(3)  NULL  DEFAULT '2',
   `editDate` TIMESTAMP  NULL  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -525,10 +530,10 @@ CREATE TABLE `ipTags` (
 /* insert default values */
 INSERT INTO `ipTags` (`id`, `type`, `showtag`, `bgcolor`, `fgcolor`, `locked`)
 VALUES
-	(0, 'Offline', 1, '#f59c99', '#ffffff', 'Yes'),
-	(1, 'Used', 0, '#a9c9a4', '#ffffff', 'Yes'),
-	(2, 'Reserved', 1, '#9ac0cd', '#ffffff', 'Yes'),
-	(3, 'DHCP', 1, '#c9c9c9', '#ffffff', 'Yes');
+	(1, 'Offline', 1, '#f59c99', '#ffffff', 'Yes'),
+	(2, 'Used', 0, '#a9c9a4', '#ffffff', 'Yes'),
+	(3, 'Reserved', 1, '#9ac0cd', '#ffffff', 'Yes'),
+	(4, 'DHCP', 1, '#c9c9c9', '#ffffff', 'Yes');
 
 
 # Dump of table -- for autofix comment, leave as it is
@@ -537,4 +542,4 @@ VALUES
 
 # update version
 # ------------------------------------------------------------
-UPDATE `settings` set `version` = '1.13';
+UPDATE `settings` set `version` = '1.15';
