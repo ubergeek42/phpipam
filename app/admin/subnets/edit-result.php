@@ -96,7 +96,7 @@ if ( ($_POST['sectionId'] != @$_POST['sectionIdNew']) && $_POST['action']=="edit
  */
 else if (($_POST['action']=="add") && ($_POST['masterSubnetId']==0)) {
     //verify cidr
-    $cidr_check = $Subnets->verify_cidr($_POST['cidr']);
+    $cidr_check = $Subnets->verify_cidr_address($_POST['cidr']);
     if(strlen($cidr_check)>5) {
 	    $errors[] = $cidr_check;
 	}
@@ -116,7 +116,7 @@ else if (($_POST['action']=="add") && ($_POST['masterSubnetId']==0)) {
  */
 else if ($_POST['action']=="add") {
     //verify cidr
-    $cidr_check = $Subnets->verify_cidr($_POST['cidr']);
+    $cidr_check = $Subnets->verify_cidr_address($_POST['cidr']);
     if(strlen($cidr_check)>5) {
 	    $errors[] = $cidr_check;
 	}

@@ -226,6 +226,8 @@ else {
 	# re-initialize classes
 	$Database = new Database_PDO;
 	$Scan = new Scan ($Database);
+	// reset debugging
+	$Scan->reset_debugging(false);
 
 	# update all active statuses
 	foreach($addresses as $k=>$a) {
@@ -237,12 +239,24 @@ else {
 
 
 # print change
-if($Scan->debugging)							{ "\nAddress changes:\n----------\n"; print_r($address_change); }
-
-
+if($Scan->debugging)							{ print "\nAddress changes:\n----------\n"; print_r($address_change); }
 
 # all done, mail diff?
 if(sizeof($address_change)>0 && $send_mail) {
+
+	if(!is_object(@$Scan)) {
+		$Database 	= new Database_PDO;
+		$Subnets	= new Subnets ($Database);
+		$Addresses	= new Addresses ($Database);
+		$Tools		= new Tools ($Database);
+		$Scan		= new Scan ($Database);
+		$Result		= new Result();
+
+		// set exit flag to true
+		$Scan->ping_set_exit(true);
+		// set debugging
+		$Scan->reset_debugging(false);
+	}
 
 	# check for recipients
 	foreach($Tools->fetch_multiple_objects ("users", "role", "Administrator") as $admin) {

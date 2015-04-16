@@ -33,7 +33,7 @@ foreach($permitted_domains as $k=>$d) {
 	$out[$d]['domain'] = $domain;
 	$out[$d]['vlans']  = $vlans;
 	//count add
-	$vlans===false ? : $cnt++;
+	$cnt++;
 }
 //filter out empty
 $permitted_domains = array_filter($out);
@@ -46,7 +46,6 @@ $permitted_domains = array_filter($out);
 	# print all available domains
 	foreach($permitted_domains as $d) {
 		//more than default
-		if($cnt>1) {
 			print "<optgroup label='".$d['domain']->name."'>";
 			//add
 			print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
@@ -65,27 +64,8 @@ $permitted_domains = array_filter($out);
 			}
 			else {
 				print "<option value='0' disabled>"._('No VLANs')."</option>";
-				//add
-				print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
 			}
 			print "</optgroup>";
-		}
-		//only default domain
-		else {
-			//add
-			print "<option value='Add' data-domain='".$d['domain']->id."'>"._('+ Add new VLAN')."</option>";
-
-			foreach($d['vlans'] as $v) {
-				// set print
-				$printVLAN = $v->number;
-				if(!empty($v->name)) { $printVLAN .= " ($v->name)"; }
-
-				/* selected? */
-				if(@$subnet_old_details['vlanId']==$v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
-				elseif(@$_POST['vlanId'] == $v->vlanId) 	{ print '<option value="'. $v->vlanId .'" selected>'. $printVLAN .'</option>'. "\n"; }
-				else 										{ print '<option value="'. $v->vlanId .'">'. $printVLAN .'</option>'. "\n"; }
-			}
-		}
 	}
 	?>
 </select>

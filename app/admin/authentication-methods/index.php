@@ -54,6 +54,9 @@ foreach($all_methods as $method) {
 	if(strlen($method->params)>0) {
 		$params = json_decode($method->params);
 		foreach($params as $key=>$parameter) {
+			// mask user/pass
+			if($key=="adminPassword")	{ $parameter = "********"; }
+			// print
 			print $key." => ".$parameter."<br>";
 		}
 	}
