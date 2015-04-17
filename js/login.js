@@ -58,18 +58,6 @@ $('form#login').submit(function() {
     return false;
 });
 
-/*	auto-suggest first available IP in selected subnet
-********************************************************/
-$(document).on("change", "select#subnetId", function() {
-	showSpinner();
-	var subnetId = $('select#subnetId option:selected').attr('value');
-	//post it via json to request_ip_first_free.php
-	$.post('app/login/request_ip_first_free.php', { subnetId:subnetId}, function(data) {
-		$('input.ip_addr').val(data);
-		hideSpinner();
-	});
-});
-
 /*	submit IP request
 *****************************************/
 $(document).on("submit", "#requestIP", function() {

@@ -114,7 +114,7 @@ $content[] = "</table>";
 $content_plain[] = "$subject"."\r\n------------------------------";
 $content_plain[] = _("Subnet").": ".$Addresses->transform_to_dotted($subnet['subnet'])."/".$subnet['mask'] ;
 if($_POST['action'] == "accept")
-$content_plain[] = _("Assigned IP address").":  ".$Addresses->transform_to_dotted($_POST['ip_addr']);
+$content_plain[] = _("Assigned IP address").":  ".$Addresses->transform_address($_POST['ip_addr'], "dotted");
 $content_plain[] = _("Description").":  $_POST[description]";
 $content_plain[] = _("Hostname").":  $_POST[dns_name]";
 $content_plain[] = _("Owner").":  $_POST[owner]";

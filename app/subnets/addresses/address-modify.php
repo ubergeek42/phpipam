@@ -79,6 +79,24 @@ else				{ $delete = ""; }
 
 ?>
 
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-switch.min.css">
+<script type="text/javascript" src="js/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+/* bootstrap switch */
+var switch_options = {
+	onText: "Yes",
+	offText: "No",
+    onColor: 'default',
+    offColor: 'default',
+    size: "mini"
+};
+
+$(".input-switch").bootstrapSwitch(switch_options);
+});
+</script>
+
 <!-- header -->
 <div class="pHeader"><?php print ucwords($btnName); ?> <?php print _('IP address'); ?></div>
 
@@ -231,7 +249,7 @@ else				{ $delete = ""; }
 		# fetch all states
 		$ip_types = $Addresses->addresses_types_fetch();
 		# default type
-		if(!is_numeric(@$address['state'])) 		{ $address['state'] = 1; }
+		if(!is_numeric(@$address['state'])) 		{ $address['state'] = 2; }
 
 		print '<tr>'. "\n";
 		print '	<td>'._('Tag').'</td>'. "\n";
@@ -269,10 +287,7 @@ else				{ $delete = ""; }
 	<tr>
 		<td><?php print _("Is gateway"); ?></td>
 		<td>
-			<select name="is_gateway" class="form-control input-w-auto">
-				<option value="0"><?php print _('No'); ?></option>
-				<option value="1" <?php if(@$address['is_gateway']==1) print "selected='selected'"; ?>><?php print _('Yes'); ?></option>
-			</select>
+			<input type="checkbox" name="is_gateway" class="input-switch" value="1" <?php if(@$address['is_gateway']==1) print "checked"; ?>>
 		</td>
 	</tr>
 

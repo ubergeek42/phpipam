@@ -169,6 +169,194 @@ function write_log( $command, $details = NULL, $severity = 0, $username = NULL )
 
 
 /**
+ * Functions to write changelog
+ *
+ */
+function write_changelog($ctype, $action, $result, $old, $new) {
+	return false;
+	//cast
+	$old = (array) $old;
+	$new = (array) $new;
+
+    /* set query, open db connection and fetch results */
+    global $database;
+    # get settings
+    $settings = getAllSettings();
+
+    if($settings['enableChangelog']==1) {
+
+	    # get user details
+	    $cuser = getActiveUserDetails();
+
+	    # unset unneeded values and format
+	    if($ctype == "ip_addr") 	{
+	    	unset($new['action'], $new['subnet'], $new['type']);
+	    } elseif($ctype == "subnet")	{
+	    	$new['id'] = $new['subnetId'];
+	    	unset($new['action'], $new['subnetId'], $new['location'], $new['vrfIdOld'], $new['permissions']);
+	    	# if section does not change
+	    	if($new['sectionId']==$new['sectionIdNew']) { unset($new['sectionIdNew']); unset($new['sectionId']); unset($old['sectionId']); }
+	    	else										{ $old['sectionIdNew'] = $old['sectionId']; }
+	    	//transform subnet
+	    	if(strlen($new['subnet'])>0) {
+		    	$new['subnet'] = Transform2decimal (substr($new['subnet'], 0, strpos($new['subnet'], "/")));
+			}
+	    } elseif($ctype == "section") {
+		    unset($new['action']);
+	    }
+
+	    # calculate diff
+	    if($action == "edit") {
+			//old - checkboxes
+			foreach($old as $k=>$v) {
+				if(!isset($new[$k]) && $v==1) {
+					$new[$k] = 0;
+				}
+			}
+			foreach($new as $k=>$v) {
+				//change
+				if($old[$k]!=$v && ($old[$k] != str_replace("\'", "'", $v)))	{
+					//empty
+					if(strlen(@$old[$k])==0)	{ $old[$k] = "NULL"; }
+					if(strlen(@$v)		==0)	{ $v = "NULL"; }
+
+					//state
+					if($k == 'state') {
+						$old[$k] = reformatIPStateText($old[$k]);
+						$v = reformatIPStateText($v);
+					}
+					//section
+					elseif($k == 'sectionIdNew') {
+						//get old and new device
+						if($old[$k] != "NULL") 		{ $dev = getSectionDetailsById($old[$k]);	$old[$k] = $dev['name']; }
+						if($v 	 	!= "NULL")		{ $dev = getSectionDetailsById($v);			$v 		 = $dev['name'];  }
+					}
+					//subnet change
+					elseif($k == "masterSubnetId") {
+						if($old[$k]==0)				{ $old[$k] = "Root"; }
+						else						{ $dev = getSubnetDetailsById($old[$k]);	$old[$k] = transform2long($dev['subnet'])."/$dev[mask] [$dev[description]]"; }
+						if($v==0)					{ $v 	   = "Root"; }
+						else						{ $dev = getSubnetDetailsById($v);			$v 		 = transform2long($dev['subnet'])."/$dev[mask] [$dev[description]]"; }
+					}
+					//device change
+					elseif($k == 'switch') {
+						if($old[$k] == 0)			{ $old[$k] = "None"; }
+						elseif($old[$k] != "NULL") 	{ $dev = getDeviceDetailsById($old[$k]);	$old[$k] = $dev['hostname']; }
+						if($v == 0)					{ $v = "None"; }
+						if($v 	 	!= "NULL")		{ $dev = getDeviceDetailsById($v);			$v 		 = $dev['hostname'];  }
+					}
+					//vlan
+					elseif($k == 'vlanId') {
+						//get old and new device
+						if($old[$k] == 0)			{ $old[$k] = "None"; }
+						elseif($old[$k] != "NULL") 	{ $dev = getVLANById($old[$k]);				$old[$k] = $dev['name']." [$dev[number]]"; }
+						if($v == 0)					{ $v = "None"; }
+						elseif($v 	 	!= "NULL")	{ $dev = getVLANById($v);					$v 		 = $dev['name']." [$dev[number]]"; }
+					}
+					//vrf
+					elseif($k == 'vrfId') {
+						//get old and new device
+						if($old[$k] == 0)			{ $old[$k] = "None"; }
+						elseif($old[$k] != "NULL") 	{ $dev = getVRFDetailsById($old[$k]);		$old[$k] = $dev['name']." [$dev[description]]"; }
+						if($v == 0)					{ $v = "None"; }
+						elseif($v 	 	!= "NULL")	{ $dev = getVRFDetailsById($v);				$v 		 = $dev['name']." [$dev[description]]"; }
+					}
+					//master section change
+					elseif($k == 'masterSection') {
+						if($old[$k]==0)				{ $old[$k] = "Root"; }
+						else						{ $dev = getSectionDetailsById($old[$k]);	$old[$k] = "$dev[name]"; }
+						if($v==0)					{ $v 	   = "Root"; }
+						else						{ $dev = getSectionDetailsById($v);			$v 		 = "$dev[name]"; }
+					}
+					//permission change
+					elseif($k == "permissions") {
+						# get old and compare
+						$new['permissions'] = str_replace("\\", "", $new['permissions']);		//Remove /
+
+						# Get all groups:
+						$groups = getAllGroups();
+						$groups = rekeyGroups($groups);
+
+						# reformat:
+						$newp = json_decode($new['permissions']);
+						$v = '';
+						foreach($newp as $ke=>$p) {
+							$v .= "<br>". $groups[$ke]['g_name'] ." : ".parsePermissions($p);
+						}
+
+						$old[$k] = "";
+					}
+
+
+					$log["[$k]"] = "$old[$k] => $v";
+				}
+			}
+		}
+		elseif($action == "add") {
+			$log['[create]'] = "$ctype created";
+		}
+		elseif($action == "delete") {
+			$log['[delete]'] = "$ctype deleted";
+			$new['id']		 = $old['id'];
+		}
+		elseif($action == "truncate") {
+			$log['[truncate]'] = "Subnet truncated";
+		}
+		elseif($action == "resize") {
+			$log['[resize]'] = "Subnet Resized";
+			$log['[New mask]'] = "/".$new['mask'];
+		}
+		elseif($action == "perm_change") {
+			# get old and compare
+			$new['permissions_change'] = str_replace("\\", "", $new['permissions_change']);		//Remove /
+
+			# Get all groups:
+			$groups = getAllGroups();
+			$groups = rekeyGroups($groups);
+
+			# reformat
+			if($new['permissions_change']!="null") {
+			$newp = json_decode($new['permissions_change']);
+			foreach($newp as $k=>$p) {
+				$log['[Permissions]'] .= "<br>". $groups[$k]['g_name'] ." : ".parsePermissions($p);
+			}
+			}
+
+		}
+
+		//if change happened write it!
+		if(isset($log)) {
+			# format change
+			foreach(@$log as $k=>$l) {
+				$changelog .= "$k $l\n";
+			}
+			$changelog = $database->real_escape_string(trim($changelog));
+
+			# set insert query
+			$query = "insert into `changelog` (`ctype`,`coid`,`cuser`,`caction`,`cresult`,`cdate`,`cdiff`) values ('$ctype', '$new[id]', '$cuser[id]', '$action', '$result', NOW(), '$changelog');";
+
+			# execute
+			try {  $database->executeQuery( $query ); }
+			catch (Exception $e) {
+		    	$error =  $e->getMessage();
+				return true;
+			}
+			# mail it!
+
+
+			# all good
+			return true;
+		}
+	}
+	# not enabled
+	else {
+		return true;
+	}
+}
+
+
+
+/**
  * Functions to transform IPv6 to decimal and back
  *
  */

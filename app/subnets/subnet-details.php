@@ -280,7 +280,7 @@ $rowSpan = 10 + sizeof($custom_fields);
 	print "<div class='btn-group'>";
 		// if full prevent new
 		if($Subnets->reformat_number($subnet_usage['freehosts'])=="0" || !$sp['addip'])
-		print "<a class='btn btn-xs btn-default btn-success disabled' 	href='' data-container='body' rel='tooltip' title='"._('Add new IP address1')."'>															<i class='fa fa-plus'></i></a> ";
+		print "<a class='btn btn-xs btn-default btn-success disabled' 	href='' data-container='body' rel='tooltip' title='"._('Add new IP address')."'>															<i class='fa fa-plus'></i></a> ";
 		else
 		print "<a class='modIPaddr btn btn-xs btn-default btn-success' 	href='' data-container='body' rel='tooltip' title='"._('Add new IP address')."' data-subnetId='$subnet[id]' data-action='add' data-id=''>	<i class='fa fa-plus'></i></a> ";
 		//requests
