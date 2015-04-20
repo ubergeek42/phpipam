@@ -109,6 +109,14 @@ for($mask=($subnet->mask+1); $mask<=$max_new_mask; $mask++) {
     	</td>
     </tr>
 
+    <!-- Prefix -->
+    <tr>
+    	<td><?php print _('Name prefix'); ?></td>
+    	<td>
+	    	<input type="text" name="prefix" value="<?php print $subnet->description."_"; ?>">
+    	</td>
+    </tr>
+
     </table>
     </form>
 

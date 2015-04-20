@@ -16,6 +16,7 @@ if(!is_object($User)) {
 	$User 		= new User ($Database);
 	$Tools 		= new Tools ($Database);
 	$Subnets 	= new Subnets ($Database);
+	$Addresses 	= new Addresses ($Database);
 }
 
 # user must be authenticated
@@ -45,7 +46,7 @@ else {
 	print "	<th>"._('Description')."</th>";
 	print "	<th>"._('Section')."</th>";
 	print "	<th>"._('VLAN')."</th>";
-	print "	<th style='width:5px;'></th>";
+	print "	<th></th>";
 	print "</tr>";
 
 	# subnets
@@ -79,8 +80,26 @@ else {
 				print "	<td>/</td>";
 			}
 
-			# remove from favourites
-			print "	<td><a class='btn btn-xs btn-default editFavourite favourite-$f[subnetId]' data-subnetId='$f[subnetId]' data-action='remove' data-from='widget' rel='tooltip' data-placement='left' title='"._('Click to remove from favourites')."'><i class='fa fa-star'></i></a></td>";
+			# usage
+			if($f['isFolder']==1) {
+			}
+			elseif(!$master) {
+	    		$address_count = $Addresses->count_subnet_addresses ($f['subnetId']);
+	    		$subnet_usage = $Subnets->calculate_subnet_usage (gmp_strval($address_count), $f['mask'], $f['subnet']);
+	    	}
+
+			# add address
+			if($master===true || $f['isFolder']==1 || $Subnets->reformat_number($subnet_usage['freehosts'])=="0") 	{ $disabled = "disabled"; }
+			else																									{ $disabled = ""; }
+
+			# remove
+			print "	<td class='actions'>";
+			print "	<div class='btn-group'>";
+			print "	<a class='btn btn-xs btn-default modIPaddr btn-success $disabled' href='' data-container='body' rel='tooltip' title='"._('Add new IP address')."' data-subnetId='$f[subnetId]' data-action='add' data-id=''><i class='fa fa-plus'></i></a>";
+			print "	<a class='btn btn-xs btn-default editFavourite' data-subnetId='$f[subnetId]' data-action='remove' data-from='widget'><i class='fa fa-star favourite-$f[subnetId]' rel='tooltip' title='"._('Click to remove from favourites')."'></i></a>";
+			print "	</div>";
+			print " </td>";
+
 			print "</tr>";
 		}
 	}

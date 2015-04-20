@@ -144,9 +144,10 @@ if($nested_subnets!==false) {
 
 # create new subnets and change subnetId for recalculated hosts
 $m = 0;
+
 foreach($newsubnets as $subnet) {
 	//set new subnet insert values
-	$values = array("description"=>strlen($subnet['description'])>0 ? $subnet['description']."_$m" : "split_subnet_$m",
+	$values = array("description"=>strlen($_POST['prefix'])>0 ? $_POST['prefix'].($m+1) : "split_subnet_".($m+1),
 					"subnet"=>$subnet['subnet'],
 					"mask"=>$subnet['mask'],
 					"sectionId"=>$subnet['sectionId'],

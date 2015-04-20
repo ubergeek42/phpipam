@@ -83,8 +83,8 @@ class phpipam_mail {
 		//set smtp
 		$this->Php_mailer->isSMTP();
 		//tls, ssl?
-		if($this->mail_settings!='none')
-		$this->Php_mailer->SMTPSecure = $this->mail_settings=='ssl' ? 'ssl' : 'tls';
+		if($this->mail_settings->msecure!='none')
+		$this->Php_mailer->SMTPSecure = $this->mail_settings->msecure=='ssl' ? 'ssl' : 'tls';
 		//server
 		$this->Php_mailer->Host = $this->mail_settings->mserver;
 		$this->Php_mailer->Port = $this->mail_settings->mport;

@@ -33,7 +33,7 @@ if($_POST['action']=="edit"||$_POST['action']=="delete") {
 if(strlen(@$_POST['password1'])>0 || (@$_POST['action']=="add" && $auth_method->type=="local")) {
 	//checks
 	if($_POST['password1']!=$_POST['password2'])						{ $Result->show("danger", _("Passwords do not match"), true); }
-	if(strlen($_POST['password1'])<6)									{ $Result->show("danger", _("Password must be at least 8 characters long!"), true); }
+	if(strlen($_POST['password1'])<8)									{ $Result->show("danger", _("Password must be at least 8 characters long!"), true); }
 
 	//hash passowrd
 	$_POST['password1'] = $User->crypt_user_pass ($_POST['password1']);
@@ -47,7 +47,7 @@ if (!validate_email(@$_POST['email'])) 									{ $Result->show("danger", _("Inv
 # username must not already exist (if action is add)
 if ($_POST['action']=="add") {
 	//username > 8 chars
-	if(strlen($_POST['username'])<8)									{ $Result->show("danger", _("Username must be at least 8 characters long!"), true); }
+	if(strlen($_POST['username'])<6)									{ $Result->show("danger", _("Username must be at least 6 characters long!"), true); }
 	//check duplicate
 	if($Admin->fetch_object("users", "username", $_POST['username'])!==false) {
 																		{ $Result->show("danger", _("User")." ".$_POST['username']." "._("already exists!"), true); }

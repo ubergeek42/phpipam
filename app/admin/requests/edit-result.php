@@ -92,7 +92,7 @@ $phpipam_mail->initialize_mailer();
 
 
 # subject
-if($_POST['action'] == "accept")  	{ $subject = _("IP address request")."$_POST[ip_addr] "._("$_POST[action]ed"); }
+if($_POST['action'] == "accept")  	{ $subject = _("IP address request")." $_POST[ip_addr] "._("$_POST[action]ed"); }
 else								{ $subject = _("IP address request $_POST[action]ed"); }
 
 # set HTML content
@@ -100,7 +100,7 @@ $content[] = "<table style='margin-left:10px;margin-top:5px;width:auto;padding:0
 $content[] = "<tr><td style='padding:5px;margin:0px;color:#333;font-size:16px;text-shadow:1px 1px 1px white;border-bottom:1px solid #eeeeee;' colspan='2'><font face='Helvetica, Verdana, Arial, sans-serif' style='font-size:16px;'>$subject</font></td></tr>";
 $content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('Subnet').'   			</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. $Addresses->transform_to_dotted($subnet['subnet'])."/".$subnet['mask'] .'</font></td></tr>' . "\n";
 if($_POST['action'] == "accept")
-$content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('assigned IP address').'</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. $Addresses->transform_to_dotted(@$_POST['ip_addr']) .'</font></td></tr>' . "\n";
+$content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('assigned IP address').'</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. $Addresses->transform_address($_POST['ip_addr'], "dotted") .'</font></td></tr>' . "\n";
 $content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('Description').'		</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. @$_POST['description'] .'</font></td></tr>' . "\n";
 $content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('Hostname').'			</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. @$_POST['dns_name'] .'</font></td></tr>' . "\n";
 $content[] = '<tr><td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">&bull; '._('Owner').'				</font></td>	<td style="padding: 0px;padding-left:10px;margin:0px;line-height:18px;text-align:left;"><font face="Helvetica, Verdana, Arial, sans-serif" style="font-size:13px;">'. @$_POST['owner'] .'</font></td></tr>' . "\n";

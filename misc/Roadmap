@@ -39,6 +39,15 @@ version - 1.2
 
 	+ ARIN whois (https://www.arin.net/resources/whoisrws/whois_api.html);
 
+	+ Override entries on import checkbox;
+
+	+ Resolve requests - rwa users;
+
+	+ NAT module
+		- Link individual ip addresses (eg public <> private) - static NAT, destination NAT
+		- Ability to create NAT pools and link subnet / address to that pool - source NAT
+		- Show bindings under tools and next to IP address
+
 
 features for next releases:
 ---------------------------
