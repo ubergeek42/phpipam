@@ -41,6 +41,7 @@ else {
 			print "<tr class='favSubnet-$f[subnetId]'>";
 
 			if($f['isFolder']==1) {
+				$master = true;
 				print "	<td><a href='".create_link("folder",$f['sectionId'],$f['subnetId'])."'><i class='fa fa-folder fa-sfolder'></i> $f[description]</a></td>";
 			}
 			else {
