@@ -232,7 +232,7 @@ if(sizeof($address)>1) {
 			print "<td>";
 			$m=1;
 			foreach($active_shares as $s) {
-				print "<button class='btn btn-xs btn-default removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expires")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				print "<button class='btn btn-xs btn-default removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".create_link("temp_share",$s->code)."'>Share $m</a> ("._("Expires")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
 				$m++;
 			}
 			print "<td>";
@@ -250,7 +250,7 @@ if(sizeof($address)>1) {
 			print "<td>";
 			$m=1;
 			foreach($expired_shares as $s) {
-				print "<button class='btn btn-xs btn-danger removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".createURL().BASE."temp_share/$s->code/'>Share $m</a> ("._("Expired")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
+				print "<button class='btn btn-xs btn-danger removeSharedTemp' data-code='$s->code' ><i class='fa fa-times'></i></button> <a href='".create_link("temp_share",$s->code)."'>Share $m</a> ("._("Expired")." ".date("Y-m-d H:i:s", $s->validity).")<br>";
 				$m++;
 			}
 			print "<td>";

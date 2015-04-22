@@ -119,7 +119,8 @@ $(".input-switch").bootstrapSwitch(switch_options);
             <input type="text" class="form-control input-sm input-w-200" name="subnet"   placeholder="<?php print _('subnet in CIDR'); ?>"   value="<?php print @$cidr; ?>" <?php if ($readonly) print "readonly"; ?>>
         </td>
         <td class="info2">
-        	<button class="btn btn-xs btn-default"  id='get-ripe' rel='tooltip' data-placement="bottom" title='<?php print _('Get information from RIPE database'); ?>'><i class="fa fa-refresh"></i></button>
+        	<button type="button" class="btn btn-xs btn-default show-masks" rel='tooltip' data-placement="bottom" title='<?php print _('Subnet masks'); ?>' data-closeClass="hidePopupMasks"><i class="fa fa-th-large"></i></button>
+        	<button type="button" class="btn btn-xs btn-default"  id='get-ripe' rel='tooltip' data-placement="bottom" title='<?php print _('Get information from RIPE database'); ?>'><i class="fa fa-refresh"></i></button>
         	<?php print _('Enter subnet in CIDR format (e.g. 192.168.1.1/24)'); ?>
         </td>
     </tr>

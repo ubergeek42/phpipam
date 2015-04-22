@@ -47,7 +47,8 @@ $share->details = implode("<br>", $tmp);
 $share->validity = date("Y-m-d H:i:s", strtotime("+1 day"));
 
 # set url for printing
-$url = create_link("temp_share", $share->code);
+$url = createURL().rtrim(BASE, "/").create_link("temp_share",$share->code);
+
 ?>
 
 
@@ -77,7 +78,7 @@ $(".datetimepicker").datetimepicker( { pickDate: true, pickTime: true } );
 			print "<div style='padding:20px;font-size:14px;' class='text-muted'>";
 			print $share->details;
 			print "	<hr style='margin-top:15px;margin-bottom:15px;'>";
-			print "URL: <a href='$url' target='_blank'>$url</a>";
+			print "URL: <xmp>$url</xmp>";
 			print "</div>";
 			print "<hr>";
 			?>

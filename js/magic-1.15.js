@@ -101,8 +101,13 @@ function hidePopup2() {
     $('.popup_w700').css("z-index", "100");        //set popup back
     hideSpinner();
 }
+function hidePopupMasks() {
+    $('.popup_wmasks').fadeOut('fast');
+    hideSpinner();
+}
 $(document).on("click", "#popupOverlay, .hidePopups", function() { hidePopups(); });
 $(document).on("click", "button.hidePopup2", function() { hidePopup2(); });
+$(document).on("click", ".hidePopupMasks", function() { hidePopupMasks(); });
 
 //prevent loading for disabled buttons
 $('a.disabled, button.disabled').click(function() { return false; });
@@ -845,7 +850,11 @@ $(document).on('submit', "#deviceFilter", function() {
     return false;
 });
 
-
+// show subnet masks popup
+$(document).on("click", '.show-masks', function() {
+	open_popup("masks", "app/tools/subnet-masks/popup.php", {closeClass:$(this).attr('data-closeClass')});
+	return false;
+});
 
 
 
@@ -1359,8 +1368,6 @@ $(document).on("click", "button#subnetTruncateSubmit", function() {
 	return false;
 });
 $(document).on("submit", "#editSubnetDetails", function() {
-	alert('test');
-	hideSpinner();
 	return false;
 });
 //save edit subnet changes

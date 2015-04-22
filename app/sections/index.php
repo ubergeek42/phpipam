@@ -199,6 +199,11 @@ require( dirname(__FILE__) . '/../admin/admin-menu-config.php' );
 			</li>
 		<?php } ?>
 
+		<!-- masks -->
+		<li>
+			<a href="" class="icon-li show-masks" rel='tooltip' data-placement='bottom' title="<?php print _('Subnet masks'); ?>" data-closeClass="hidePopups"><i class='fa fa-th-large'></i></a>
+		</li>
+
 		<!-- Favourites -->
 		<?php
 		//check if user has favourite subnets

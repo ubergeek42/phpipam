@@ -96,6 +96,11 @@ pre {
 	color: #686868;
 	font-weight: normal;
 }
+xmp {
+	font-size: 12px;
+	line-height: normal;
+	font-weight: normal;
+}
 blockquote {
 	border-left-width: 2px !important;
 }
@@ -166,6 +171,11 @@ table td.info2,
 }
 .info2 checkbox {
 	margin-top: 2px;
+}
+.subnet-mask-table th,
+.subnet-mask-table td {
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 
@@ -1822,13 +1832,24 @@ table#userPrint h4 {
 
 	z-index: 102;
 }
-.popup_w700 {
+.popup_w700,
+.popup_wmasks {
 	width: 700px;
 
 	left: 50%;
 	margin-left: -350px;
 
 	z-index: 101;
+}
+.popup_wmasks {
+
+	width: 800px;
+	margin-left: -400px;
+
+	z-index: 104;
+}
+.popup_wmasks .pContent {
+	max-height: 700px !important;
 }
 .popup_max {
 	width: 90%;

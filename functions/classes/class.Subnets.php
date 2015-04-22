@@ -565,6 +565,39 @@ class Subnets {
 		return sizeof($gateway)>0 ? $gateway : false;
 	}
 
+	/**
+	 * Returns all IPv4 subnet masks with different presentations
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function get_ipv4_masks () {
+		# loop masks
+		for($mask=30; $mask>=8; $mask--) {
+			// initialize
+			$out[$mask] = new StdClass ();
+
+			// fake cidr
+			$this->initialize_pear_net_IPv4 ();
+			$net = Net_IPv4::parseAddress("10.0.0.0/$mask");
+
+			// set
+			$out[$mask]->bitmask = $mask;									// bitmask
+			$out[$mask]->netmask = $net->netmask;							// netmask
+			$out[$mask]->host_bits = 32-$mask;								// host bits
+			$out[$mask]->subnet_bits = 32-$out[$mask]->host_bits;			// network bits
+			$out[$mask]->hosts = number_format($this->get_max_hosts ($mask, "IPv4"), 0, ",", ".");		// max hosts
+			$out[$mask]->subnets = number_format(pow(2,($mask-8)), 0, ",", ".");
+
+			// binary
+			$parts = explode(".", $net->netmask);
+			foreach($parts as $k=>$p) { $parts[$k] = str_pad(decbin($p),8, 0); }
+			$out[$mask]->binary = implode(".", $parts);
+		}
+		# return result
+		return $out;
+	}
+
 
 
 

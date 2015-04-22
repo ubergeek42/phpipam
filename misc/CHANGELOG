@@ -1,4 +1,4 @@
-== 1.14.001
+== 1.15.006
 
 	New features:
 	------------
@@ -9,6 +9,7 @@
 	+ Added option to define address as default GW for subnet;
 	+ Added customizable address tags;
 	+ Added temporary subnet / address shares;
+	+ Added quick subnet masks;
 
 	Enhancements:
 	----------------------------
