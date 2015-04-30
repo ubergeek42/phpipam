@@ -123,7 +123,7 @@ else {
 					$class = $n==0 ? "odd" : "even";
 					//start - VLAN details
 					print "<tr class='$class change'>";
-					print "	<td><a href='".create_link("tools","vlan", $vlan_domain->id, $vlan->vlanId)."'>".$vlan[0]->number."</td>";
+					print "	<td><a href='".create_link("tools","vlan", $vlan_domain->id, $vlan[0]->vlanId)."'>".$vlan[0]->number."</td>";
 					print "	<td>".$vlan[0]->name."</td>";
 					print "	<td>".$vlan[0]->description."</td>";
 				} else {

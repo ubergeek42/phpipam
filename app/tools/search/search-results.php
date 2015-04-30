@@ -410,7 +410,7 @@ if(sizeof($result_vlans) > 0) {
 
 		print '<tr class="nolink">' . "\n";
 		print ' <td><dd>'. $vlan['name']      .'</dd></td>' . "\n";
-		print ' <td><dd><a href="'.create_link("tools","vlan",$vlan['vlanId']).'">'. $vlan['number']     .'</a></dd></td>' . "\n";
+		print ' <td><dd><a href="'.create_link("tools","vlan",$vlan['domainId'],$vlan['vlanId']).'">'. $vlan['number']     .'</a></dd></td>' . "\n";
 		print ' <td><dd>'. $vlan['description'] .'</dd></td>' . "\n";
 		# custom fields
 		if(sizeof($custom_vlan_fields) > 0) {
