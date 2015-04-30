@@ -39,7 +39,7 @@ sizeof($subnet)>0 ?:			$Result->show("danger", _("Invalid subnet"), true, true);
 
 # set and check permissions
 $subnet_permission = $Subnets->check_permission($User->user, $subnet['id']);
-$subnet_permission > 2 ?:		$Result->show("danger", _('Cannot edit IP address details').'! <br>'._('You do not have write access for this network'), true, true);
+$subnet_permission > 1 ?:		$Result->show("danger", _('Cannot edit IP address details').'! <br>'._('You do not have write access for this network'), true, true);
 
 # set selected address fields array
 $selected_ip_fields = $User->settings->IPfilter;

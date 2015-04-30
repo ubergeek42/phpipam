@@ -40,7 +40,7 @@ isset($address['state']) ?:			$Result->show("danger", _("Missing required fields
 
 # set and check permissions
 $subnet_permission = $Subnets->check_permission($User->user, $address['subnetId']);
-$subnet_permission > 2 ?:		$Result->show("danger", _('Cannot edit IP address'), true);
+$subnet_permission > 1 ?:		$Result->show("danger", _('Cannot edit IP address'), true);
 
 # fetch subnet
 $subnet = (array) $Subnets->fetch_subnet(null, $address['subnetId']);
